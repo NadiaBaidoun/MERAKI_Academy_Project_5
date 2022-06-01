@@ -1,6 +1,6 @@
 const connection = require("../models/db");
 
-// function to create task
+// function to create post
 const createPost = (req, res) => {
   const { content } = req.body;
   const userId = req.token.userId;
@@ -23,7 +23,35 @@ const createPost = (req, res) => {
   });
 };
 
+// function to get all Posts
+const getAllPosts = (req, res) => {
+   
+    const query = `SELECT * FROM posts WHERE is_deleted=0;`;
+
+    connection.query(query, (err, result) => {
+      if (err) {
+        return res.status(500).json({
+          success: false,
+          massage: "Server error",
+          err,
+        });
+      }
+      if (!result.length) {
+        return res.status(404).json({
+          success: false,
+          massage: "no posts yet",
+        });
+      }
+  
+      res.status(200).json({
+        success: true,
+        massage: "All posts",
+        result,
+      });
+    });
+  };
 module.exports = {
     createPost,
+    getAllPosts,
   };
   
