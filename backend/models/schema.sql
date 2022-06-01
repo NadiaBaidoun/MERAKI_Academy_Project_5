@@ -60,8 +60,8 @@ CREATE TABLE likes(
 
 CREATE TABLE friends(
     id INT AUTO_INCREMENT NOT NULL, 
-    soucre_id INT,
-    FOREIGN KEY (soucre_id) REFERENCES users(id),
+    source_id INT,
+    FOREIGN KEY (source_id) REFERENCES users(id),
     target_id INT,
     FOREIGN KEY (target_id) REFERENCES users(id),
     PRIMARY KEY (id),
