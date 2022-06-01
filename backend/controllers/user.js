@@ -102,4 +102,32 @@ const getUserById = (req, res) => {
   });
 };
 
-module.exports = { followUser, unFollowUser, getUserById };
+// function to get all friends
+const getAllFriends = (req, res) => {
+  const sourceId = req.token.userId;
+  const query = `SELECT * FROM friends WHERE source_id=? AND is_deleted=0;`;
+  const data = [sourceId];
+  connection.query(query, data, (err, result) => {
+    if (err) {
+      return res.status(500).json({
+        success: false,
+        massage: "Server error",
+        err,
+      });
+    }
+    if (!result.length) {
+      return res.status(404).json({
+        success: false,
+        massage: "You have no friends",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      massage: "All your friends",
+      result,
+    });
+  });
+};
+
+module.exports = { followUser, unFollowUser, getUserById, getAllFriends };
