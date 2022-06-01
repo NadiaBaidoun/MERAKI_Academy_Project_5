@@ -1,7 +1,7 @@
 const express = require("express");
 
 //controllers
-const { createPost, getAllPosts } = require("../controllers/posts");
+const { createPost, getAllPosts, updatePostById } = require("../controllers/posts");
 
 const postsRouter = express.Router()
 
@@ -9,6 +9,7 @@ const postsRouter = express.Router()
 const authentication = require("../middlewares/authentication");
 
 postsRouter.get("/", getAllPosts);
+postsRouter.put("/:id", updatePostById);
 postsRouter.post(
     "/",
     authentication,

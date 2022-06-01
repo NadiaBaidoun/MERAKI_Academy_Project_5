@@ -50,8 +50,53 @@ const getAllPosts = (req, res) => {
       });
     });
   };
+  // function to update post by id
+const updatePostById = (req, res) => {
+    const { content } = req.body;
+    const id = req.params.id;
+  
+    const query = `SELECT * FROM posts WHERE id=?;`;
+    const data = [id];
+  
+    connection.query(query, data, (err, result) => {
+      if (err) {
+        return res.status(404).json({
+          success: false,
+          massage: `Server error`,
+          err,
+        });
+      }
+      if (!result.length) {
+        res.status(404).json({
+          success: false,
+          massage: `no posts found`,
+        });
+      } else {
+   
+        const query = `UPDATE posts SET content=?WHERE id=?;`;
+        const data = [content || result[0].content, id];
+  
+        connection.query(query, data, (err, result) => {
+          if (err) {
+            return res.status(404).json({
+              success: false,
+              massage: `Server error`,
+              err,
+            });
+          }
+          res.status(201).json({
+            success: true,
+            massage: `posts updated`,
+            result: result,
+          });
+        });
+      }
+    });
+  };
+  
 module.exports = {
     createPost,
     getAllPosts,
+    updatePostById,
   };
   
