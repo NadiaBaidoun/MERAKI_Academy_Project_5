@@ -72,7 +72,7 @@ const updatePostById = (req, res) => {
         massage: `no posts found`,
       });
     } else {
-      console.log(result);
+ 
       const query = `UPDATE posts SET content=?WHERE id=?;`;
       const data = [content || result[0].content, id];
 
