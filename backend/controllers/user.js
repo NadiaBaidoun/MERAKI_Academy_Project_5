@@ -1,5 +1,6 @@
 const connection = require("../models/db");
 
+//function to follow another user
 const followUser = (req, res) => {
   const sourceId = req.token.userId;
   const targetId = req.params.target_id;
@@ -42,4 +43,35 @@ const followUser = (req, res) => {
   });
 };
 
-module.exports = { followUser };
+// function to unfollow user
+const unFollowUser = (req, res) => {
+  const sourceId = req.token.userId;
+  const targetId = req.params.target_id;
+
+  const query = `UPDATE friends SET is_deleted=1 WHERE source_id=? AND target_id=? AND is_deleted=0;`;
+
+  const data = [sourceId, targetId];
+
+  connection.query(query, data, (err, result) => {
+    if (err) {
+      return res.status(500).json({
+        success: false,
+        massage: "Server Error",
+        err,
+      });
+    }
+
+    if (!result.changedRows) {
+      return res.status(405).json({
+        success: false,
+        massage: `User unfollowed already`,
+      });
+    }
+    res.status(200).json({
+      success: true,
+      massage: `User unfollowed successfully`,
+    });
+  });
+};
+
+module.exports = { followUser, unFollowUser };

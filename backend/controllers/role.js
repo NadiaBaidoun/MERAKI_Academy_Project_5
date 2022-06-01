@@ -7,7 +7,7 @@ const createNewRole = (req, res) => {
   const data = [role];
   connection.query(query, data, (err, results) => {
     if (err) {
-   return res.status(500).json({
+      return res.status(500).json({
         success: false,
         massage: "server error*",
         err: err,
