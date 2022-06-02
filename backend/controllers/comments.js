@@ -99,8 +99,34 @@ const updateCommentById = (req, res) => {
     });
   };
   
+
+const getAllComments = (req, res) => {
+  const query = `SELECT * FROM comments WHERE is_deleted=0;`;
+
+  connection.query(query, (err, result) => {
+    if (err) {
+      return res.status(500).json({
+        success: false,
+        massage: "Server error",
+        err,
+      });
+    }
+    if (!result.length) {
+      return res.status(404).json({
+        success: false,
+        massage: "no comments yet",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      massage: "All comments",
+      result,
+    });
+  });
+};
   
 
 module.exports = {
-  createComment,updateCommentById ,deleteCommentById
+  createComment,updateCommentById ,deleteCommentById ,getAllComments
 };
