@@ -2,7 +2,6 @@ const express = require("express");
 require("dotenv").config();
 const cors = require("cors");
 
-
 //routers
 const postsRouter = require("./routes/posts");
 const registerRouter = require("./routes/register");
@@ -21,13 +20,13 @@ app.use(cors());
 
 // routes
 app.use("/register", registerRouter);
-app.use("/posts",postsRouter);
+app.use("/posts", postsRouter);
 app.use("/login", loginRouter);
 app.use("/role", roleRouter);
 app.use("/permission", permissionRouter);
-app.use("/comments",commentsRouter);
-app.use("/likes",likeRouter);
-app.use("/user",userRouter);
+app.use("/comments", commentsRouter);
+app.use("/likes", likeRouter);
+app.use("/user", userRouter);
 
 const PORT = process.env.PORT || 5000;
 
