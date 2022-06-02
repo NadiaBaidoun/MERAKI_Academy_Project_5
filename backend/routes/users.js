@@ -6,10 +6,12 @@ const {
   unFollowUser,
   getUserById,
   getAllFriends,
+  deleteUserById,
 } = require("../controllers/user");
 
 // middleware
 const authentication = require("../middlewares/authentication");
+const authorization = require("../middlewares/authorization");
 
 const userRouter = express.Router();
 
@@ -19,4 +21,10 @@ userRouter.delete("/delete/:target_id", authentication, unFollowUser);
 userRouter.get("/:user_id", authentication, getUserById);
 userRouter.get("/list/friends", authentication, getAllFriends);
 
+userRouter.delete(
+  "/:user_id",
+  authentication,
+  authorization("DELETE_USER"),
+  deleteUserById
+);
 module.exports = userRouter;

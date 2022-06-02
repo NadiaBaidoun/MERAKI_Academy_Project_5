@@ -130,4 +130,40 @@ const getAllFriends = (req, res) => {
   });
 };
 
-module.exports = { followUser, unFollowUser, getUserById, getAllFriends };
+// function to delete user by id
+const deleteUserById = (req, res) => {
+  const id = req.params.user_id;
+
+  const query = `UPDATE users SET is_deleted=1 WHERE id=?;`;
+
+  const data = [id];
+
+  connection.query(query, data, (err, result) => {
+    if (err) {
+      return res.status(500).json({
+        success: false,
+        massage: "Server Error",
+        err,
+      });
+    }
+
+    if (!result.changedRows) {
+      return res.status(404).json({
+        success: false,
+        massage: `User not found`,
+      });
+    }
+    res.status(200).json({
+      success: true,
+      massage: `User deleted successfully`,
+    });
+  });
+};
+
+module.exports = {
+  followUser,
+  unFollowUser,
+  getUserById,
+  getAllFriends,
+  deleteUserById,
+};
