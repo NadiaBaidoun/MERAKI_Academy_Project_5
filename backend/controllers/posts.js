@@ -92,6 +92,34 @@ const updatePostById = (req, res) => {
   });
 };
 
+// function to get all posts by userID
+const getPostByUserId = (req, res) => {
+  const id = req.params.id;
+  const query = `SELECT * FROM posts WHERE user_id=? AND is_deleted=0;`;
+  const data = [id];
+  connection.query(query, data, (err, result) => {
+    if (err) {
+      return res.status(500).json({
+        success: false,
+        massage: "Server error",
+        err,
+      });
+    }
+    if (!result.length) {
+      return res.status(404).json({
+        success: false,
+        massage: "no Post yet for this user",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      massage: "All tasks",
+      result,
+    });
+  });
+};
+
 //function to delete post by id
 const deletePostById = (req, res) => {
   const id = req.params.id;
@@ -126,5 +154,6 @@ module.exports = {
   createPost,
   getAllPosts,
   updatePostById,
+  getPostByUserId,
   deletePostById,
 };
