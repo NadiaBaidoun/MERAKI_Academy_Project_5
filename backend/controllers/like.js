@@ -23,4 +23,34 @@ const like = (req, res) => {
   });
 };
 
-module.exports = { like };
+const unlike = (req, res) => {
+  const user_id = req.token.userId;
+  const post_id = req.params.id;
+
+  const query = `UPDATE likes SET is_deleted=1 WHERE is_liked=1 AND user_id=? AND post_id=?;`;
+
+  const data = [user_id, post_id];
+
+  connection.query(query, data, (err, result) => {
+    if (err) {
+      return res.status(500).json({
+        success: false,
+        massage: "Server Error",
+        err,
+      });
+    }
+
+    if (!result.changedRows) {
+      return res.status(404).json({
+        success: false,
+        massage: `post not found`,
+      });
+    }
+    res.status(200).json({
+      success: true,
+      massage: `post unliked`,
+    });
+  });
+};
+
+module.exports = { like, unlike };
