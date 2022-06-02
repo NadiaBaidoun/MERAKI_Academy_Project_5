@@ -53,4 +53,30 @@ const unlike = (req, res) => {
   });
 };
 
-module.exports = { like, unlike };
+const getAllLikes = (req, res) => {
+  const query = `SELECT * FROM likes WHERE is_deleted=0;`;
+
+  connection.query(query, (err, result) => {
+    if (err) {
+      return res.status(500).json({
+        success: false,
+        massage: "Server error",
+        err,
+      });
+    }
+    if (!result.length) {
+      return res.status(404).json({
+        success: false,
+        massage: "No likes",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      massage: "All likes",
+      result,
+    });
+  });
+};
+
+module.exports = { like, unlike ,getAllLikes };
