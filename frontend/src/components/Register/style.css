@@ -1,0 +1,102 @@
+form {
+  background-color: white;
+  padding: 0px 60px;
+  border-radius: 10px;
+}
+
+h1 {
+  color: rgb(77, 1, 77);
+  text-align: center;
+}
+
+button {
+  width: 100%;
+  height: 50px;
+  padding: 10px;
+  border: none;
+  background-color: rebeccapurple;
+  color: white;
+  border-radius: 5px;
+  font-weight: bold;
+  font-size: 18px;
+  cursor: pointer;
+  margin-top: 15px;
+  margin-bottom: 30px;
+}
+
+.formInput {
+  display: flex;
+  flex-direction: column;
+  width: 280px;
+}
+
+input {
+  padding: 15px;
+  margin: 10px 0px;
+  border-radius: 5px;
+  border: 1px solid gray;
+}
+
+label {
+  font-size: 12px;
+  color: gray;
+}
+
+span {
+  font-size: 12px;
+  padding: 3px;
+  color: red;
+  display: none;
+}
+
+.firstName:invalid[focused=""] {
+  border: 1px solid red;
+}
+
+.firstName:invalid[focused=""] ~ .firstNameError {
+  display: block;
+}
+
+.lastName:invalid[focused=""] {
+  border: 1px solid red;
+}
+
+.lastName:invalid[focused=""] ~ .lastNameError {
+  display: block;
+}
+
+.birthdate:invalid[focused=""] {
+  border: 1px solid red;
+}
+
+.birthdate:invalid[focused=""] ~ .ageError {
+  display: block;
+}
+
+.email:invalid[focused=""] {
+  border: 1px solid red;
+}
+
+.email:invalid[focused=""] ~ .emailError {
+  display: block;
+}
+
+.password:invalid[focused="true"] {
+  border: 1px solid red;
+}
+
+.password:invalid[focused="true"] ~ .passwordError {
+  display: block;
+}
+
+.repeatPassword:invalid[focused=""] {
+  border: 1px solid red;
+}
+
+.repeatPassword:invalid[focused=""] ~ .repeatPasswordError {
+  display: block;
+}
+
+.notExist {
+  display: block;
+}
