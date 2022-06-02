@@ -25,6 +25,50 @@ const createComment = (req, res) => {
   });
 };
 
+
+// function to update post by id
+const updateCommentById = (req, res) => {
+    const { comment } = req.body;
+    const id = req.params.id;
+  
+    const query = `SELECT * FROM comments WHERE id=?;`;
+    const data = [id];
+  
+    connection.query(query, data, (err, result) => {
+      if (err) {
+        return res.status(404).json({
+          success: false,
+          massage: `Server error`,
+          err,
+        });
+      }
+      if (!result.length) {
+        res.status(404).json({
+          success: false,
+          massage: `no comment found`,
+        });
+      } else {
+        const query = `UPDATE comments SET comment=?WHERE id=?;`;
+        const data = [comment || result[0].comment, id];
+  
+        connection.query(query, data, (err, result) => {
+          if (err) {
+            return res.status(404).json({
+              success: false,
+              massage: `Server error`,
+              err,
+            });
+          }
+          res.status(201).json({
+            success: true,
+            massage: `comment updated`,
+            result: result,
+          });
+        });
+      }
+    });
+  };
+
 module.exports = {
-  createComment,
+  createComment,updateCommentById
 };
