@@ -1,4 +1,4 @@
-DROP DATABASE FacebookClone;
+--DROP DATABASE FacebookClone;
 
 CREATE DATABASE FacebookClone;
 
@@ -67,7 +67,6 @@ CREATE TABLE friends(
     PRIMARY KEY (id),
     is_deleted TINYINT DEFAULT 0
 );
-
 
 
 CREATE TABLE permissions(

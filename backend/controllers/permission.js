@@ -23,7 +23,7 @@ const createPermission = (req, res) => {
           res.status(201).json({
             success: true,
             message: "permission created",
-            result: result,
+            result,
           });
         }
       });
@@ -31,6 +31,7 @@ const createPermission = (req, res) => {
       res.status(500).json({
         success: false,
         message: "permission not created",
+        err,
       });
     }
   });
