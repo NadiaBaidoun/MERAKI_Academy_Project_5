@@ -11,7 +11,7 @@ const createComment = (req, res) => {
 
   connection.query(query, data, (err, result) => {
     if (err) {
-      res.status(404).json({
+    return  res.status(404).json({
         success: false,
         massage: "server error",
         err: err,
@@ -25,80 +25,77 @@ const createComment = (req, res) => {
   });
 };
 
-
 // function to update post by id
 const updateCommentById = (req, res) => {
-    const { comment } = req.body;
-    const id = req.params.id;
-  
-    const query = `SELECT * FROM comments WHERE id=?;`;
-    const data = [id];
-  
-    connection.query(query, data, (err, result) => {
-      if (err) {
-        return res.status(404).json({
-          success: false,
-          massage: `Server error`,
-          err,
-        });
-      }
-      if (!result.length) {
-        res.status(404).json({
-          success: false,
-          massage: `no comment found`,
-        });
-      } else {
-        const query = `UPDATE comments SET comment=?WHERE id=?;`;
-        const data = [comment || result[0].comment, id];
-  
-        connection.query(query, data, (err, result) => {
-          if (err) {
-            return res.status(404).json({
-              success: false,
-              massage: `Server error`,
-              err,
-            });
-          }
-          res.status(201).json({
-            success: true,
-            massage: `comment updated`,
-            result: result,
-          });
-        });
-      }
-    });
-  };
+  const { comment } = req.body;
+  const id = req.params.id;
 
+  const query = `SELECT * FROM comments WHERE id=?;`;
+  const data = [id];
 
-  const deleteCommentById = (req, res) => {
-    const id = req.params.id;
-  
-    const query = `UPDATE comments SET is_deleted=1 WHERE id=?;`;
-  
-    const data = [id];
-  
-    connection.query(query, data, (err, result) => {
-      if (err) {
-        return res.status(500).json({
-          success: false,
-          massage: "Server Error",
-          err,
-        });
-      }
-  
-      if (!result.changedRows) {
-        return res.status(404).json({
-          success: false,
-          massage: `comment not found`,
-        });
-      }
-      res.status(200).json({
-        success: true,
-        massage: `comment deleted successfully`,
+  connection.query(query, data, (err, result) => {
+    if (err) {
+      return res.status(404).json({
+        success: false,
+        massage: `Server error`,
+        err,
       });
+    }
+    if (!result.length) {
+      res.status(404).json({
+        success: false,
+        massage: `no comment found`,
+      });
+    } else {
+      const query = `UPDATE comments SET comment=?WHERE id=?;`;
+      const data = [comment || result[0].comment, id];
+
+      connection.query(query, data, (err, result) => {
+        if (err) {
+          return res.status(404).json({
+            success: false,
+            massage: `Server error`,
+            err,
+          });
+        }
+        res.status(201).json({
+          success: true,
+          massage: `comment updated`,
+          result: result,
+        });
+      });
+    }
+  });
+};
+
+const deleteCommentById = (req, res) => {
+  const id = req.params.id;
+
+  const query = `UPDATE comments SET is_deleted=1 WHERE id=?;`;
+
+  const data = [id];
+
+  connection.query(query, data, (err, result) => {
+    if (err) {
+      return res.status(500).json({
+        success: false,
+        massage: "Server Error",
+        err,
+      });
+    }
+
+    if (!result.changedRows) {
+      return res.status(404).json({
+        success: false,
+        massage: `comment not found`,
+      });
+    }
+    res.status(200).json({
+      success: true,
+      massage: `comment deleted successfully`,
     });
-  };
-  
+  });
+};
 
 const getAllComments = (req, res) => {
   const query = `SELECT * FROM comments WHERE is_deleted=0;`;
@@ -125,8 +122,10 @@ const getAllComments = (req, res) => {
     });
   });
 };
-  
 
 module.exports = {
-  createComment,updateCommentById ,deleteCommentById ,getAllComments
+  createComment,
+  updateCommentById,
+  deleteCommentById,
+  getAllComments,
 };
