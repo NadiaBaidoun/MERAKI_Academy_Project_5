@@ -12,4 +12,162 @@
   margin: 20px;
   border-radius: 5px;
   text-align: center;
+  position: relative;
+}
+
+/* .posts-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 50%;
+    margin: auto;
+    font-weight: bold;
+  }
+   */
+/* .post {
+    background-color: blueviolet;
+    color: white;
+    border-radius: 5px;
+    box-shadow: 0 1px 5px black;
+    width: 50%;
+    margin: 10px;
+    padding: 15px;
+    position: relative;
+  } */
+
+.dd-container {
+  display: flex;
+  position: absolute;
+  right: 0;
+  top: 0;
+  flex-direction: row-reverse;
+}
+
+.control-container {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.dropdown {
+  position: absolute;
+  right: -6.5em;
+  list-style: none;
+  box-shadow: 0 1px 9px black;
+  width: 6em;
+  border: 2px solid blueviolet;
+  border-radius: 5px;
+  color: blueviolet;
+  margin: 2% 0;
+}
+
+.options-div {
+  width: 100%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-size: small;
+  font-weight: bold;
+  justify-content: start;
+  height: 5vh;
+  padding: 15px;
+  border-bottom: 1px solid blueviolet;
+}
+
+.options {
+  font-size: 1em;
+  padding-left: 4%;
+  border-style: none;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.dropdown div:hover {
+  background-color: blueviolet;
+  color: white;
+}
+
+.dd-button {
+  width: 2em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-style: none;
+  border-radius: 5px;
+  height: 5vh;
+  background-color: transparent;
+  color: rgb(12, 13, 17);
+  cursor: pointer;
+}
+
+.addpost {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px;
+  width: 350px;
+}
+
+.addpost input {
+  height: 2em;
+  font-size: 1.2em;
+  border-radius: 5px;
+  border: 1px solid blueviolet;
+  padding: 5px;
+  margin: 2px;
+}
+
+.addpost input:focus {
+  border: 2px solid blueviolet;
+  outline: none;
+  box-shadow: 0 1px 5px blueviolet;
+}
+
+.addpost button {
+  height: 2em;
+  font-size: 1.2em;
+  width: 5em;
+  color: white;
+  border-radius: 5px;
+  border-style: none;
+  cursor: pointer;
+  background-color: blueviolet;
+}
+
+.update-form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin: 10px;
+}
+
+.update-form button {
+  height: 2em;
+  font-size: 0.8em;
+  width: 5em;
+  font-weight: bold;
+  color: blueviolet;
+  margin: 5px;
+  border-radius: 5px;
+  border-style: none;
+  cursor: pointer;
+  background-color: white;
+}
+
+.update-form input {
+  height: 2em;
+  width: 10em;
+  font-size: 0.8em;
+  border-radius: 5px;
+  border: 1px solid darkviolet;
+  padding: 5px;
+  margin: 2px;
+}
+
+.update-form input:focus {
+  border: 2px solid blueviolet;
+  outline: none;
+  box-shadow: 0 1px 5px blueviolet;
 }

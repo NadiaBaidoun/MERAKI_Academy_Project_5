@@ -2,7 +2,11 @@ import React, { useEffect, useState, useRef } from "react";
 
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { setPosts, updatePostById } from "../Redux/reducers/posts";
+import {
+  deletePostById,
+  setPosts,
+  updatePostById,
+} from "../Redux/reducers/posts";
 import CreatPost from "../Createpost";
 import "./style.css";
 import { BsThreeDotsVertical } from "react-icons/bs";
@@ -25,7 +29,11 @@ const Dashboard = () => {
       posts: state.posts.posts,
     };
   });
-
+  const { token } = useSelector((state) => {
+    return {
+      token: state.auth.token,
+    };
+  });
   //=================================
 
   const showDD = (e) => {
@@ -69,11 +77,29 @@ const Dashboard = () => {
       });
   };
   //=================================
+  const deletepost = (id) => {
+    axios
+      .delete(`http://localhost:5000/posts/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((result) => {
+        dispatch(deletePostById(id));
+      })
+      .catch((error) => {
+        {
+          console.log(error.response.data.message);
+        }
+      });
+  };
 
-  const updateForm = (e, taskcontent) => {
+  //=================================
+
+  const updateForm = (e, postcontent) => {
     setShowUpdate(!showUpdate);
     setDropdownId(e.target.id);
-    setUpdatecontent(taskcontent);
+    setUpdatecontent(postcontent);
     setOpen(!open);
   };
 
@@ -118,7 +144,9 @@ const Dashboard = () => {
                     <div
                       className="options-div"
                       id={post.id}
-                      
+                      onClick={(e) => {
+                        deletepost(e.target.id);
+                      }}
                     >
                       Delete
                     </div>
