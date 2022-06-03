@@ -15,27 +15,6 @@
   position: relative;
 }
 
-/* .posts-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 50%;
-    margin: auto;
-    font-weight: bold;
-  }
-   */
-/* .post {
-    background-color: blueviolet;
-    color: white;
-    border-radius: 5px;
-    box-shadow: 0 1px 5px black;
-    width: 50%;
-    margin: 10px;
-    padding: 15px;
-    position: relative;
-  } */
-
 .dd-container {
   display: flex;
   position: absolute;
@@ -170,4 +149,25 @@
   border: 2px solid blueviolet;
   outline: none;
   box-shadow: 0 1px 5px blueviolet;
+}
+
+.like {
+  width: 60px;
+  font-size: 1em;
+  height: 30px;
+  margin: 20px;
+  text-align: center;
+}
+
+.like-div {
+  display: flex;
+  align-items: center;
+}
+
+.post-action {
+  display: flex;
+}
+
+.post-action button {
+  margin: 20px;
 }
