@@ -4,9 +4,8 @@ import "./style.css";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 
-import { addPost } from "../Redux/reducers/Post";
-
 import jwt_decode from "jwt-decode";
+import { addPost } from "../Redux/reducers/posts";
 
 const CreatPost = () => {
   const [content, setContent] = useState("");

@@ -53,7 +53,7 @@ const Register = () => {
   };
 
   return (
-    <div className="app">
+    <div>
       <form className="formInput" onSubmit={createUser}>
         <h1>Sign Up</h1>
         <input
@@ -137,7 +137,7 @@ const Register = () => {
 
         <span className="emailError">{message}</span>
 
-        <span className="notExist">{error}</span>
+        <span className={error ? "notExist" : ""}>{error}</span>
 
         <input
           placeholder="Password"

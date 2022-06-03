@@ -1,0 +1,21 @@
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid gray;
+  background-color: blueviolet;
+  height: 9vh;
+}
+
+.header {
+  font-size: 2.2em !important;
+  font-weight: bold;
+}
+
+.link {
+  text-decoration: none;
+  margin: 15px;
+  font-size: 1.2em;
+  cursor: pointer;
+  color: white;
+}

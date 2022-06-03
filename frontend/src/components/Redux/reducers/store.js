@@ -1,14 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 
 //reducers
-
-import postReducer from './Post'
 import postsReducer from "./posts";
+import authReducer from "./auth";
 
 export default configureStore({
   reducer: {
-//     Nadia
-    posts:postReducer, 
-//     Faris
-      post: postsReducer
+    posts: postsReducer,
+    auth: authReducer,
+  },
 });

@@ -1,0 +1,45 @@
+.Home {
+  height: 100vh;
+}
+
+.home-elements {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  /* padding-bottom: 164px;
+  padding-top: 20px; */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.facebook-logo {
+  width: 450px;
+}
+
+.home-elements h1 {
+  font-size: 3.5rem;
+  color: #1877f2;
+}
+
+.home-elements p {
+  font-size: 2em;
+}
+
+.home-actions {
+  display: flex;
+  width: 350px;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 5px;
+  box-shadow: 0 1px 5px;
+}
+
+.register-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}

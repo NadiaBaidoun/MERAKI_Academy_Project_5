@@ -1,30 +1,27 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import "./style.css";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+
+import { logout } from "../Redux/reducers/auth";
 
 const Navbar = () => {
   const dispatch = useDispatch();
 
-  let signOut;
+  const { isLoggedIn } = useSelector((state) => {
+    return {
+      isLoggedIn: state.auth.isLoggedIn,
+    };
+  });
 
-  const isLoggedIn = false;
+  const signOut = () => {
+    dispatch(logout());
+  };
 
   return (
     <div className="navbar-container">
-      <Link className="header link" to="/home">
-        Home
-      </Link>
-      {!isLoggedIn ? (
-        <div className="Links-container">
-          <Link className="link" to={"/login"}>
-            Login
-          </Link>
-          <Link className="link" to={"/register"}>
-            Register
-          </Link>
-        </div>
-      ) : (
+      {isLoggedIn ? (
         <div className="Links-container">
           <Link className="link" to={"/home"}>
             Home
@@ -36,6 +33,8 @@ const Navbar = () => {
             Logout
           </Link>
         </div>
+      ) : (
+        <></>
       )}
     </div>
   );
