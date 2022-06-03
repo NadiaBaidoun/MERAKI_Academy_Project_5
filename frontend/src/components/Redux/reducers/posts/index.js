@@ -12,9 +12,17 @@ const postSlice = createSlice({
     addPost: (state, action) => {
       state.posts.push(action.payload);
     },
+    updatePostById: (state, action) => {
+      state.posts = state.posts.map((post) => {
+        if (post.id == action.payload.id) {
+          return { ...post, content: action.payload.content };
+        }
+        return post;
+      });
+    },
   },
 });
 
-export const { setPosts, addPost } = postSlice.actions;
+export const { setPosts, addPost,updatePostById } = postSlice.actions;
 
 export default postSlice.reducer;
