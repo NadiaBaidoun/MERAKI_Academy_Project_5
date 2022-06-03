@@ -20,9 +20,15 @@ const postSlice = createSlice({
         return post;
       });
     },
+    deletePostById: (state, action) => {
+      state.posts = state.posts.filter((post) => {
+        return post.id != action.payload;
+      });
+    },
   },
 });
 
-export const { setPosts, addPost,updatePostById } = postSlice.actions;
+export const { setPosts, addPost, updatePostById, deletePostById } =
+  postSlice.actions;
 
 export default postSlice.reducer;
