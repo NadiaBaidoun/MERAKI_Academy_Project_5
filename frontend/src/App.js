@@ -17,6 +17,7 @@ function App() {
 
         <Route path="/home" element={<Dashboard />} />
         <Route path="/profile" element={<Profile />} />
+      
       </Routes>
     </div>
   );
