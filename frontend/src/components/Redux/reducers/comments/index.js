@@ -12,7 +12,6 @@ const commentSlice = createSlice({
     addComment: (state, action) => {
       state.comments.push(action.payload);
     },
-
     updateCommentById: (state, action) => {
       state.comments = state.comments.map((comment) => {
         if (comment.id == action.payload.id) {
@@ -21,10 +20,15 @@ const commentSlice = createSlice({
         return comment;
       });
     },
+    deleteCommentById: (state, action) => {
+      state.comments = state.comments.filter((comment) => {
+        return comment.id != action.payload;
+      });
+    },
   },
 });
 
-export const { setComments, addComment, updateCommentById } =
+export const { setComments, addComment, updateCommentById, deleteCommentById } =
   commentSlice.actions;
 
 export default commentSlice.reducer;

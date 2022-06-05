@@ -16,6 +16,7 @@ import {
   addComment,
   setComments,
   updateCommentById,
+  deleteCommentById,
 } from "../Redux/reducers/comments";
 import jwt_decode from "jwt-decode";
 
@@ -274,6 +275,25 @@ const Dashboard = () => {
 
   //=================================
 
+  const deleteComment = (id) => {
+    axios
+      .delete(`http://localhost:5000/comments/delete/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((result) => {
+        dispatch(deleteCommentById(id));
+      })
+      .catch((error) => {
+        {
+          console.log(error.response.data.message);
+        }
+      });
+  };
+
+  //=================================
+
   useEffect(() => {
     getAllPosts();
     getAllLikes();
@@ -438,14 +458,24 @@ const Dashboard = () => {
                             <>
                               <p>{comment.comment}</p>
                               {comment.commenter_id === userId ? (
-                                <button
-                                  id={comment.id}
-                                  onClick={(e) => {
-                                    updateFormComment(e, comment.comment);
-                                  }}
-                                >
-                                  Update
-                                </button>
+                                <>
+                                  <button
+                                    id={comment.id}
+                                    onClick={(e) => {
+                                      updateFormComment(e, comment.comment);
+                                    }}
+                                  >
+                                    Update
+                                  </button>
+                                  <button
+                                    id={comment.id}
+                                    onClick={(e) => {
+                                      deleteComment(e.target.id);
+                                    }}
+                                  >
+                                    Delete
+                                  </button>
+                                </>
                               ) : (
                                 ""
                               )}
