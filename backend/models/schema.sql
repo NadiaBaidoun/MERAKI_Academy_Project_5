@@ -1,4 +1,4 @@
---DROP DATABASE FacebookClone;
+ DROP DATABASE FacebookClone;
 
 CREATE DATABASE FacebookClone;
 
@@ -29,6 +29,7 @@ CREATE TABLE users(
 CREATE TABLE posts(
     id INT AUTO_INCREMENT NOT NULL,
     content VARCHAR(255) NOT NULL,
+    image VARCHAR(255),
     user_id INT,
     FOREIGN KEY (user_id) REFERENCES users(id),
     PRIMARY KEY (id),

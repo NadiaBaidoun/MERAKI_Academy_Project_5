@@ -11,10 +11,10 @@ import {
 
 import "./style.css";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { addLike, removeLike, setLikes } from "../Redux/reducers/like";
+import { addLike, setLikes } from "../Redux/reducers/like";
 import jwt_decode from "jwt-decode";
 
-const Dashboard = () => {
+const Profile = () => {
   const [content, setContent] = useState("");
   const [show, setShow] = useState(false);
   const [showUpdate, setShowUpdate] = useState(false);
@@ -22,7 +22,7 @@ const Dashboard = () => {
 
   const [dropdownId, setDropdownId] = useState("");
   const [updatecontent, setUpdatecontent] = useState("");
-  const [liked, setLiked] = useState([]);
+  const [liked, setLiked] = useState(false);
 
   const formRef = useRef("");
   //=================================
@@ -64,7 +64,7 @@ const Dashboard = () => {
       .then((res) => {
         if (res.data.success) {
           dispatch(addPost({ content }));
-          getAllPosts();
+          
           formRef.current.reset();
         }
       })
@@ -81,10 +81,12 @@ const Dashboard = () => {
   //=================================
 
   //=================================
-  const getAllPosts = () => {
+  const getPostByUserId = (id) => {
+    console.log(id);
     axios
-      .get("http://localhost:5000/posts")
+      .get(`http://localhost:5000/posts/user/${id}`)
       .then((result) => {
+        console.log(result);
         if (result.data.success) {
           dispatch(setPosts(result.data.result));
           setShow(true);
@@ -156,7 +158,7 @@ const Dashboard = () => {
 
   //=================================
 
-  const likePost = (id) => {
+  const likePost = async (id) => {
     axios
       .post(
         `http://localhost:5000/likes/${id}`,
@@ -175,24 +177,28 @@ const Dashboard = () => {
       });
   };
   //=================================
-  const unLikePost = (id) => {
-    axios
-      .delete(`http://localhost:5000/likes/delete/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+
+  const [image, setImage] = useState("");
+  const [url, setUrl] = useState("");
+
+  const uploadImage = () => {
+    const data = new FormData();
+    data.append("file", image);
+    data.append("upload_preset", "olfkj7in");
+    data.append("cloud_name", "aa");
+    fetch("https://api.cloudinary.com/v1_1/dviqtfdwx/image/upload", {
+      method: "post",
+      body: data,
+    })
+      .then((resp) => resp.json())
+      .then((data) => {
+        setUrl(data.url);
       })
-      .then((result) => {
-        dispatch(removeLike(id));
-      })
-      .catch((error) => {
-        console.log(error.response.data.message);
-      });
+      .catch((err) => console.log(err));
   };
   //=================================
-
   useEffect(() => {
-    getAllPosts();
+    getPostByUserId(userId);
     getAllLikes();
   }, []);
 
@@ -202,16 +208,37 @@ const Dashboard = () => {
         <h1>
           {jwt_decode(token).firstName} {jwt_decode(token).lastName}
         </h1>
-        <form ref={formRef} onSubmit={newPost} className="addPost">
+        <div className="upload">
+        {/* <input
+          type="file"
+          onChange={(e) => setImage(e.target.files[0])}
+        ></input> */}
+        {/* <button onClick={uploadImage}>Upload</button> */}
+      </div>
+      <div>
+       
+        <img className="prof_img"  src={url} />
+      </div>
+        <form ref={formRef}  onSubmit={ image? uploadImage : newPost }className="addPost">
           <textarea
             placeholder="article description here"
             onChange={(e) => setContent(e.target.value)}
           ></textarea>
           <div className="post-action">
-            <button>photo</button>
-            <button>Add</button>
+           
+            <input
+          type="file"
+          onChange={(e) => setImage(e.target.files[0])}></input>
+            <button  >Add</button>
+           
           </div>
         </form>
+      </div>
+      <div className="left-info">
+        <div className="left-container">
+          <div>INFO</div>
+          <div>Friend List</div>
+        </div>
       </div>
       {show &&
         posts.map((post, index) => {
@@ -272,19 +299,6 @@ const Dashboard = () => {
                     }}
                     ref={formRef}
                   >
-                    {setLiked(
-                      likes.filter((el) => {
-                        return post.id == el.post_id;
-                      })
-                    )}
-                    {/* {likesbyuser.map((el) => {
-                      if (post.id == el.post_id) {
-                        <button>Unlike</button>;
-                      } else {
-                        <button>Like</button>;
-                      }
-                    })} */}
-
                     <input
                       defaultValue={post.content}
                       onChange={(e) => {
@@ -298,23 +312,18 @@ const Dashboard = () => {
                 )}
               </div>
               <div className="like-div">
-                <button
-                  className="like"
-                  onClick={(e) => {
-                    likePost(post.id);
-                  }}
-                >
-                  Like
-                </button>
-
-                <button
-                  className="like"
-                  onClick={(e) => {
-                    unLikePost(post.id);
-                  }}
-                >
-                  Unlike
-                </button>
+                {!liked ? (
+                  <button
+                    className="like"
+                    onClick={(e) => {
+                      likePost(post.id);
+                    }}
+                  >
+                    Like
+                  </button>
+                ) : (
+                  <button className="like">Unlike</button>
+                )}
 
                 {
                   likes.filter((el) => {
@@ -330,4 +339,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default Profile;
