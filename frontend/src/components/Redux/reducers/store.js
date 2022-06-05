@@ -1,10 +1,14 @@
 import { configureStore } from "@reduxjs/toolkit";
 
 //reducers
-import postReducer from "./post";
+import postsReducer from "./posts";
+import authReducer from "./auth";
+import likeReducer from "./like";
 
 export default configureStore({
   reducer: {
-    post: postReducer,
+    posts: postsReducer,
+    auth: authReducer,
+    like: likeReducer,
   },
 });
