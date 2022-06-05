@@ -64,7 +64,7 @@ const Profile = () => {
       .then((res) => {
         if (res.data.success) {
           dispatch(addPost({ content }));
-          getPostByUserId();
+          
           formRef.current.reset();
         }
       })
@@ -178,8 +178,25 @@ const Profile = () => {
   };
   //=================================
 
-  //=================================
+  const [image, setImage] = useState("");
+  const [url, setUrl] = useState("");
 
+  const uploadImage = () => {
+    const data = new FormData();
+    data.append("file", image);
+    data.append("upload_preset", "olfkj7in");
+    data.append("cloud_name", "aa");
+    fetch("https://api.cloudinary.com/v1_1/dviqtfdwx/image/upload", {
+      method: "post",
+      body: data,
+    })
+      .then((resp) => resp.json())
+      .then((data) => {
+        setUrl(data.url);
+      })
+      .catch((err) => console.log(err));
+  };
+  //=================================
   useEffect(() => {
     getPostByUserId(userId);
     getAllLikes();
@@ -191,15 +208,29 @@ const Profile = () => {
         <h1>
           {jwt_decode(token).firstName} {jwt_decode(token).lastName}
         </h1>
-
-        <form ref={formRef} onSubmit={newPost} className="addPost">
+        <div className="upload">
+        {/* <input
+          type="file"
+          onChange={(e) => setImage(e.target.files[0])}
+        ></input> */}
+        {/* <button onClick={uploadImage}>Upload</button> */}
+      </div>
+      <div>
+       
+        <img className="prof_img"  src={url} />
+      </div>
+        <form ref={formRef}  onSubmit={ image? uploadImage : newPost }className="addPost">
           <textarea
             placeholder="article description here"
             onChange={(e) => setContent(e.target.value)}
           ></textarea>
           <div className="post-action">
-            <button>photo</button>
-            <button>Add</button>
+           
+            <input
+          type="file"
+          onChange={(e) => setImage(e.target.files[0])}></input>
+            <button  >Add</button>
+           
           </div>
         </form>
       </div>
