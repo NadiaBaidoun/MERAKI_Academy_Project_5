@@ -2,10 +2,10 @@ const connection = require("../models/db");
 
 // function to create post
 const createPost = (req, res) => {
-  const { content } = req.body;
+  const { content,image } = req.body;
   const userId = req.token.userId;
-  const query = `INSERT INTO posts (content,user_id) VALUES (?,?);`;
-  const data = [content, userId];
+  const query = `INSERT INTO posts (content,image,user_id) VALUES (?,?,?);`;
+  const data = [content,image,userId];
 
   connection.query(query, data, (err, result) => {
     if (err) {
