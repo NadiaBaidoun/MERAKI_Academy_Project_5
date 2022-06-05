@@ -11,7 +11,7 @@ import {
 
 import "./style.css";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { addLike, setLikes } from "../Redux/reducers/like";
+import { addLike, removeLike, setLikes } from "../Redux/reducers/like";
 import jwt_decode from "jwt-decode";
 
 const Dashboard = () => {
@@ -22,7 +22,7 @@ const Dashboard = () => {
 
   const [dropdownId, setDropdownId] = useState("");
   const [updatecontent, setUpdatecontent] = useState("");
-  const [liked, setLiked] = useState(false);
+  const [liked, setLiked] = useState([]);
 
   const formRef = useRef("");
   //=================================
@@ -156,7 +156,7 @@ const Dashboard = () => {
 
   //=================================
 
-  const likePost = async (id) => {
+  const likePost = (id) => {
     axios
       .post(
         `http://localhost:5000/likes/${id}`,
@@ -175,7 +175,20 @@ const Dashboard = () => {
       });
   };
   //=================================
-
+  const unLikePost = (id) => {
+    axios
+      .delete(`http://localhost:5000/likes/delete/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((result) => {
+        dispatch(removeLike(id));
+      })
+      .catch((error) => {
+        console.log(error.response.data.message);
+      });
+  };
   //=================================
 
   useEffect(() => {
@@ -259,6 +272,19 @@ const Dashboard = () => {
                     }}
                     ref={formRef}
                   >
+                    {setLiked(
+                      likes.filter((el) => {
+                        return post.id == el.post_id;
+                      })
+                    )}
+                    {/* {likesbyuser.map((el) => {
+                      if (post.id == el.post_id) {
+                        <button>Unlike</button>;
+                      } else {
+                        <button>Like</button>;
+                      }
+                    })} */}
+
                     <input
                       defaultValue={post.content}
                       onChange={(e) => {
@@ -272,18 +298,23 @@ const Dashboard = () => {
                 )}
               </div>
               <div className="like-div">
-                {!liked ? (
-                  <button
-                    className="like"
-                    onClick={(e) => {
-                      likePost(post.id);
-                    }}
-                  >
-                    Like
-                  </button>
-                ) : (
-                  <button className="like">Unlike</button>
-                )}
+                <button
+                  className="like"
+                  onClick={(e) => {
+                    likePost(post.id);
+                  }}
+                >
+                  Like
+                </button>
+
+                <button
+                  className="like"
+                  onClick={(e) => {
+                    unLikePost(post.id);
+                  }}
+                >
+                  Unlike
+                </button>
 
                 {
                   likes.filter((el) => {
