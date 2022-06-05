@@ -25,6 +25,10 @@ const Profile = () => {
   const [liked, setLiked] = useState(false);
 
   const formRef = useRef("");
+  const imageRef = useRef("");
+  // const [image, setImage] = useState("");
+  const [url, setUrl] = useState("");
+
   //=================================
   const dispatch = useDispatch();
 
@@ -48,13 +52,13 @@ const Profile = () => {
 
   const userId = jwt_decode(token).userId;
   //=================================
-
   const newPost = async (e) => {
     e.preventDefault();
+
     axios
       .post(
         "http://localhost:5000/posts/",
-        { content },
+        { content, image: url },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -63,7 +67,9 @@ const Profile = () => {
       )
       .then((res) => {
         if (res.data.success) {
-          dispatch(addPost({ content }));
+
+          dispatch(addPost({ content, image: url }));
+
 
           formRef.current.reset();
         }
@@ -178,12 +184,10 @@ const Profile = () => {
   };
   //=================================
 
-  const [image, setImage] = useState("");
-  const [url, setUrl] = useState("");
-
   const uploadImage = () => {
     const data = new FormData();
-    data.append("file", image);
+
+    data.append("file", imageRef.current);
     data.append("upload_preset", "olfkj7in");
     data.append("cloud_name", "aa");
     fetch("https://api.cloudinary.com/v1_1/dviqtfdwx/image/upload", {
@@ -208,6 +212,7 @@ const Profile = () => {
         <h1>
           {jwt_decode(token).firstName} {jwt_decode(token).lastName}
         </h1>
+
         <div className="upload">
           {/* <input
           type="file"
@@ -215,14 +220,9 @@ const Profile = () => {
         ></input> */}
           {/* <button onClick={uploadImage}>Upload</button> */}
         </div>
-        <div>
-          <img className="prof_img" src={url} />
-        </div>
-        <form
-          ref={formRef}
-          onSubmit={image ? uploadImage : newPost}
-          className="addPost"
-        >
+
+        <form ref={formRef} onSubmit={newPost} className="addPost">
+
           <textarea
             placeholder="article description here"
             onChange={(e) => setContent(e.target.value)}
@@ -230,8 +230,14 @@ const Profile = () => {
           <div className="post-action">
             <input
               type="file"
-              onChange={(e) => setImage(e.target.files[0])}
-            ></input>
+
+              onChange={(e) => {
+                // setImage(e.target.files[0]);
+                imageRef.current = e.target.files[0];
+                uploadImage();
+              }}
+            />
+
             <button>Add</button>
           </div>
         </form>
@@ -291,6 +297,8 @@ const Profile = () => {
                   )}
                 </div>
                 <p>{post.content}</p>
+                <img className="prof_img" src={post.image} />
+
                 {post.id == dropdownId && showUpdate ? (
                   <form
                     className="update-form"

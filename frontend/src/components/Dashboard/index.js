@@ -12,6 +12,12 @@ import {
 import "./style.css";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { addLike, removeLike, setLikes } from "../Redux/reducers/like";
+import {
+  addComment,
+  setComments,
+  updateCommentById,
+  deleteCommentById,
+} from "../Redux/reducers/comments";
 import jwt_decode from "jwt-decode";
 
 const Dashboard = () => {
@@ -19,9 +25,11 @@ const Dashboard = () => {
   const [show, setShow] = useState(false);
   const [showUpdate, setShowUpdate] = useState(false);
   const [open, setOpen] = useState(false);
-
+  const [comment, setComment] = useState("");
   const [dropdownId, setDropdownId] = useState("");
+  const [dropdownIdCom, setDropdownIdCom] = useState("");
   const [updatecontent, setUpdatecontent] = useState("");
+  const [updatecomment, setupdatecomment] = useState("");
   const [liked, setLiked] = useState([]);
 
   const formRef = useRef("");
@@ -44,6 +52,12 @@ const Dashboard = () => {
   const { token } = useSelector((state) => {
     return {
       token: state.auth.token,
+    };
+  });
+
+  const { comments } = useSelector((state) => {
+    return {
+      comments: state.comments.comments,
     };
   });
 
@@ -190,11 +204,101 @@ const Dashboard = () => {
         console.log(error.response.data.message);
       });
   };
+
+  //=================================
+
+  const getAllComments = async () => {
+    axios
+      .get(`http://localhost:5000/comments`)
+      .then((result) => {
+        dispatch(setComments(result.data.result));
+        setShow(true);
+      })
+      .catch((error) => {
+        setShow(false);
+        console.log(error.response.data.message);
+      });
+  };
+
+  //=================================
+
+  const newComment = async (e, id) => {
+    e.preventDefault();
+    axios
+      .post(
+        `http://localhost:5000/comments/${id}`,
+        { comment },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((res) => {
+        if (res.data.success) {
+          dispatch(addComment({ comment, post_id: id }));
+          getAllComments();
+          formRef.current.reset();
+        }
+      })
+      .catch((error) => {
+        console.log(error.response.data.message);
+      });
+  };
+
+  //=================================
+
+  const editComment = (id) => {
+    axios
+      .put(`http://localhost:5000/comments/update/${id}`, {
+        comment: updatecomment,
+      })
+      .then((result) => {
+        if (result.data.success) {
+          dispatch(updateCommentById({ comment: updatecomment, id }));
+        }
+      })
+      .catch((error) => {
+        {
+          console.log(error);
+        }
+      });
+  };
+
+  //=================================
+
+  const updateFormComment = (e, commentcomment) => {
+    setShowUpdate(!showUpdate);
+    setDropdownIdCom(e.target.id);
+    setupdatecomment(commentcomment);
+    setOpen(!open);
+  };
+
+  //=================================
+
+  const deleteComment = (id) => {
+    axios
+      .delete(`http://localhost:5000/comments/delete/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((result) => {
+        dispatch(deleteCommentById(id));
+      })
+      .catch((error) => {
+        {
+          console.log(error.response.data.message);
+        }
+      });
+  };
+
   //=================================
 
   useEffect(() => {
     getAllPosts();
     getAllLikes();
+    getAllComments();
   }, []);
 
   return (
@@ -306,6 +410,90 @@ const Dashboard = () => {
 
                 <p>{postLike.likesNumber}</p>
               </div>
+              <div className="comment-div">
+                <div className="comment-container">
+                  <h1>
+                    {jwt_decode(token).firstName} {jwt_decode(token).lastName}
+                  </h1>
+                  <form ref={formRef} className="addComment">
+                    <textarea
+                      placeholder="comment  here"
+                      onChange={(e) => {
+                        setComment(e.target.value);
+                      }}
+                    ></textarea>
+                    <div className="comment-action">
+                      <button
+                        onClick={(e) => {
+                          newComment(e, post.id);
+                        }}
+                      >
+                        Add
+                      </button>
+                    </div>
+                  </form>
+                </div>
+                {show &&
+                  comments.map((comment, index) => {
+                    return (
+                      <div key={index}>
+                        <div className="comment">
+                          {post.id === comment.post_id ? (
+                            <>
+                              <p>{comment.comment}</p>
+                              {comment.commenter_id === userId ? (
+                                <>
+                                  <button
+                                    id={comment.id}
+                                    onClick={(e) => {
+                                      updateFormComment(e, comment.comment);
+                                    }}
+                                  >
+                                    Update
+                                  </button>
+                                  <button
+                                    id={comment.id}
+                                    onClick={(e) => {
+                                      deleteComment(e.target.id);
+                                    }}
+                                  >
+                                    Delete
+                                  </button>
+                                </>
+                              ) : (
+                                ""
+                              )}
+                            </>
+                          ) : (
+                            ""
+                          )}
+                        </div>
+                        {comment.id == dropdownIdCom && showUpdate ? (
+                          <form
+                            className="update-form"
+                            onSubmit={(e) => {
+                              e.preventDefault();
+                              setShowUpdate(false);
+                              editComment(comment.id);
+                            }}
+                            ref={formRef}
+                          >
+                            <input
+                              defaultValue={comment.comment}
+                              onChange={(e) => {
+                                setupdatecomment(e.target.value);
+                              }}
+                            />
+                            <button>Update</button>
+                          </form>
+                        ) : (
+                          ""
+                        )}
+                      </div>
+                    );
+                  })}
+                {!comments.length ? <h1>No comments</h1> : ""}
+              </div>
             </div>
           );
         })}
@@ -313,5 +501,4 @@ const Dashboard = () => {
     </div>
   );
 };
-
 export default Dashboard;
