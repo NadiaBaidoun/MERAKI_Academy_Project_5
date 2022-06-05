@@ -12,9 +12,14 @@ const likeSlice = createSlice({
     addLike: (state, action) => {
       state.likes.push(action.payload);
     },
+    removeLike: (state, action) => {
+      state.likes = state.likes.filter((like) => {
+        return like.id != action.payload;
+      });
+    },
   },
 });
 
-export const { setLikes, addLike } = likeSlice.actions;
+export const { setLikes, addLike, removeLike } = likeSlice.actions;
 
 export default likeSlice.reducer;
