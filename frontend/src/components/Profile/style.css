@@ -1,0 +1,12 @@
+.left-info {
+  position: fixed;
+  left: 10%;
+  top: 50%;
+}
+
+.left-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
