@@ -64,7 +64,7 @@ const Profile = () => {
       .then((res) => {
         if (res.data.success) {
           dispatch(addPost({ content }));
-          
+
           formRef.current.reset();
         }
       })
@@ -209,28 +209,30 @@ const Profile = () => {
           {jwt_decode(token).firstName} {jwt_decode(token).lastName}
         </h1>
         <div className="upload">
-        {/* <input
+          {/* <input
           type="file"
           onChange={(e) => setImage(e.target.files[0])}
         ></input> */}
-        {/* <button onClick={uploadImage}>Upload</button> */}
-      </div>
-      <div>
-       
-        <img className="prof_img"  src={url} />
-      </div>
-        <form ref={formRef}  onSubmit={ image? uploadImage : newPost }className="addPost">
+          {/* <button onClick={uploadImage}>Upload</button> */}
+        </div>
+        <div>
+          <img className="prof_img" src={url} />
+        </div>
+        <form
+          ref={formRef}
+          onSubmit={image ? uploadImage : newPost}
+          className="addPost"
+        >
           <textarea
             placeholder="article description here"
             onChange={(e) => setContent(e.target.value)}
           ></textarea>
           <div className="post-action">
-           
             <input
-          type="file"
-          onChange={(e) => setImage(e.target.files[0])}></input>
-            <button  >Add</button>
-           
+              type="file"
+              onChange={(e) => setImage(e.target.files[0])}
+            ></input>
+            <button>Add</button>
           </div>
         </form>
       </div>

@@ -34,9 +34,10 @@ const Dashboard = () => {
     };
   });
 
-  const { likes } = useSelector((state) => {
+  const postLike = useSelector((state) => {
     return {
       likes: state.like.likes,
+      likesNumber: state.like.likesNumber,
     };
   });
 
@@ -183,7 +184,7 @@ const Dashboard = () => {
         },
       })
       .then((result) => {
-        dispatch(removeLike(id));
+        dispatch(removeLike({ post_id: id }));
       })
       .catch((error) => {
         console.log(error.response.data.message);
@@ -272,19 +273,6 @@ const Dashboard = () => {
                     }}
                     ref={formRef}
                   >
-                    {setLiked(
-                      likes.filter((el) => {
-                        return post.id == el.post_id;
-                      })
-                    )}
-                    {/* {likesbyuser.map((el) => {
-                      if (post.id == el.post_id) {
-                        <button>Unlike</button>;
-                      } else {
-                        <button>Like</button>;
-                      }
-                    })} */}
-
                     <input
                       defaultValue={post.content}
                       onChange={(e) => {
@@ -316,11 +304,7 @@ const Dashboard = () => {
                   Unlike
                 </button>
 
-                {
-                  likes.filter((el) => {
-                    return el.post_id == post.id;
-                  }).length
-                }
+                <p>{postLike.likesNumber}</p>
               </div>
             </div>
           );
