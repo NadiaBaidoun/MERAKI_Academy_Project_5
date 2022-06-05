@@ -212,10 +212,8 @@ const Dashboard = () => {
       .get(`http://localhost:5000/comments`)
       .then((result) => {
         dispatch(setComments(result.data.result));
-        setShow(true);
-      })
+     })
       .catch((error) => {
-        setShow(false);
         console.log(error.response.data.message);
       });
   };

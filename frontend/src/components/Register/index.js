@@ -43,7 +43,6 @@ const Register = () => {
         role_id,
       })
       .then((result) => {
-        console.log(result.data);
         setMessage(result.data.massage);
         // navigate("/login");
       })
@@ -123,7 +122,7 @@ const Register = () => {
             setError("");
           }}
           onBlur={() => {
-            email !== "null" && email.includes(".com") ? (
+            email !== "null" ? (
               setEmail(email)
             ) : (
               <>
