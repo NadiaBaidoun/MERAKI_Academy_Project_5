@@ -12,7 +12,7 @@ import {
 import "./style.css";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { addLike, removeLike, setLikes } from "../Redux/reducers/like";
-import { setComments } from "../Redux/reducers/comments";
+import { addComment, setComments } from "../Redux/reducers/comments";
 import jwt_decode from "jwt-decode";
 
 const Dashboard = () => {
@@ -20,7 +20,7 @@ const Dashboard = () => {
   const [show, setShow] = useState(false);
   const [showUpdate, setShowUpdate] = useState(false);
   const [open, setOpen] = useState(false);
-
+  const [comment, setComment] = useState("");
   const [dropdownId, setDropdownId] = useState("");
   const [updatecontent, setUpdatecontent] = useState("");
   const [liked, setLiked] = useState([]);
@@ -212,6 +212,33 @@ const Dashboard = () => {
       });
   };
 
+    //=================================
+
+  const newComment = async (e, id) => {
+    e.preventDefault();
+    axios
+      .post(
+        `http://localhost:5000/comments/${id}`,
+        { comment },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((res) => {
+        if (res.data.success) {
+          dispatch(addComment({ comment, post_id: id }));
+          getAllComments();
+          formRef.current.reset();
+        }
+      })
+      .catch((error) => {
+        console.log(error.response.data.message);
+      });
+  };
+
+
   //=================================
 
   useEffect(() => {
@@ -337,7 +364,7 @@ const Dashboard = () => {
                     unLikePost(post.id);
                   }}
                 >
-                  Unlike-
+                  Unlike
                 </button>
 
                 {
@@ -347,6 +374,28 @@ const Dashboard = () => {
                 }
               </div>
               <div className="comment-div">
+              <div className="comment-container">
+                  <h1>
+                    {jwt_decode(token).firstName} {jwt_decode(token).lastName}
+                  </h1>
+                  <form ref={formRef} className="addComment">
+                    <textarea
+                      placeholder="comment  here"
+                      onChange={(e) => {
+                        setComment(e.target.value);
+                      }}
+                    ></textarea>
+                    <div className="comment-action">
+                      <button
+                        onClick={(e) => {
+                          newComment(e, post.id);
+                        }}
+                      >
+                        Add
+                      </button>
+                    </div>
+                  </form>
+                </div>
                 {show &&
                   comments.map((comment, index) => {
                     return (
