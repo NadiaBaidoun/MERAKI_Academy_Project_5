@@ -12,7 +12,11 @@ import {
 import "./style.css";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { addLike, removeLike, setLikes } from "../Redux/reducers/like";
-import { addComment, setComments } from "../Redux/reducers/comments";
+import {
+  addComment,
+  setComments,
+  updateCommentById,
+} from "../Redux/reducers/comments";
 import jwt_decode from "jwt-decode";
 
 const Dashboard = () => {
@@ -22,7 +26,9 @@ const Dashboard = () => {
   const [open, setOpen] = useState(false);
   const [comment, setComment] = useState("");
   const [dropdownId, setDropdownId] = useState("");
+  const [dropdownIdCom, setDropdownIdCom] = useState("");
   const [updatecontent, setUpdatecontent] = useState("");
+  const [updatecomment, setupdatecomment] = useState("");
   const [liked, setLiked] = useState([]);
 
   const formRef = useRef("");
@@ -212,7 +218,7 @@ const Dashboard = () => {
       });
   };
 
-    //=================================
+  //=================================
 
   const newComment = async (e, id) => {
     e.preventDefault();
@@ -238,6 +244,33 @@ const Dashboard = () => {
       });
   };
 
+  //=================================
+
+  const editComment = (id) => {
+    axios
+      .put(`http://localhost:5000/comments/update/${id}`, {
+        comment: updatecomment,
+      })
+      .then((result) => {
+        if (result.data.success) {
+          dispatch(updateCommentById({ comment: updatecomment, id }));
+        }
+      })
+      .catch((error) => {
+        {
+          console.log(error);
+        }
+      });
+  };
+
+  //=================================
+
+  const updateFormComment = (e, commentcomment) => {
+    setShowUpdate(!showUpdate);
+    setDropdownIdCom(e.target.id);
+    setupdatecomment(commentcomment);
+    setOpen(!open);
+  };
 
   //=================================
 
@@ -374,7 +407,7 @@ const Dashboard = () => {
                 }
               </div>
               <div className="comment-div">
-              <div className="comment-container">
+                <div className="comment-container">
                   <h1>
                     {jwt_decode(token).firstName} {jwt_decode(token).lastName}
                   </h1>
@@ -404,11 +437,44 @@ const Dashboard = () => {
                           {post.id === comment.post_id ? (
                             <>
                               <p>{comment.comment}</p>
+                              {comment.commenter_id === userId ? (
+                                <button
+                                  id={comment.id}
+                                  onClick={(e) => {
+                                    updateFormComment(e, comment.comment);
+                                  }}
+                                >
+                                  Update
+                                </button>
+                              ) : (
+                                ""
+                              )}
                             </>
                           ) : (
                             ""
                           )}
                         </div>
+                        {comment.id == dropdownIdCom && showUpdate ? (
+                          <form
+                            className="update-form"
+                            onSubmit={(e) => {
+                              e.preventDefault();
+                              setShowUpdate(false);
+                              editComment(comment.id);
+                            }}
+                            ref={formRef}
+                          >
+                            <input
+                              defaultValue={comment.comment}
+                              onChange={(e) => {
+                                setupdatecomment(e.target.value);
+                              }}
+                            />
+                            <button>Update</button>
+                          </form>
+                        ) : (
+                          ""
+                        )}
                       </div>
                     );
                   })}
@@ -421,5 +487,4 @@ const Dashboard = () => {
     </div>
   );
 };
-
 export default Dashboard;
