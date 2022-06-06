@@ -13,6 +13,7 @@ import "./style.css";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { addLike, setLikes } from "../Redux/reducers/like";
 import jwt_decode from "jwt-decode";
+import { setUsers, updateUserById } from "../Redux/reducers/users";
 
 const Profile = () => {
   const [content, setContent] = useState("");
@@ -22,11 +23,18 @@ const Profile = () => {
 
   const [dropdownId, setDropdownId] = useState("");
   const [updatecontent, setUpdatecontent] = useState("");
+  const [updatecountry, setUpdatecountry] = useState("");
+  const [updateimage, setUpdateImage] = useState(
+    "https://www.icmetl.org/wp-content/uploads/2020/11/user-icon-human-person-sign-vector-10206693.png"
+  );
+  const [updatebirthdate, setUpdatebirthdate] = useState("");
+  const [updatebio, setUpdateBio] = useState("");
   const [liked, setLiked] = useState(false);
 
   const formRef = useRef("");
   const imageRef = useRef("");
-  // const [image, setImage] = useState("");
+  const coverRef = useRef("");
+
   const [url, setUrl] = useState("");
 
   //=================================
@@ -35,6 +43,12 @@ const Profile = () => {
   const { posts } = useSelector((state) => {
     return {
       posts: state.posts.posts,
+    };
+  });
+
+  const { users } = useSelector((state) => {
+    return {
+      users: state.users.users,
     };
   });
 
@@ -67,9 +81,7 @@ const Profile = () => {
       )
       .then((res) => {
         if (res.data.success) {
-
           dispatch(addPost({ content, image: url }));
-
 
           formRef.current.reset();
         }
@@ -88,11 +100,9 @@ const Profile = () => {
 
   //=================================
   const getPostByUserId = (id) => {
-    console.log(id);
     axios
       .get(`http://localhost:5000/posts/user/${id}`)
       .then((result) => {
-        console.log(result);
         if (result.data.success) {
           dispatch(setPosts(result.data.result));
           setShow(true);
@@ -105,7 +115,59 @@ const Profile = () => {
   };
 
   //=================================
+  const getUserById = (id) => {
+    console.log(id);
+    axios
+      .get(`http://localhost:5000/user/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((result) => {
+        console.log(result);
+        if (result.data.success) {
+          dispatch(setUsers(result.data.result));
+          setShow(true);
+        }
+      })
+      .catch((error) => {
+        setShow(false);
+        console.log(error.response.data.message);
+      });
+  };
+  //=================================
 
+  const editProfile = () => {
+    axios
+      .put(`http://localhost:5000/user/${userId}`, {
+        bio: updatebio,
+        country: updatecountry,
+        birthdate: updatebirthdate,
+        image: updateimage,
+        cover: url,
+      })
+      .then((result) => {
+        if (result.data.success) {
+          dispatch(
+            updateUserById({
+              bio: updatebio,
+              country: updatecountry,
+              birthdate: updatebirthdate,
+              image: updateimage,
+              cover: url,
+              id: userId,
+            })
+          );
+        }
+      })
+      .catch((error) => {
+        {
+          console.log(error.response.data);
+        }
+      });
+  };
+  //=================================
+  //=================================
   const editpost = (id) => {
     axios
       .put(`http://localhost:5000/posts/${id}`, {
@@ -200,29 +262,53 @@ const Profile = () => {
       })
       .catch((err) => console.log(err));
   };
-  //=================================
+
+  // ==================================
+  const uploadCover = () => {
+    const data = new FormData();
+
+    data.append("file", coverRef.current);
+    data.append("upload_preset", "olfkj7in");
+    data.append("cloud_name", "aa");
+    fetch("https://api.cloudinary.com/v1_1/dviqtfdwx/image/upload", {
+      method: "post",
+      body: data,
+    })
+      .then((resp) => resp.json())
+      .then((data) => {
+        setUrl(data.url);
+      })
+      .catch((err) => console.log(err));
+  };
+
   useEffect(() => {
+    getUserById(userId);
     getPostByUserId(userId);
     getAllLikes();
   }, []);
 
   return (
     <div className="post-container">
+      <div className="cover">
+        <img src={users[0].cover} />
+
+        <input
+          type="file"
+          onChange={(e) => {
+            coverRef.current = e.target.files[0];
+            uploadCover();
+          }}
+        />
+
+        <button onClick={editProfile}>UPDATE COVER</button>
+      </div>
+
       <div className="post-container">
         <h1>
           {jwt_decode(token).firstName} {jwt_decode(token).lastName}
         </h1>
 
-        <div className="upload">
-          {/* <input
-          type="file"
-          onChange={(e) => setImage(e.target.files[0])}
-        ></input> */}
-          {/* <button onClick={uploadImage}>Upload</button> */}
-        </div>
-
         <form ref={formRef} onSubmit={newPost} className="addPost">
-
           <textarea
             placeholder="article description here"
             onChange={(e) => setContent(e.target.value)}
@@ -230,9 +316,7 @@ const Profile = () => {
           <div className="post-action">
             <input
               type="file"
-
               onChange={(e) => {
-                // setImage(e.target.files[0]);
                 imageRef.current = e.target.files[0];
                 uploadImage();
               }}
@@ -244,7 +328,31 @@ const Profile = () => {
       </div>
       <div className="left-info">
         <div className="left-container">
-          <div>INFO</div>
+          <div className="INFO">
+            <h1>INFO</h1>
+            <button>UPDATE INFO</button>
+            {users.map((user, i) => {
+              return (
+                <div key={i}>
+                  {/* <input
+                    defaultValue={users.bio}
+                    onChange={(e) => {
+                      setUpdateBio(e.target.value);
+                    }}
+                  /> */}
+                  <h1>{user.bio}</h1>
+                  <textarea defaultValue={user.bio}></textarea>
+                  <p>{user.country}</p>
+                  <textarea></textarea>
+
+                  <p>{user.birthdate}</p>
+                  <input type={"date"} />
+                  <div></div>
+                </div>
+              );
+            })}
+          </div>
+          <br />
           <div>Friend List</div>
         </div>
       </div>
