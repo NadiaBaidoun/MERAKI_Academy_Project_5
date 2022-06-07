@@ -33,6 +33,11 @@ const Dashboard = () => {
   const formRef = useRef("");
   const addPostRef = useRef("");
 
+  const imageRef = useRef("");
+  const [postUrl, setPostUrl] = useState("");
+  const imageEditRef = useRef("");
+  const [postEditUrl, setPostEditUrl] = useState("");
+
   //=================================
   const dispatch = useDispatch();
 
@@ -68,7 +73,7 @@ const Dashboard = () => {
     axios
       .post(
         "http://localhost:5000/posts/",
-        { content },
+        { content, image: postUrl },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -78,15 +83,32 @@ const Dashboard = () => {
       .then((res) => {
         if (res.data.success) {
           getAllPosts();
-
           addPostRef.current.reset();
         }
       })
       .catch((error) => {
         console.log(error);
-        // console.log(error.response.data.message);
       });
   };
+  //=================================
+
+  const uploadImage = () => {
+    const data = new FormData();
+
+    data.append("file", imageRef.current);
+    data.append("upload_preset", "olfkj7in");
+    data.append("cloud_name", "aa");
+    fetch("https://api.cloudinary.com/v1_1/dviqtfdwx/image/upload", {
+      method: "post",
+      body: data,
+    })
+      .then((resp) => resp.json())
+      .then((data) => {
+        setPostUrl(data.url);
+      })
+      .catch((err) => console.log(err));
+  };
+
   //=================================
 
   const showDD = (e) => {
@@ -102,10 +124,8 @@ const Dashboard = () => {
         axios
           .get(`http://localhost:5000/likes`)
           .then((response) => {
-            const postsRes = res.data.result;
+            const postsRes = res.data.result.reverse();
             const likeRes = response.data.result;
-
-            console.log(postsRes);
 
             const postWithLike = [];
 
@@ -124,7 +144,7 @@ const Dashboard = () => {
           })
           .catch((error) => {
             if (error.response.data.massage.includes("likes")) {
-              const postsRes = res.data.result;
+              const postsRes = res.data.result.reverse();
               console.log(postsRes);
 
               const postWithLike = [];
@@ -149,10 +169,13 @@ const Dashboard = () => {
     axios
       .put(`http://localhost:5000/posts/${id}`, {
         content: updatecontent,
+        image: postEditUrl,
       })
       .then((result) => {
         if (result.data.success) {
-          dispatch(updatePostById({ content: updatecontent, id }));
+          dispatch(
+            updatePostById({ content: updatecontent, image: postEditUrl, id })
+          );
         }
       })
       .catch((error) => {
@@ -160,6 +183,24 @@ const Dashboard = () => {
           console.log(error);
         }
       });
+  };
+  //=================================
+
+  const editPostImage = () => {
+    const data = new FormData();
+
+    data.append("file", imageEditRef.current);
+    data.append("upload_preset", "olfkj7in");
+    data.append("cloud_name", "aa");
+    fetch("https://api.cloudinary.com/v1_1/dviqtfdwx/image/upload", {
+      method: "post",
+      body: data,
+    })
+      .then((resp) => resp.json())
+      .then((data) => {
+        setPostEditUrl(data.url);
+      })
+      .catch((err) => console.log(err));
   };
   //=================================
   const deletepost = (id) => {
@@ -328,14 +369,19 @@ const Dashboard = () => {
         <form ref={addPostRef} className="addPost">
           <textarea
             placeholder="article description here"
-            defaultValue={""}
             onChange={(e) => setContent(e.target.value)}
           ></textarea>
           <div className="post-action">
-            <button>photo</button>
+            <input
+              type="file"
+              onChange={(e) => {
+                imageRef.current = e.target.files[0];
+                uploadImage();
+              }}
+            />
             <button
               onClick={(e) => {
-                content ? newPost(e) : <></>;
+                newPost(e);
               }}
             >
               Add
@@ -395,6 +441,8 @@ const Dashboard = () => {
                 )}
                 <h2>{post.userName}</h2>
                 <p>{post.content}</p>
+                <img className="prof_img" src={post.image} />
+
                 {post.id == dropdownId && showUpdate ? (
                   <form
                     className="update-form"
@@ -405,6 +453,13 @@ const Dashboard = () => {
                     }}
                     ref={formRef}
                   >
+                    <input
+                      type="file"
+                      onChange={(e) => {
+                        imageEditRef.current = e.target.files[0];
+                        editPostImage();
+                      }}
+                    />
                     <input
                       defaultValue={post.content}
                       onChange={(e) => {

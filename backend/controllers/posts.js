@@ -51,7 +51,7 @@ const getAllPosts = (req, res) => {
 };
 // function to update post by id
 const updatePostById = (req, res) => {
-  const { content } = req.body;
+  const { content, image } = req.body;
   const id = req.params.id;
 
   const query = `SELECT * FROM posts WHERE id=?;`;
@@ -71,8 +71,8 @@ const updatePostById = (req, res) => {
         massage: `no posts found`,
       });
     } else {
-      const query = `UPDATE posts SET content=?WHERE id=?;`;
-      const data = [content || result[0].content, id];
+      const query = `UPDATE posts SET content=?, image=? WHERE id=?;`;
+      const data = [content || result[0].content, image || result[0].image, id];
 
       connection.query(query, data, (err, result) => {
         if (err) {

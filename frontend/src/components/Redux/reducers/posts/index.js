@@ -15,7 +15,11 @@ const postSlice = createSlice({
     updatePostById: (state, action) => {
       state.posts = state.posts.map((post) => {
         if (post.id == action.payload.id) {
-          return { ...post, content: action.payload.content };
+          return {
+            ...post,
+            content: action.payload.content,
+            image: action.payload.image,
+          };
         }
         return post;
       });
