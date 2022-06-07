@@ -3,7 +3,6 @@ import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  addPost,
   deletePostById,
   setPosts,
   updatePostById,
@@ -106,6 +105,8 @@ const Dashboard = () => {
             const postsRes = res.data.result;
             const likeRes = response.data.result;
 
+            console.log(postsRes);
+
             const postWithLike = [];
 
             postsRes.forEach((post) => {
@@ -124,6 +125,7 @@ const Dashboard = () => {
           .catch((error) => {
             if (error.response.data.massage.includes("likes")) {
               const postsRes = res.data.result;
+              console.log(postsRes);
 
               const postWithLike = [];
 
@@ -391,7 +393,7 @@ const Dashboard = () => {
                 ) : (
                   ""
                 )}
-
+                <h2>{post.userName}</h2>
                 <p>{post.content}</p>
                 {post.id == dropdownId && showUpdate ? (
                   <form
