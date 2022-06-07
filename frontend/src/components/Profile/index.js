@@ -290,8 +290,8 @@ const Profile = () => {
   return (
     <div className="post-container">
       <div className="cover">
-{/*       
-      <img src={`${users&&users[0].cover?users[0].cover: "https://img.freepik.com/free-photo/white-watercolor-papar-texture-background-cover-card-design-overlay-aon-paint-art-background_1962-2207.jpg"}`}/> */}
+      
+      <img src={`${users[0].cover?users[0].cover: "https://img.freepik.com/free-photo/white-watercolor-papar-texture-background-cover-card-design-overlay-aon-paint-art-background_1962-2207.jpg"}`}/>
 
 
 
@@ -333,7 +333,7 @@ const Profile = () => {
         <div className="left-container">
           <div className="INFO">
             <h1>INFO</h1>
-            <button>UPDATE INFO</button>
+            <button onClick={editProfile}>UPDATE INFO</button>
             {users.map((user, i) => {
               return (
                 <div key={i}>
@@ -349,7 +349,9 @@ const Profile = () => {
                   <textarea  defaultValue={user.country} onChange={(e) => setUpdatecountry(e.target.value)}></textarea>
 
                   <p>{user.birthdate}</p>
-                  <input type={"date"} />
+                  <input type={"date"}      onChange={(e) => {
+                        setUpdatebirthdate(e.target.value);
+                      }}/>
                   <div></div>
                 </div>
               );
