@@ -10,3 +10,25 @@
   align-items: center;
   justify-content: center;
 }
+
+.cover{
+  background-color: rgba(190, 190, 190, 0.312);
+  border:1px black solid ;
+  width: 100%;
+  
+}
+.prof_img{
+  width: 100%;
+}
+.upload_cover{
+  
+  background-color: rgb(255, 255, 255);
+  color: gray;
+  border: 1px black solid;
+  width: 100px;
+  height: 30px;
+  font-size: small;
+}
+.h1{
+ background-color: red;
+}
