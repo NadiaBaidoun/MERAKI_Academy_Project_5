@@ -24,18 +24,23 @@ const Profile = () => {
   const [dropdownId, setDropdownId] = useState("");
   const [updatecontent, setUpdatecontent] = useState("");
   const [updatecountry, setUpdatecountry] = useState("");
-  const [updateimage, setUpdateImage] = useState(
-    "https://www.icmetl.org/wp-content/uploads/2020/11/user-icon-human-person-sign-vector-10206693.png"
-  );
+  // const [updateimage, setUpdateImage] = useState(
+  //   "https://www.icmetl.org/wp-content/uploads/2020/11/user-icon-human-person-sign-vector-10206693.png"
+  // );
   const [updatebirthdate, setUpdatebirthdate] = useState("");
   const [updatebio, setUpdateBio] = useState("");
   const [liked, setLiked] = useState(false);
+  // const [users, setUsers] = useState([]);
 
   const formRef = useRef("");
   const imageRef = useRef("");
   const coverRef = useRef("");
+  const profileRef = useRef("");
 
   const [url, setUrl] = useState("");
+
+  const [urlCover, seturlCover] = useState("");
+  const [urlImage, seturlImage] = useState("");
 
   //=================================
   const dispatch = useDispatch();
@@ -126,6 +131,7 @@ const Profile = () => {
       .then((result) => {
         console.log(result);
         if (result.data.success) {
+          // setUsers(result.data.result);
           dispatch(setUsers(result.data.result));
           setShow(true);
         }
@@ -143,8 +149,8 @@ const Profile = () => {
         bio: updatebio,
         country: updatecountry,
         birthdate: updatebirthdate,
-        image: updateimage,
-        cover: url,
+        image: url,
+        cover: urlCover,
       })
       .then((result) => {
         if (result.data.success) {
@@ -153,8 +159,8 @@ const Profile = () => {
               bio: updatebio,
               country: updatecountry,
               birthdate: updatebirthdate,
-              image: updateimage,
-              cover: url,
+              image: urlImage,
+              cover: urlCover,
               id: userId,
             })
           );
@@ -275,8 +281,26 @@ const Profile = () => {
       body: data,
     })
       .then((resp) => resp.json())
+
       .then((data) => {
-        setUrl(data.url);
+        console.log(data);
+        seturlCover(data.url);
+      })
+      .catch((err) => console.log(err));
+  };
+  const uploadUserImage = () => {
+    const data = new FormData();
+
+    data.append("file", profileRef.current);
+    data.append("upload_preset", "olfkj7in");
+    data.append("cloud_name", "aa");
+    fetch("https://api.cloudinary.com/v1_1/dviqtfdwx/image/upload", {
+      method: "post",
+      body: data,
+    })
+      .then((resp) => resp.json())
+      .then((data) => {
+        seturlImage(data.url);
       })
       .catch((err) => console.log(err));
   };
@@ -290,8 +314,9 @@ const Profile = () => {
   return (
     <div className="post-container">
       <div className="cover">
-        <img src={users[0].cover} />
-
+        {users.map((el) => {
+          return <img key={el.id} src={el.cover} />;
+        })}
         <input
           type="file"
           onChange={(e) => {
@@ -310,9 +335,10 @@ const Profile = () => {
 
         <form ref={formRef} onSubmit={newPost} className="addPost">
           <textarea
-            placeholder="article description here"
+            placeholder="post description here"
             onChange={(e) => setContent(e.target.value)}
           ></textarea>
+
           <div className="post-action">
             <input
               type="file"
@@ -330,7 +356,7 @@ const Profile = () => {
         <div className="left-container">
           <div className="INFO">
             <h1>INFO</h1>
-            <button>UPDATE INFO</button>
+            <button onClick={editProfile}>UPDATE INFO</button>
             {users.map((user, i) => {
               return (
                 <div key={i}>
@@ -341,12 +367,23 @@ const Profile = () => {
                     }}
                   /> */}
                   <h1>{user.bio}</h1>
-                  <textarea defaultValue={user.bio}></textarea>
-                  <p>{user.country}</p>
-                  <textarea></textarea>
+                  <textarea
+                    defaultValue={user.bio}
+                    onChange={(e) => setUpdateBio(e.target.value)}
+                  ></textarea>
+                  <p>{user.country} </p>
+                  <textarea
+                    defaultValue={user.country}
+                    onChange={(e) => setUpdatecountry(e.target.value)}
+                  ></textarea>
 
                   <p>{user.birthdate}</p>
-                  <input type={"date"} />
+                  <input
+                    type={"date"}
+                    onChange={(e) => {
+                      setUpdatebirthdate(e.target.value);
+                    }}
+                  />
                   <div></div>
                 </div>
               );
@@ -405,6 +442,7 @@ const Profile = () => {
                   )}
                 </div>
                 <p>{post.content}</p>
+
                 <img className="prof_img" src={post.image} />
 
                 {post.id == dropdownId && showUpdate ? (

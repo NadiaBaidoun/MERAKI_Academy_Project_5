@@ -12,7 +12,7 @@ const userSlice = createSlice({
     updateUserById: (state, action) => {
       state.users = state.users.map((user) => {
         if (user.id == action.payload.id) {
-          return { ...user, bio: action.payload.bio ,country: action.payload.country, birthdate: action.payload.birthdate,};
+          return { ...user, bio: action.payload.bio ,country: action.payload.country, birthdate: action.payload.birthdate,cover: action.payload.cover,image: action.payload.image};
         }
         return user})},
   
