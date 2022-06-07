@@ -169,10 +169,13 @@ const Dashboard = () => {
     axios
       .put(`http://localhost:5000/posts/${id}`, {
         content: updatecontent,
+        image: postEditUrl,
       })
       .then((result) => {
         if (result.data.success) {
-          dispatch(updatePostById({ content: updatecontent, id }));
+          dispatch(
+            updatePostById({ content: updatecontent, image: postEditUrl, id })
+          );
         }
       })
       .catch((error) => {
@@ -186,7 +189,7 @@ const Dashboard = () => {
   const editPostImage = () => {
     const data = new FormData();
 
-    data.append("file", imageRef.current);
+    data.append("file", imageEditRef.current);
     data.append("upload_preset", "olfkj7in");
     data.append("cloud_name", "aa");
     fetch("https://api.cloudinary.com/v1_1/dviqtfdwx/image/upload", {
@@ -195,7 +198,7 @@ const Dashboard = () => {
     })
       .then((resp) => resp.json())
       .then((data) => {
-        setPostUrl(data.url);
+        setPostEditUrl(data.url);
       })
       .catch((err) => console.log(err));
   };
@@ -450,6 +453,13 @@ const Dashboard = () => {
                     }}
                     ref={formRef}
                   >
+                    <input
+                      type="file"
+                      onChange={(e) => {
+                        imageEditRef.current = e.target.files[0];
+                        editPostImage();
+                      }}
+                    />
                     <input
                       defaultValue={post.content}
                       onChange={(e) => {
