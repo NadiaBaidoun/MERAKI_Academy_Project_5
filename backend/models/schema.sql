@@ -14,6 +14,7 @@ CREATE TABLE users(
     id INT AUTO_INCREMENT NOT NULL,
     firstName VARCHAR(255) NOT NULL ,
     lastName VARCHAR(255) NOT NULL ,
+    userName VARCHAR(255)  ,    
     birthdate VARCHAR(255),
     country VARCHAR(255),
     image VARCHAR(255),
@@ -25,6 +26,7 @@ CREATE TABLE users(
     PRIMARY KEY (id),
     is_deleted TINYINT DEFAULT 0
 );
+
 
 CREATE TABLE posts(
     id INT AUTO_INCREMENT NOT NULL,

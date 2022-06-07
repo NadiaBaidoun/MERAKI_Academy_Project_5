@@ -160,10 +160,41 @@ const deleteUserById = (req, res) => {
   });
 };
 
+const getUserByName = (req, res) => {
+  const { userName } = req.params;
+
+  const query = `SELECT * FROM users WHERE is_deleted=0 AND userName LIKE ? ;`;
+  const data = [`%${userName}%`];
+  connection.query(query, data, (err, result) => {
+    console.log(result);
+    if (err) {
+      return res.status(500).json({
+        success: false,
+        massage: "Server error",
+        err,
+      });
+    }
+    if (!result.length) {
+      return res.status(404).json({
+        success: false,
+        massage: "user not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      massage: "user found",
+      result,
+    });
+  });
+};
+
+
 module.exports = {
   followUser,
   unFollowUser,
   getUserById,
   getAllFriends,
   deleteUserById,
+  getUserByName
 };

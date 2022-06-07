@@ -18,11 +18,12 @@ const register = async (req, res) => {
   const salt = 10;
 
   const encryptedPassword = await bcrypt.hash(password, salt);
-
-  const query = `INSERT INTO users (firstName, lastName, birthdate, country,image,email,bio, password, role_id) VALUES (?,?,?,?,?,?,?,?,?)`;
+  const userName = `${firstName} ${lastName}`;
+  const query = `INSERT INTO users (firstName, lastName,userName, birthdate, country,image,email,bio, password, role_id) VALUES (?,?,?,?,?,?,?,?,?,?)`;
   const data = [
     firstName,
     lastName,
+    userName,
     age,
     country,
     image,

@@ -7,6 +7,7 @@ const {
   getUserById,
   getAllFriends,
   deleteUserById,
+  getUserByName,
 } = require("../controllers/user");
 
 // middleware
@@ -20,6 +21,9 @@ userRouter.delete("/delete/:target_id", authentication, unFollowUser);
 
 userRouter.get("/:user_id", authentication, getUserById);
 userRouter.get("/list/friends", authentication, getAllFriends);
+
+userRouter.get("/search/:userName", authentication,getUserByName);
+
 
 userRouter.delete(
   "/:user_id",
