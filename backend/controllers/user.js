@@ -189,12 +189,62 @@ const getUserByName = (req, res) => {
   });
 };
 
+// function to update user by id
+const updateUserById = (req, res) => {
+  const { country, bio, birthdate, cover, image } = req.body;
+  const id = req.params.id;
 
+  const query = `SELECT * FROM users WHERE id=?;`;
+  const data = [id];
+
+  connection.query(query, data, (err, result) => {
+    if (err) {
+      return res.status(404).json({
+        success: false,
+        massage: `Server error`,
+        err,
+      });
+    }
+    if (!result.length) {
+      res.status(404).json({
+        success: false,
+        massage: `no user found`,
+      });
+    } else {
+      const query = `UPDATE users SET country =? ,bio=? ,birthdate=?,cover=?,image=? WHERE id=?;`;
+      const data = [
+        country || result[0].country,
+        bio || result[0].bio,
+        birthdate || result[0].birthdate,
+        cover || result[0].cover,
+        image || result[0].image,
+        id,
+      ];
+
+      connection.query(query, data, (err, result) => {
+        if (err) {
+          return res.status(404).json({
+            success: false,
+            massage: `Server error`,
+            err,
+          });
+        }
+        console.log(result);
+        res.status(201).json({
+          success: true,
+          massage: `user updated`,
+          result: result,
+        });
+      });
+    }
+  });
+};
 module.exports = {
   followUser,
   unFollowUser,
   getUserById,
   getAllFriends,
   deleteUserById,
-  getUserByName
+  getUserByName,
+  updateUserById
 };
