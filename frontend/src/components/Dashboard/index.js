@@ -30,9 +30,10 @@ const Dashboard = () => {
   const [dropdownIdCom, setDropdownIdCom] = useState("");
   const [updatecontent, setUpdatecontent] = useState("");
   const [updatecomment, setupdatecomment] = useState("");
-  const [liked, setLiked] = useState([]);
 
   const formRef = useRef("");
+  const addPostRef = useRef("");
+
   //=================================
   const dispatch = useDispatch();
 
@@ -42,10 +43,9 @@ const Dashboard = () => {
     };
   });
 
-  const postLike = useSelector((state) => {
+  const { likes } = useSelector((state) => {
     return {
       likes: state.like.likes,
-      likesNumber: state.like.likesNumber,
     };
   });
 
@@ -78,13 +78,14 @@ const Dashboard = () => {
       )
       .then((res) => {
         if (res.data.success) {
-          dispatch(addPost({ content }));
           getAllPosts();
-          formRef.current.reset();
+
+          addPostRef.current.reset();
         }
       })
       .catch((error) => {
-        console.log(error.response.data.message);
+        console.log(error);
+        // console.log(error.response.data.message);
       });
   };
   //=================================
@@ -93,21 +94,50 @@ const Dashboard = () => {
     setOpen(!open);
     setDropdownId(e.target.id);
   };
-  //=================================
 
   //=================================
   const getAllPosts = () => {
     axios
       .get("http://localhost:5000/posts")
-      .then((result) => {
-        if (result.data.success) {
-          dispatch(setPosts(result.data.result));
-          setShow(true);
-        }
+      .then((res) => {
+        axios
+          .get(`http://localhost:5000/likes`)
+          .then((response) => {
+            const postsRes = res.data.result;
+            const likeRes = response.data.result;
+
+            const postWithLike = [];
+
+            postsRes.forEach((post) => {
+              postWithLike.push({ ...post, like: [] });
+            });
+            postWithLike.forEach((post) => {
+              likeRes.forEach((like) => {
+                if (post.id == like.post_id) {
+                  post.like.push(like.user_id);
+                }
+              });
+            });
+            dispatch(setPosts(postWithLike));
+            setShow(true);
+          })
+          .catch((error) => {
+            if (error.response.data.massage.includes("likes")) {
+              const postsRes = res.data.result;
+
+              const postWithLike = [];
+
+              postsRes.forEach((post) => {
+                postWithLike.push({ ...post, like: [] });
+              });
+              dispatch(setPosts(postWithLike));
+              setShow(true);
+            }
+          });
       })
       .catch((error) => {
         setShow(false);
-        console.log(error.response.data.message);
+        console.log(error.response.data.massage);
       });
   };
 
@@ -158,19 +188,6 @@ const Dashboard = () => {
 
   //=================================
 
-  const getAllLikes = async () => {
-    axios
-      .get(`http://localhost:5000/likes`)
-      .then((result) => {
-        dispatch(setLikes(result.data.result));
-      })
-      .catch((error) => {
-        console.log(error.response.data.message);
-      });
-  };
-
-  //=================================
-
   const likePost = (id) => {
     axios
       .post(
@@ -184,11 +201,13 @@ const Dashboard = () => {
       )
       .then((result) => {
         dispatch(addLike({ post_id: id }));
+        getAllPosts();
       })
       .catch((error) => {
         console.log(error.response.data.message);
       });
   };
+
   //=================================
   const unLikePost = (id) => {
     axios
@@ -199,6 +218,7 @@ const Dashboard = () => {
       })
       .then((result) => {
         dispatch(removeLike({ post_id: id }));
+        getAllPosts();
       })
       .catch((error) => {
         console.log(error.response.data.message);
@@ -212,7 +232,7 @@ const Dashboard = () => {
       .get(`http://localhost:5000/comments`)
       .then((result) => {
         dispatch(setComments(result.data.result));
-     })
+      })
       .catch((error) => {
         console.log(error.response.data.message);
       });
@@ -291,11 +311,8 @@ const Dashboard = () => {
       });
   };
 
-  //=================================
-
   useEffect(() => {
     getAllPosts();
-    getAllLikes();
     getAllComments();
   }, []);
 
@@ -305,14 +322,22 @@ const Dashboard = () => {
         <h1>
           {jwt_decode(token).firstName} {jwt_decode(token).lastName}
         </h1>
-        <form ref={formRef} onSubmit={newPost} className="addPost">
+
+        <form ref={addPostRef} className="addPost">
           <textarea
             placeholder="article description here"
+            defaultValue={""}
             onChange={(e) => setContent(e.target.value)}
           ></textarea>
           <div className="post-action">
             <button>photo</button>
-            <button>Add</button>
+            <button
+              onClick={(e) => {
+                content ? newPost(e) : <></>;
+              }}
+            >
+              Add
+            </button>
           </div>
         </form>
       </div>
@@ -321,49 +346,52 @@ const Dashboard = () => {
           return (
             <div key={index}>
               <div className="post">
-                <div className="dd-container">
-                  <button
-                    id={post.id}
-                    className="dd-button"
-                    onClick={(e) => {
-                      console.log(post.id);
-                      showDD(e);
-                    }}
-                  >
-                    <BsThreeDotsVertical
+                {post.user_id == userId ? (
+                  <div className="dd-container">
+                    <button
                       id={post.id}
+                      className="dd-button"
                       onClick={(e) => {
-                        console.log(post.id);
                         showDD(e);
                       }}
-                    />
-                  </button>
-                  {open && dropdownId == post.id ? (
-                    <div className="dropdown">
-                      <div
-                        className="options-div"
+                    >
+                      <BsThreeDotsVertical
                         id={post.id}
                         onClick={(e) => {
-                          updateForm(e, post.content);
+                          showDD(e);
                         }}
-                      >
-                        Update
-                      </div>
+                      />
+                    </button>
+                    {open && dropdownId == post.id ? (
+                      <div className="dropdown">
+                        <div
+                          className="options-div"
+                          id={post.id}
+                          onClick={(e) => {
+                            updateForm(e, post.content);
+                          }}
+                        >
+                          Update
+                        </div>
 
-                      <div
-                        className="options-div"
-                        id={post.id}
-                        onClick={(e) => {
-                          deletepost(e.target.id);
-                        }}
-                      >
-                        Delete
+                        <div
+                          className="options-div"
+                          id={post.id}
+                          onClick={(e) => {
+                            deletepost(e.target.id);
+                          }}
+                        >
+                          Delete
+                        </div>
                       </div>
-                    </div>
-                  ) : (
-                    <></>
-                  )}
-                </div>
+                    ) : (
+                      <></>
+                    )}
+                  </div>
+                ) : (
+                  ""
+                )}
+
                 <p>{post.content}</p>
                 {post.id == dropdownId && showUpdate ? (
                   <form
@@ -391,22 +419,14 @@ const Dashboard = () => {
                 <button
                   className="like"
                   onClick={(e) => {
-                    likePost(post.id);
+                    post.like.includes(userId)
+                      ? unLikePost(post.id)
+                      : likePost(post.id);
                   }}
                 >
-                  Like
+                  {post.like.includes(userId) ? "Unlike" : "Like"}
                 </button>
-
-                <button
-                  className="like"
-                  onClick={(e) => {
-                    unLikePost(post.id);
-                  }}
-                >
-                  Unlike
-                </button>
-
-                <p>{postLike.likesNumber}</p>
+                <p>{post.like.length}</p>
               </div>
               <div className="comment-div">
                 <div className="comment-container">

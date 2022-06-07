@@ -4,18 +4,18 @@ const likeSlice = createSlice({
   name: "like",
   initialState: {
     likes: [],
-    likesNumber: 0,
   },
   reducers: {
     setLikes: (state, action) => {
       state.likes = action.payload;
-      state.likesNumber = state.likes.length;
     },
     addLike: (state, action) => {
-      state.likesNumber = state.likesNumber + 1;
+      state.likes.push(action.payload);
     },
     removeLike: (state, action) => {
-      state.likesNumber = state.likesNumber - 1;
+      state.likes = state.likes.filter((like) => {
+        return like.id != action.payload;
+      });
     },
   },
 });
