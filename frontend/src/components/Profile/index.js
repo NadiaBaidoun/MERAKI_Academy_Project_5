@@ -149,21 +149,12 @@ const Profile = () => {
         bio: updatebio,
         country: updatecountry,
         birthdate: updatebirthdate,
-        image: url,
+        image: urlImage,
         cover: urlCover,
       })
       .then((result) => {
         if (result.data.success) {
-          dispatch(
-            updateUserById({
-              bio: updatebio,
-              country: updatecountry,
-              birthdate: updatebirthdate,
-              image: urlImage,
-              cover: urlCover,
-              id: userId,
-            })
-          );
+          getUserById(userId);
         }
       })
       .catch((error) => {
@@ -283,7 +274,6 @@ const Profile = () => {
       .then((resp) => resp.json())
 
       .then((data) => {
-        console.log(data);
         seturlCover(data.url);
       })
       .catch((err) => console.log(err));
@@ -317,15 +307,31 @@ const Profile = () => {
         {users.map((el) => {
           return <img key={el.id} src={el.cover} />;
         })}
+        <div>
+          <input
+            type="file"
+            onChange={(e) => {
+              coverRef.current = e.target.files[0];
+              uploadCover();
+            }}
+          />
+
+          <button onClick={editProfile}>UPDATE COVER</button>
+        </div>
+      </div>
+      <div className="profilePic">
+        {users.map((el) => {
+          return <img key={el.id} src={el.image} />;
+        })}
         <input
           type="file"
           onChange={(e) => {
-            coverRef.current = e.target.files[0];
-            uploadCover();
+            profileRef.current = e.target.files[0];
+            uploadUserImage();
           }}
         />
 
-        <button onClick={editProfile}>UPDATE COVER</button>
+        <button onClick={editProfile}>UpdatePhoto</button>
       </div>
 
       <div className="post-container">
