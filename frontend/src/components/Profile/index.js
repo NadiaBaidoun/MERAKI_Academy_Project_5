@@ -286,11 +286,14 @@ const Profile = () => {
     getPostByUserId(userId);
     getAllLikes();
   }, []);
-
+  console.log(users);
   return (
     <div className="post-container">
       <div className="cover">
-        <img src={users[0].cover} />
+{/*       
+      <img src={`${users&&users[0].cover?users[0].cover: "https://img.freepik.com/free-photo/white-watercolor-papar-texture-background-cover-card-design-overlay-aon-paint-art-background_1962-2207.jpg"}`}/> */}
+
+
 
         <input
           type="file"
@@ -310,7 +313,7 @@ const Profile = () => {
 
         <form ref={formRef} onSubmit={newPost} className="addPost">
           <textarea
-            placeholder="article description here"
+            placeholder="post description here"
             onChange={(e) => setContent(e.target.value)}
           ></textarea>
           <div className="post-action">
@@ -341,9 +344,9 @@ const Profile = () => {
                     }}
                   /> */}
                   <h1>{user.bio}</h1>
-                  <textarea defaultValue={user.bio}></textarea>
-                  <p>{user.country}</p>
-                  <textarea></textarea>
+                  <textarea defaultValue={user.bio}  onChange={(e) => setUpdateBio(e.target.value)} ></textarea>
+                  <p>{user.country} </p>
+                  <textarea  defaultValue={user.country} onChange={(e) => setUpdatecountry(e.target.value)}></textarea>
 
                   <p>{user.birthdate}</p>
                   <input type={"date"} />
