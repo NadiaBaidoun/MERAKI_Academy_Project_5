@@ -17,6 +17,7 @@ CREATE TABLE users(
     birthdate VARCHAR(255),
     country VARCHAR(255),
     image VARCHAR(255),
+    cover VARCHAR(255),
     bio VARCHAR(255),
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255),
