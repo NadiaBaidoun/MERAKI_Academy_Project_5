@@ -25,7 +25,7 @@ const createPost = (req, res) => {
 
 // function to get all Posts
 const getAllPosts = (req, res) => {
-  const query = `SELECT * FROM users RIGHT JOIN posts ON posts.user_id = users.id WHERE posts.is_deleted=0;`;
+  const query = `SELECT * FROM users RIGHT JOIN posts ON posts.user_id =users.id WHERE posts.is_deleted=0;`;
 
   connection.query(query, (err, result) => {
     if (err) {
