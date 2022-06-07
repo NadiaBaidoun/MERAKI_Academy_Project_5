@@ -2,10 +2,10 @@ const connection = require("../models/db");
 
 // function to create post
 const createPost = (req, res) => {
-  const { content,image } = req.body;
+  const { content, image } = req.body;
   const userId = req.token.userId;
   const query = `INSERT INTO posts (content,image,user_id) VALUES (?,?,?);`;
-  const data = [content,image,userId];
+  const data = [content, image, userId];
 
   connection.query(query, data, (err, result) => {
     if (err) {
@@ -25,7 +25,7 @@ const createPost = (req, res) => {
 
 // function to get all Posts
 const getAllPosts = (req, res) => {
-  const query = `SELECT * FROM posts WHERE is_deleted=0;`;
+  const query = `SELECT * FROM users RIGHT JOIN posts ON posts.user_id = users.id WHERE posts.is_deleted=0;`;
 
   connection.query(query, (err, result) => {
     if (err) {
