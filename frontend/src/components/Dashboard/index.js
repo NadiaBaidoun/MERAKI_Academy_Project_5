@@ -515,7 +515,10 @@ const Dashboard = () => {
                         <div className="comment">
                           {post.id === comment.post_id ? (
                             <>
-                              <p>{comment.comment}</p>
+                              <div>
+                                <h3>{comment.userName}</h3>
+                                <p>{comment.comment}</p>
+                              </div>
                               {comment.commenter_id === userId ? (
                                 <>
                                   <button
