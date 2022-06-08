@@ -11,7 +11,7 @@ const createComment = (req, res) => {
 
   connection.query(query, data, (err, result) => {
     if (err) {
-    return  res.status(404).json({
+      return res.status(404).json({
         success: false,
         massage: "server error",
         err: err,
@@ -98,7 +98,7 @@ const deleteCommentById = (req, res) => {
 };
 
 const getAllComments = (req, res) => {
-  const query = `SELECT * FROM comments WHERE is_deleted=0;`;
+  const query = `SELECT * FROM users RIGHT JOIN comments ON users.id = comments.commenter_id WHERE comments.is_deleted=0;`;
 
   connection.query(query, (err, result) => {
     if (err) {
