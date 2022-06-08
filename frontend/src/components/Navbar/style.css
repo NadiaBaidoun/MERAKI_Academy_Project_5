@@ -1,8 +1,16 @@
 .navbar-container {
   display: flex;
   border-bottom: 1px solid gray;
-  background-color: blueviolet;
+  background-color: rgb(54, 54, 54);
   height: 9vh;
+}
+
+.left-navbar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 10px;
+  width: 25%;
 }
 
 .header {
@@ -23,4 +31,23 @@
   justify-content: space-between;
   width: 100%;
   align-items: center;
+}
+
+.facebook-logo {
+  width: 50px;
+  cursor: pointer;
+}
+
+.logo {
+  color: blue;
+  width: 50px;
+  height: 50px;
+  background-color: white;
+  border-radius: 50%;
+  border: 1px solid rgb(54, 54, 54);
+  cursor: pointer;
+}
+
+.search-container {
+  width: 20vw;
 }
