@@ -29,65 +29,50 @@ const SearchResult = () => {
 
   const userId = jwt_decode(token).userId;
   // ==========================
-  const getUserById = () => {
+  const getAllFriends = () => {
     axios
-      .get(`http://localhost:5000/user/${userId}`, {
+      .get(`http://localhost:5000/user/list/friends/${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
-      .then((user) => {
-        console.log(user);
-        axios
-          .get(`http://localhost:5000/user/list/friends/${userId}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          })
-          .then((result) => {
-            const userRes = user.data.result;
-            const friendsRes = result.data.result;
+      .then((result) => {
+        const friendsRes = result.data.result;
 
-            const userFriends = [];
+        const userFriends = [];
 
-            // userRes.forEach((res) => {
-            //   userFriends.push({ ...res, friends: [] });
-            // });
+        friendsRes.forEach((friend) => {
+          userFriends.push(friend.target_id);
+        });
 
-            friendsRes.forEach((friend) => {
-              userFriends.push(friend.target_id);
-            });
-
-            setUserFriends(userFriends);
-            // dispatch(setUsers(userFriends));
-            // setShow(true);
-
-            // if (result.data.success) {
-            //   dispatch(setFriends(result.data.result));
-            //   console.log("friends", friends);
-            //   setShow(true);
-            // }
-          })
-          .catch((error) => {
-            // setShow(false);
-            console.log(error.response.data);
-            // console.log(error.response.data.message);
-          });
-
-        // console.log(result.data.result);
-        // if (result.data.success) {
-        //   dispatch(setUsers(result.data.result));
-        //   setShow(true);
-        // }
+        setUserFriends(userFriends);
       })
       .catch((error) => {
-        // setShow(false);
-        console.log(error.response.data.message);
+        console.log(error.response.data);
+      });
+  };
+  // ==========================
+  const followFriend = (id) => {
+    axios
+      .put(
+        `http://localhost:5000/user/follow/${id}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((result) => {
+        getAllFriends();
+      })
+      .catch((error) => {
+        console.log(error);
       });
   };
 
   useEffect(() => {
-    getUserById();
+    getAllFriends();
   }, []);
 
   return (
@@ -97,7 +82,14 @@ const SearchResult = () => {
           <div key={index}>
             <div className="user">
               <h2>{user.userName}</h2>
-              <button>
+              <button
+                className="like"
+                onClick={() => {
+                  userFriends.includes(user.id)
+                    ? console.log("Unfollow function")
+                    : followFriend(user.id);
+                }}
+              >
                 {userFriends.includes(user.id) ? "Unfollow" : "follow"}
               </button>
               {/* <img className="prof_img" src={user.image} /> */}
