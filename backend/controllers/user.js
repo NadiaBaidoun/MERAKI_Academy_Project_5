@@ -105,7 +105,8 @@ const getUserById = (req, res) => {
 // function to get all friends
 const getAllFriends = (req, res) => {
   const sourceId = req.token.userId;
-  const query = `SELECT * FROM friends WHERE source_id=? AND is_deleted=0;`;
+  const query = `SELECT * FROM users 
+  RIGHT JOIN friends on friends.target_id=users.id WHERE friends.source_id=? AND friends.is_deleted=0;`;
   const data = [sourceId];
   connection.query(query, data, (err, result) => {
     if (err) {
