@@ -1,7 +1,5 @@
 .navbar-container {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
   border-bottom: 1px solid gray;
   background-color: blueviolet;
   height: 9vh;
@@ -18,4 +16,11 @@
   font-size: 1.2em;
   cursor: pointer;
   color: white;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
 }
