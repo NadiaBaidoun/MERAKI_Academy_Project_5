@@ -17,6 +17,7 @@ const SearchResult = () => {
             <div key={index}>
               <div className="user">
                 <h2>{user.userName}</h2>
+                <button>Follow</button>
                 {/* <img className="prof_img" src={user.image} /> */}
               </div>
             </div>
