@@ -512,11 +512,58 @@ const Dashboard = () => {
                   comments.map((comment, index) => {
                     return (
                       <div key={index}>
-                        <div className="comment">
+                        <div>
                           {post.id === comment.post_id ? (
-                            <>
-                              <p>{comment.comment}</p>
-                              {comment.commenter_id === userId ? (
+                            <div className="comment-div-container">
+                              {comment.commenter_id == userId ? (
+                                <div className="dd-comment">
+                                  <button
+                                    id={comment.id}
+                                    className="dd-button"
+                                    onClick={(e) => {
+                                      showDD(e);
+                                    }}
+                                  >
+                                    <BsThreeDotsVertical
+                                      id={comment.id}
+                                      onClick={(e) => {
+                                        showDD(e);
+                                      }}
+                                    />
+                                  </button>
+                                  {open && dropdownId == comment.id ? (
+                                    <div className="dropdown">
+                                      <div
+                                        className="options-div"
+                                        id={comment.id}
+                                        onClick={(e) => {
+                                          updateForm(e, comment.comment);
+                                        }}
+                                      >
+                                        Update
+                                      </div>
+
+                                      <div
+                                        className="options-div"
+                                        id={comment.id}
+                                        onClick={(e) => {
+                                          deletepost(e.target.id);
+                                        }}
+                                      >
+                                        Delete
+                                      </div>
+                                    </div>
+                                  ) : (
+                                    <></>
+                                  )}
+                                </div>
+                              ) : (
+                                ""
+                              )}
+                              <h3>{comment.userName}</h3>
+                              <p className="comment">{comment.comment}</p>
+
+                              {/* {comment.commenter_id === userId ? (
                                 <>
                                   <button
                                     id={comment.id}
@@ -537,8 +584,8 @@ const Dashboard = () => {
                                 </>
                               ) : (
                                 ""
-                              )}
-                            </>
+                              )} */}
+                            </div>
                           ) : (
                             ""
                           )}
