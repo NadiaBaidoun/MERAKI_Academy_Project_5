@@ -48,6 +48,7 @@ const SearchResult = () => {
         setUserFriends(userFriends);
       })
       .catch((error) => {
+        setUserFriends([]);
         console.log(error.response.data);
       });
   };
@@ -71,6 +72,21 @@ const SearchResult = () => {
       });
   };
 
+  // ==========================
+  const unFollowFriend = (id) => {
+    axios
+      .delete(`http://localhost:5000/user/delete/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((result) => {
+        getAllFriends();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   useEffect(() => {
     getAllFriends();
   }, []);
@@ -86,11 +102,11 @@ const SearchResult = () => {
                 className="like"
                 onClick={() => {
                   userFriends.includes(user.id)
-                    ? console.log("Unfollow function")
+                    ? unFollowFriend(user.id)
                     : followFriend(user.id);
                 }}
               >
-                {userFriends.includes(user.id) ? "Unfollow" : "follow"}
+                {userFriends.includes(user.id) ? "Unfollow" : "Follow"}
               </button>
               {/* <img className="prof_img" src={user.image} /> */}
             </div>
