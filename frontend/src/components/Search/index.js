@@ -1,13 +1,12 @@
 import React, { useState } from "react";
 
 import axios from "axios";
+import "./style.css";
 
 import { setUserName } from "../Redux/reducers/users";
 
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-
-
 
 const Search = () => {
   const [name, setName] = useState("");
@@ -40,7 +39,7 @@ const Search = () => {
   };
 
   return (
-    <div className="user-container">
+    <div className="search-container">
       <input
         type={"search"}
         onChange={(e) => {

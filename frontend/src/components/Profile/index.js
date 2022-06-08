@@ -52,10 +52,10 @@ const Profile = () => {
     };
   });
 
-  const { users,friends } = useSelector((state) => {
+  const { users, friends } = useSelector((state) => {
     return {
       users: state.users.users,
-      friends:state.friends.friends
+      friends: state.friends.friends,
     };
   });
 
@@ -104,27 +104,27 @@ const Profile = () => {
     setDropdownId(e.target.id);
   };
   //=================================
- const getAllFriends=() => { 
-  axios.get(`http://localhost:5000/user/list/friends/${userId}`, {
+  const getAllFriends = () => {
+    axios
+      .get(`http://localhost:5000/user/list/friends/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((result) => {
+        console.log(result);
 
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  })
-    .then((result) => {
-      console.log(result);
-
-      if (result.data.success) {
-        dispatch(setFriends(result.data.result));
-        console.log("friends",friends);
-        setShow(true);
-      }
-    })
-    .catch((error) => {
-     setShow(false);
-      console.log(error.response.data);
-    });
-};
+        if (result.data.success) {
+          dispatch(setFriends(result.data.result));
+          console.log("friends", friends);
+          setShow(true);
+        }
+      })
+      .catch((error) => {
+        setShow(false);
+        console.log(error.response.data);
+      });
+  };
   //=================================
   const getPostByUserId = (id) => {
     axios
@@ -357,15 +357,13 @@ const Profile = () => {
         <button onClick={editProfile}>UpdatePhoto</button>
       </div>
       <h1>
-          {jwt_decode(token).firstName} {jwt_decode(token).lastName}
-        </h1>
+        {jwt_decode(token).firstName} {jwt_decode(token).lastName}
+      </h1>
       <div className="post-container">
-       
-
         <form ref={formRef} onSubmit={newPost} className="addPost">
-        <h1>
-          {jwt_decode(token).firstName} {jwt_decode(token).lastName}
-        </h1>
+          <h1>
+            {jwt_decode(token).firstName} {jwt_decode(token).lastName}
+          </h1>
           <textarea
             placeholder="post description here"
             onChange={(e) => setContent(e.target.value)}
@@ -423,12 +421,18 @@ const Profile = () => {
           </div>
           <br />
           <div>Friend List</div>
-          {friends && friends.map((friend, i) => {
+          {friends.length ? (
+            friends.map((friend, i) => {
+              console.log(friend);
               return (
                 <div key={i}>
-                  
-               <p> {friend.firstName}</p>
-                </div>)})}
+                  <p>{friend.userName}</p>
+                </div>
+              );
+            })
+          ) : (
+            <p>You have no friends</p>
+          )}
         </div>
       </div>
       {show &&
