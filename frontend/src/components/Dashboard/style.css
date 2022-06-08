@@ -23,12 +23,6 @@
   flex-direction: row-reverse;
 }
 
-.control-container {
-  position: absolute;
-  right: 0;
-  top: 0;
-}
-
 .dropdown {
   position: absolute;
   right: -6.5em;
@@ -87,11 +81,11 @@
   margin: 10px;
   width: 350px;
 }
-.friend{
-    background-color: blueviolet;
-    position: absolute;
-    left:20px;
-    bottom: 20px;
+.friend {
+  background-color: blueviolet;
+  position: absolute;
+  left: 20px;
+  bottom: 20px;
 }
 
 .addpost input {
@@ -178,3 +172,17 @@
   margin: 20px;
 }
 
+.comment-div-container {
+  height: 50px;
+  margin: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+}
+
+.dd-comment {
+  position: absolute;
+  top: -30%;
+  right: 0;
+}
