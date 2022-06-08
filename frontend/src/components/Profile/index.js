@@ -14,6 +14,7 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { addLike, setLikes } from "../Redux/reducers/like";
 import jwt_decode from "jwt-decode";
 import { setUsers, updateUserById } from "../Redux/reducers/users";
+import { setFriends } from "../Redux/reducers/friends";
 
 const Profile = () => {
   const [content, setContent] = useState("");
@@ -51,9 +52,10 @@ const Profile = () => {
     };
   });
 
-  const { users } = useSelector((state) => {
+  const { users,friends } = useSelector((state) => {
     return {
       users: state.users.users,
+      friends:state.friends.friends
     };
   });
 
@@ -102,7 +104,27 @@ const Profile = () => {
     setDropdownId(e.target.id);
   };
   //=================================
+ const getAllFriends=() => { 
+  axios.get(`http://localhost:5000/user/list/friends/${userId}`, {
 
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+    .then((result) => {
+      console.log(result);
+
+      if (result.data.success) {
+        dispatch(setFriends(result.data.result));
+        console.log("friends",friends);
+        setShow(true);
+      }
+    })
+    .catch((error) => {
+     setShow(false);
+      console.log(error.response.data);
+    });
+};
   //=================================
   const getPostByUserId = (id) => {
     axios
@@ -118,7 +140,6 @@ const Profile = () => {
         console.log(error.response.data.message);
       });
   };
-
   //=================================
   const getUserById = (id) => {
     console.log(id);
@@ -164,7 +185,7 @@ const Profile = () => {
       });
   };
   //=================================
-  //=================================
+
   const editpost = (id) => {
     axios
       .put(`http://localhost:5000/posts/${id}`, {
@@ -190,6 +211,7 @@ const Profile = () => {
         },
       })
       .then((result) => {
+        console.log(result);
         dispatch(deletePostById(id));
       })
       .catch((error) => {
@@ -298,6 +320,7 @@ const Profile = () => {
   useEffect(() => {
     getUserById(userId);
     getPostByUserId(userId);
+    getAllFriends();
     getAllLikes();
   }, []);
 
@@ -333,13 +356,16 @@ const Profile = () => {
 
         <button onClick={editProfile}>UpdatePhoto</button>
       </div>
-
+      <h1>
+          {jwt_decode(token).firstName} {jwt_decode(token).lastName}
+        </h1>
       <div className="post-container">
+       
+
+        <form ref={formRef} onSubmit={newPost} className="addPost">
         <h1>
           {jwt_decode(token).firstName} {jwt_decode(token).lastName}
         </h1>
-
-        <form ref={formRef} onSubmit={newPost} className="addPost">
           <textarea
             placeholder="post description here"
             onChange={(e) => setContent(e.target.value)}
@@ -397,6 +423,12 @@ const Profile = () => {
           </div>
           <br />
           <div>Friend List</div>
+          {friends && friends.map((friend, i) => {
+              return (
+                <div key={i}>
+                  
+               <p> {friend.firstName}</p>
+                </div>)})}
         </div>
       </div>
       {show &&
