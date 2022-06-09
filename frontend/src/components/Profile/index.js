@@ -19,6 +19,7 @@ import { deleteFriendById, setFriends } from "../Redux/reducers/friends";
 const Profile = () => {
   const [content, setContent] = useState("");
   const [show, setShow] = useState(false);
+  const [show2, setShow2] = useState(false);
   const [showUpdate, setShowUpdate] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -357,6 +358,33 @@ const Profile = () => {
 
   return (
     <div className="post-container">
+       {show2? (
+            <div className="popup">
+               {friends.length ? (
+            friends.map((friend, i) => {
+              console.log(friend);
+              return (
+                <div className="firend" key={i}>
+                  <p>{friend.userName} </p>
+                  <img className="friendimg" src={friend.image} />
+                  <button
+                    className="like"
+                    onClick={() => {
+                       console.log(friend.id);
+                      unFollowFriend(friend.target_id)
+                    }}
+                  >
+                    Unfollow
+                  </button>
+            
+                </div>
+
+              );
+            })
+          ) : (
+            <p>You have no friends</p>
+          )}
+   </div> ) : ("")}
       <div className="cover">
         {users.map((el) => {
           return <img key={el.id} src={el.cover} />;
@@ -452,9 +480,20 @@ const Profile = () => {
           </div>
           <br />
           <div>
-            {" "}
+         
             <h1> Friend List</h1>
           </div>
+          <div >
+   
+          <button
+            onClick={(e) => {
+              setShow2(true);
+            }}
+          >
+           see allFriends
+          </button>
+         
+        </div>
           {friends.length ? (
             friends.map((friend, i) => {
               console.log(friend);
