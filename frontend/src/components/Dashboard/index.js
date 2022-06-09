@@ -18,6 +18,7 @@ import {
   deleteCommentById,
 } from "../Redux/reducers/comments";
 import jwt_decode from "jwt-decode";
+import { Link } from "react-router-dom";
 
 const Dashboard = () => {
   const [content, setContent] = useState("");
@@ -447,7 +448,13 @@ const Dashboard = () => {
                 ) : (
                   ""
                 )}
-                <h2>{post.userName}</h2>
+                <Link
+                  style={{ color: "black" }}
+                  className="link"
+                  to={`/users/${post.user_id}`}
+                >
+                  {post.userName}
+                </Link>
                 <p>{post.content}</p>
                 <img className="prof_img" src={post.image} />
 
@@ -569,7 +576,23 @@ const Dashboard = () => {
                               ) : (
                                 ""
                               )}
-                              <h3>{comment.userName}</h3>
+                              {comment.commenter_id === userId ? (
+                                <Link
+                                  style={{ color: "black" }}
+                                  className="link"
+                                  to={`/profile`}
+                                >
+                                  {comment.userName}
+                                </Link>
+                              ) : (
+                                <Link
+                                  style={{ color: "black" }}
+                                  className="link"
+                                  to={`/users/${comment.commenter_id}`}
+                                >
+                                  {comment.userName}
+                                </Link>
+                              )}
                               <p className="comment">{comment.comment}</p>
                             </div>
                           ) : (

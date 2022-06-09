@@ -837,7 +837,24 @@ const Profile = () => {
                               ) : (
                                 ""
                               )}
-                              <h3>{comment.userName}</h3>
+                              {comment.commenter_id === userId ? (
+                                <Link
+                                  style={{ color: "black" }}
+                                  className="link"
+                                  to={`/profile`}
+                                >
+                                  {comment.userName}
+                                </Link>
+                              ) : (
+                                <Link
+                                  style={{ color: "black" }}
+                                  className="link"
+                                  to={`/users/${comment.commenter_id}`}
+                                >
+                                  {comment.userName}
+                                </Link>
+                              )}
+
                               <p className="comment">{comment.comment}</p>
                             </div>
                           ) : (
