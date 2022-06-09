@@ -17,6 +17,12 @@ import { setUsers, updateUserById } from "../Redux/reducers/users";
 import { deleteFriendById, setFriends } from "../Redux/reducers/friends";
 import { IoMdCloseCircle } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
+import {
+  addComment,
+  setComments,
+  updateCommentById,
+  deleteCommentById,
+} from "../Redux/reducers/comments";
 
 const Profile = () => {
   const [content, setContent] = useState("");
@@ -27,7 +33,7 @@ const Profile = () => {
   const [open, setOpen] = useState(false);
 
   const [dropdownId, setDropdownId] = useState("");
-  const [updatecontent, setUpdatecontent] = useState("");
+ 
   const [updatecountry, setUpdatecountry] = useState("");
   const [userFriends, setUserFriends] = useState([]);
 
@@ -48,7 +54,14 @@ const Profile = () => {
   const [urlImage, seturlImage] = useState("");
   //======================================
   const Navigate = useNavigate();
-  //=================================
+  //=================================Comment================================
+  const [openComment, setOpenComment] = useState(false);
+  const [showCommentUpdate, setShowCommentUpdate] = useState(false);
+  const [dropdownIdComment, setDropdownIdComment] = useState("");
+  const [comment, setComment] = useState("");
+  const [updatecontent, setUpdatecontent] = useState("");
+  const [updatecomment, setupdatecomment] = useState("");
+  //========================================================================
   const dispatch = useDispatch();
 
   const { posts } = useSelector((state) => {
@@ -61,6 +74,11 @@ const Profile = () => {
     return {
       users: state.users.users,
       friends: state.friends.friends,
+    };
+  });
+  const { comments } = useSelector((state) => {
+    return {
+      comments: state.comments.comments,
     };
   });
 
@@ -109,6 +127,101 @@ const Profile = () => {
     setDropdownId(e.target.id);
   };
   //=================================
+  //=================================
+
+  const showDDComment = (e) => {
+    setOpenComment(!openComment);
+    setDropdownIdComment(e.target.id);
+  };
+
+  //=================================
+  //=================================
+
+  const updateFormComment = (e, commentcomment) => {
+    setShowCommentUpdate(!showCommentUpdate);
+    setDropdownIdComment(e.target.id);
+    setupdatecomment(commentcomment);
+    setOpenComment(!openComment);
+  };
+
+  //=================================
+  //=================================
+
+  const getAllComments = async () => {
+    axios
+      .get(`http://localhost:5000/comments`)
+      .then((result) => {
+        dispatch(setComments(result.data.result));
+      })
+      .catch((error) => {
+        console.log(error.response.data.message);
+      });
+  };
+
+  //=================================
+
+  const newComment = async (e, id) => {
+    e.preventDefault();
+    axios
+      .post(
+        `http://localhost:5000/comments/${id}`,
+        { comment },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((res) => {
+        if (res.data.success) {
+          dispatch(addComment({ comment, post_id: id }));
+          getAllComments();
+          formRef.current.reset();
+        }
+      })
+      .catch((error) => {
+        console.log(error.response.data.message);
+      });
+  };
+
+  //=================================
+
+  const editComment = (id) => {
+    axios
+      .put(`http://localhost:5000/comments/update/${id}`, {
+        comment: updatecomment,
+      })
+      .then((result) => {
+        if (result.data.success) {
+          dispatch(updateCommentById({ comment: updatecomment, id }));
+        }
+      })
+      .catch((error) => {
+        {
+          console.log(error);
+        }
+      });
+  };
+
+  //=================================
+
+  const deleteComment = (id) => {
+    axios
+      .delete(`http://localhost:5000/comments/delete/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((result) => {
+        dispatch(deleteCommentById(id));
+      })
+      .catch((error) => {
+        {
+          console.log(error.response.data.message);
+        }
+      });
+  };
+
   const getAllFriends = () => {
     axios
       .get(`http://localhost:5000/user/list/friends/${userId}`, {
@@ -357,7 +470,7 @@ const Profile = () => {
     getUserById(userId);
     getPostByUserId(userId);
     getAllFriends();
-    getAllLikes();
+    getAllComments();
   }, []);
 
   return (
@@ -655,7 +768,118 @@ const Profile = () => {
                   }).length
                 }
               </div>
+              <div className="comment-div">
+                <div className="comment-container">
+                  <h1>
+                    {jwt_decode(token).firstName} {jwt_decode(token).lastName}
+                  </h1>
+                  <form ref={formRef} className="addComment">
+                    <textarea
+                      placeholder="comment  here"
+                      onChange={(e) => {
+                        setComment(e.target.value);
+                      }}
+                    ></textarea>
+                    <div className="comment-action">
+                      <button
+                        onClick={(e) => {
+                          newComment(e, post.id);
+                        }}
+                      >
+                        Add
+                      </button>
+                    </div>
+                  </form>
+                </div>
+                {show &&
+                  comments.map((comment, index) => {
+                    return (
+                      <div key={index}>
+                        <div>
+                          {post.id === comment.post_id ? (
+                            <div className="comment-div-container">
+                              {comment.commenter_id == userId ? (
+                                <div className="dd-comment">
+                                  <button
+                                    id={comment.id}
+                                    className="dd-button"
+                                    onClick={(e) => {
+                                      showDDComment(e);
+                                    }}
+                                  >
+                                    <BsThreeDotsVertical
+                                      id={comment.id}
+                                      onClick={(e) => {
+                                        showDDComment(e);
+                                      }}
+                                    />
+                                  </button>
+                                  {openComment &&
+                                  dropdownIdComment == comment.id ? (
+                                    <div className="dropdown-comment">
+                                      <div
+                                        className="options-div"
+                                        id={comment.id}
+                                        onClick={(e) => {
+                                          updateFormComment(e, comment.comment);
+                                        }}
+                                      >
+                                        Update
+                                      </div>
+
+                                      <div
+                                        className="options-div"
+                                        id={comment.id}
+                                        onClick={(e) => {
+                                          deleteComment(e.target.id);
+                                        }}
+                                      >
+                                        Delete
+                                      </div>
+                                    </div>
+                                  ) : (
+                                    <></>
+                                  )}
+                                </div>
+                              ) : (
+                                ""
+                              )}
+                              <h3>{comment.userName}</h3>
+                              <p className="comment">{comment.comment}</p>
+                            </div>
+                          ) : (
+                            ""
+                          )}
+                        </div>
+                        {comment.id == dropdownIdComment &&
+                        showCommentUpdate ? (
+                          <form
+                            className="update-form"
+                            onSubmit={(e) => {
+                              e.preventDefault();
+                              setShowCommentUpdate(false);
+                              editComment(comment.id);
+                            }}
+                            ref={formRef}
+                          >
+                            <input
+                              defaultValue={comment.comment}
+                              onChange={(e) => {
+                                setupdatecomment(e.target.value);
+                              }}
+                            />
+                            <button>Update</button>
+                          </form>
+                        ) : (
+                          ""
+                        )}
+                      </div>
+                    );
+                  })}
+                {!comments.length ? <h1>No comments</h1> : ""}
+              </div>
             </div>
+            
           );
         })}
       {!posts.length ? <h1>No posts</h1> : ""}
