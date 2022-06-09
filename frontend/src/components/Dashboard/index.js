@@ -24,9 +24,11 @@ const Dashboard = () => {
   const [show, setShow] = useState(false);
   const [showUpdate, setShowUpdate] = useState(false);
   const [open, setOpen] = useState(false);
-  const [comment, setComment] = useState("");
   const [dropdownId, setDropdownId] = useState("");
-  const [dropdownIdCom, setDropdownIdCom] = useState("");
+  const [openComment, setOpenComment] = useState(false);
+  const [showCommentUpdate, setShowCommentUpdate] = useState(false);
+  const [dropdownIdComment, setDropdownIdComment] = useState("");
+  const [comment, setComment] = useState("");
   const [updatecontent, setUpdatecontent] = useState("");
   const [updatecomment, setupdatecomment] = useState("");
 
@@ -114,6 +116,12 @@ const Dashboard = () => {
   const showDD = (e) => {
     setOpen(!open);
     setDropdownId(e.target.id);
+  };
+  //=================================
+
+  const showDDComment = (e) => {
+    setOpenComment(!openComment);
+    setDropdownIdComment(e.target.id);
   };
 
   //=================================
@@ -231,6 +239,15 @@ const Dashboard = () => {
 
   //=================================
 
+  const updateFormComment = (e, commentcomment) => {
+    setShowCommentUpdate(!showCommentUpdate);
+    setDropdownIdComment(e.target.id);
+    setupdatecomment(commentcomment);
+    setOpenComment(!openComment);
+  };
+
+  //=================================
+
   const likePost = (id) => {
     axios
       .post(
@@ -324,15 +341,6 @@ const Dashboard = () => {
           console.log(error);
         }
       });
-  };
-
-  //=================================
-
-  const updateFormComment = (e, commentcomment) => {
-    setShowUpdate(!showUpdate);
-    setDropdownIdCom(e.target.id);
-    setupdatecomment(commentcomment);
-    setOpen(!open);
   };
 
   //=================================
@@ -521,23 +529,24 @@ const Dashboard = () => {
                                     id={comment.id}
                                     className="dd-button"
                                     onClick={(e) => {
-                                      showDD(e);
+                                      showDDComment(e);
                                     }}
                                   >
                                     <BsThreeDotsVertical
                                       id={comment.id}
                                       onClick={(e) => {
-                                        showDD(e);
+                                        showDDComment(e);
                                       }}
                                     />
                                   </button>
-                                  {open && dropdownId == comment.id ? (
-                                    <div className="dropdown">
+                                  {openComment &&
+                                  dropdownIdComment == comment.id ? (
+                                    <div className="dropdown-comment">
                                       <div
                                         className="options-div"
                                         id={comment.id}
                                         onClick={(e) => {
-                                          updateForm(e, comment.comment);
+                                          updateFormComment(e, comment.comment);
                                         }}
                                       >
                                         Update
@@ -547,7 +556,7 @@ const Dashboard = () => {
                                         className="options-div"
                                         id={comment.id}
                                         onClick={(e) => {
-                                          deletepost(e.target.id);
+                                          deleteComment(e.target.id);
                                         }}
                                       >
                                         Delete
@@ -562,40 +571,18 @@ const Dashboard = () => {
                               )}
                               <h3>{comment.userName}</h3>
                               <p className="comment">{comment.comment}</p>
-
-                              {/* {comment.commenter_id === userId ? (
-                                <>
-                                  <button
-                                    id={comment.id}
-                                    onClick={(e) => {
-                                      updateFormComment(e, comment.comment);
-                                    }}
-                                  >
-                                    Update
-                                  </button>
-                                  <button
-                                    id={comment.id}
-                                    onClick={(e) => {
-                                      deleteComment(e.target.id);
-                                    }}
-                                  >
-                                    Delete
-                                  </button>
-                                </>
-                              ) : (
-                                ""
-                              )} */}
                             </div>
                           ) : (
                             ""
                           )}
                         </div>
-                        {comment.id == dropdownIdCom && showUpdate ? (
+                        {comment.id == dropdownIdComment &&
+                        showCommentUpdate ? (
                           <form
                             className="update-form"
                             onSubmit={(e) => {
                               e.preventDefault();
-                              setShowUpdate(false);
+                              setShowCommentUpdate(false);
                               editComment(comment.id);
                             }}
                             ref={formRef}

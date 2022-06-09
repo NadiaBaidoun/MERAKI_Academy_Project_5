@@ -181,8 +181,21 @@
   position: relative;
 }
 
-.dd-comment {
+.dd-button {
   position: absolute;
-  top: -30%;
+  /* top: -30%; */
+  top: 0;
   right: 0;
+}
+
+.dropdown-comment {
+  position: absolute;
+  right: -6.5em;
+  list-style: none;
+  box-shadow: 0 1px 9px black;
+  width: 6em;
+  border: 2px solid blueviolet;
+  border-radius: 5px;
+  color: blueviolet;
+  margin: 2% 0;
 }
