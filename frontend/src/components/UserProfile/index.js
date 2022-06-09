@@ -6,7 +6,7 @@ import { setPosts } from "../Redux/reducers/posts";
 
 import "./style.css";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { addLike, setLikes } from "../Redux/reducers/like";
+import { addLike, removeLike, setLikes } from "../Redux/reducers/like";
 import jwt_decode from "jwt-decode";
 import { setUsers } from "../Redux/reducers/users";
 // import { setFriends } from "../Redux/reducers/friends";
@@ -21,13 +21,19 @@ import { useParams } from "react-router-dom";
 
 const UserProfile = () => {
   const [dropdownIdCom, setDropdownIdCom] = useState("");
-  const [updatecomment, setupdatecomment] = useState("");
   const [userFriends, setUserFriends] = useState([]);
   const [myFriends, setMyFriends] = useState([]);
   const [comment, setComment] = useState("");
   const [show, setShow] = useState(false);
   const [showUpdate, setShowUpdate] = useState(false);
   const [open, setOpen] = useState(false);
+  const [openComment, setOpenComment] = useState(false);
+
+  const [showCommentUpdate, setShowCommentUpdate] = useState(false);
+
+  const [dropdownIdComment, setDropdownIdComment] = useState("");
+
+  const [updatecomment, setupdatecomment] = useState("");
 
   const [dropdownId, setDropdownId] = useState("");
 
@@ -80,6 +86,72 @@ const UserProfile = () => {
 
   const userId = jwt_decode(token).userId;
 
+  const getAllPosts = () => {
+    axios
+      .get("http://localhost:5000/posts")
+      .then((res) => {
+        axios
+          .get(`http://localhost:5000/likes`)
+          .then((response) => {
+            const postsRes = res.data.result.reverse();
+            const likeRes = response.data.result;
+
+            const postWithLike = [];
+
+            postsRes.forEach((post) => {
+              postWithLike.push({ ...post, like: [] });
+            });
+            postWithLike.forEach((post) => {
+              likeRes.forEach((like) => {
+                if (post.id == like.post_id) {
+                  post.like.push(like.user_id);
+                }
+              });
+            });
+            dispatch(setPosts(postWithLike));
+            setShow(true);
+          })
+          .catch((error) => {
+            if (error.response.data.massage.includes("likes")) {
+              const postsRes = res.data.result.reverse();
+              console.log(postsRes);
+
+              const postWithLike = [];
+
+              postsRes.forEach((post) => {
+                postWithLike.push({ ...post, like: [] });
+              });
+              dispatch(setPosts(postWithLike));
+              setShow(true);
+            }
+          });
+      })
+      .catch((error) => {
+        setShow(false);
+        console.log(error.response.data.massage);
+      });
+  };
+
+  // ======================================
+
+  const unLikePost = (id) => {
+    axios
+      .delete(`http://localhost:5000/likes/delete/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((result) => {
+        dispatch(removeLike({ post_id: id }));
+        getAllPosts();
+      })
+      .catch((error) => {
+        console.log(error.response.data.message);
+      });
+  };
+
+//=================================
+
   const getMyFriends = () => {
     axios
       .get(`http://localhost:5000/user/list/friends/${userId}`, {
@@ -102,6 +174,22 @@ const UserProfile = () => {
         setMyFriends([]);
         console.log(error.response.data);
       });
+  };
+
+  //=================================
+
+  const showDDComment = (e) => {
+    setOpenComment(!openComment);
+    setDropdownIdComment(e.target.id);
+  };
+
+  //=================================
+
+  const updateFormComment = (e, commentcomment) => {
+    setShowCommentUpdate(!showCommentUpdate);
+    setDropdownIdComment(e.target.id);
+    setupdatecomment(commentcomment);
+    setOpenComment(!openComment);
   };
 
   //=================================
@@ -169,17 +257,49 @@ const UserProfile = () => {
   const getPostByUserId = (id) => {
     axios
       .get(`http://localhost:5000/posts/user/${id}`)
-      .then((result) => {
-        if (result.data.success) {
-          dispatch(setPosts(result.data.result.reverse()));
-          setShow(true);
-        }
+      .then((res) => {
+        axios
+          .get(`http://localhost:5000/likes`)
+          .then((response) => {
+            const postsRes = res.data.result.reverse();
+            const likeRes = response.data.result;
+
+            const postWithLike = [];
+
+            postsRes.forEach((post) => {
+              postWithLike.push({ ...post, like: [] });
+            });
+            postWithLike.forEach((post) => {
+              likeRes.forEach((like) => {
+                if (post.id == like.post_id) {
+                  post.like.push(like.user_id);
+                }
+              });
+            });
+            dispatch(setPosts(postWithLike));
+            setShow(true);
+          })
+          .catch((error) => {
+            if (error.response.data.massage.includes("likes")) {
+              const postsRes = res.data.result.reverse();
+              console.log(postsRes);
+
+              const postWithLike = [];
+
+              postsRes.forEach((post) => {
+                postWithLike.push({ ...post, like: [] });
+              });
+              dispatch(setPosts(postWithLike));
+              setShow(true);
+            }
+          });
       })
       .catch((error) => {
         setShow(false);
-        console.log(error.response.data.message);
+        console.log(error.response.data.massage);
       });
   };
+
   //=================================
   const getUserById = (id) => {
     console.log(id);
@@ -301,7 +421,7 @@ const UserProfile = () => {
 
   //=================================
 
-  const likePost = async (id) => {
+  const likePost = (id) => {
     axios
       .post(
         `http://localhost:5000/likes/${id}`,
@@ -314,6 +434,7 @@ const UserProfile = () => {
       )
       .then((result) => {
         dispatch(addLike({ post_id: id }));
+        getAllPosts();
       })
       .catch((error) => {
         console.log(error.response.data.message);
@@ -405,6 +526,7 @@ const UserProfile = () => {
       </div>
       {show &&
         posts.map((post, index) => {
+          console.log("USERPOSTS", post);
           return (
             <div key={index}>
               <div className="post">
@@ -414,29 +536,22 @@ const UserProfile = () => {
                 <img className="prof_img" src={post.image} />
               </div>
               <div className="like-div">
-                {!liked ? (
-                  <button
-                    className="like"
-                    onClick={(e) => {
-                      likePost(post.id);
-                    }}
-                  >
-                    Like
-                  </button>
-                ) : (
-                  <button className="like">Unlike</button>
-                )}
-
-                {
-                  likes.filter((el) => {
-                    return el.post_id == post.id;
-                  }).length
-                }
+                <button
+                  className="like"
+                  onClick={(e) => {
+                    post.like.includes(userId)
+                      ? unLikePost(post.id)
+                      : likePost(post.id);
+                  }}
+                >
+                  {post.like.includes(userId) ? "Unlike" : "Like"}
+                </button>
+                <p>{post.like.length}</p>
               </div>
               <div className="comment-div">
                 <div className="comment-container">
                   <h1>
-                    {users.firstName} {users.lastName}
+                    {jwt_decode(token).firstName} {jwt_decode(token).lastName}
                   </h1>
                   <form ref={formRef} className="addComment">
                     <textarea
@@ -469,23 +584,24 @@ const UserProfile = () => {
                                     id={comment.id}
                                     className="dd-button"
                                     onClick={(e) => {
-                                      showDD(e);
+                                      showDDComment(e);
                                     }}
                                   >
                                     <BsThreeDotsVertical
                                       id={comment.id}
                                       onClick={(e) => {
-                                        showDD(e);
+                                        showDDComment(e);
                                       }}
                                     />
                                   </button>
-                                  {open && dropdownId == comment.id ? (
-                                    <div className="dropdown">
+                                  {openComment &&
+                                  dropdownIdComment == comment.id ? (
+                                    <div className="dropdown-comment">
                                       <div
                                         className="options-div"
                                         id={comment.id}
                                         onClick={(e) => {
-                                          updateForm(e, comment.comment);
+                                          updateFormComment(e, comment.comment);
                                         }}
                                       >
                                         Update
@@ -510,40 +626,18 @@ const UserProfile = () => {
                               )}
                               <h3>{comment.userName}</h3>
                               <p className="comment">{comment.comment}</p>
-
-                              {/* {comment.commenter_id === userId ? (
-                                <>
-                                  <button
-                                    id={comment.id}
-                                    onClick={(e) => {
-                                      updateFormComment(e, comment.comment);
-                                    }}
-                                  >
-                                    Update
-                                  </button>
-                                  <button
-                                    id={comment.id}
-                                    onClick={(e) => {
-                                      deleteComment(e.target.id);
-                                    }}
-                                  >
-                                    Delete
-                                  </button>
-                                </>
-                              ) : (
-                                ""
-                              )} */}
                             </div>
                           ) : (
                             ""
                           )}
                         </div>
-                        {comment.id == dropdownIdCom && showUpdate ? (
+                        {comment.id == dropdownIdComment &&
+                        showCommentUpdate ? (
                           <form
                             className="update-form"
                             onSubmit={(e) => {
                               e.preventDefault();
-                              setShowUpdate(false);
+                              setShowCommentUpdate(false);
                               editComment(comment.id);
                             }}
                             ref={formRef}
