@@ -98,13 +98,23 @@ const SearchResult = () => {
         return (
           <div key={index}>
             <div className="user">
-              <Link
-                style={{ color: "black" }}
-                className="link"
-                to={`/users/${user.id}`}
-              >
-                {user.userName}
-              </Link>
+            {userId === user.id ? 
+               <Link
+               style={{ color: "black" }}
+               className="link"
+               to={`/profile`}
+             >
+               {user.userName}
+             </Link>
+             :
+             <Link
+             style={{ color: "black" }}
+             className="link"
+             to={`/users/${user.id}`}
+           >
+             {user.userName}
+           </Link>
+}
 
               <button
                 className="like"
