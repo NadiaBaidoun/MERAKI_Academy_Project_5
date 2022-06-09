@@ -6,6 +6,7 @@ import jwt_decode from "jwt-decode";
 import { useDispatch, useSelector } from "react-redux";
 import { setFriends } from "../Redux/reducers/friends";
 import { setUsers } from "../Redux/reducers/users";
+import { Link } from "react-router-dom";
 
 const SearchResult = () => {
   const [show, setShow] = useState(false);
@@ -97,7 +98,14 @@ const SearchResult = () => {
         return (
           <div key={index}>
             <div className="user">
-              <h2>{user.userName}</h2>
+              <Link
+                style={{ color: "black" }}
+                className="link"
+                to={`/users/${user.id}`}
+              >
+                {user.userName}
+              </Link>
+
               <button
                 className="like"
                 onClick={() => {

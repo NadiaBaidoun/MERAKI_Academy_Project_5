@@ -8,6 +8,7 @@ import Home from "./components/Home";
 import Profile from "./components/Profile";
 import Search from "./components/Search";
 import SearchResult from "./components/SearchResult";
+import UserProfile from "./components/UserProfile/index.js";
 
 function App() {
   return (
@@ -18,7 +19,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/search/" element={<Search />} />
         <Route path="/search/users" element={<SearchResult />} />
-
+        <Route path="/users/:id" element={<UserProfile />} />
         <Route path="/home" element={<Dashboard />} />
         <Route path="/profile" element={<Profile />} />
       </Routes>
