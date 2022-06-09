@@ -2,9 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import {
-    setPosts
-} from "../Redux/reducers/posts";
+import { setPosts } from "../Redux/reducers/posts";
 
 import "./style.css";
 import { BsThreeDotsVertical } from "react-icons/bs";
@@ -21,13 +19,11 @@ import {
 } from "../Redux/reducers/comments";
 import { useParams } from "react-router-dom";
 
-
-
 const UserProfile = () => {
   const [dropdownIdCom, setDropdownIdCom] = useState("");
   const [updatecomment, setupdatecomment] = useState("");
-  
-
+  const [userFriends, setUserFriends] = useState([]);
+  const [myFriends, setMyFriends] = useState([]);
   const [comment, setComment] = useState("");
   const [show, setShow] = useState(false);
   const [showUpdate, setShowUpdate] = useState(false);
@@ -35,13 +31,9 @@ const UserProfile = () => {
 
   const [dropdownId, setDropdownId] = useState("");
 
-  const {id} = useParams();
-
-
-
+  const { id } = useParams();
 
   const [liked, setLiked] = useState(false);
-
 
   const formRef = useRef("");
   const imageRef = useRef("");
@@ -86,38 +78,98 @@ const UserProfile = () => {
     };
   });
 
-
   const userId = jwt_decode(token).userId;
 
+  const getMyFriends = () => {
+    axios
+      .get(`http://localhost:5000/user/list/friends/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((result) => {
+        const friendsRes = result.data.result;
+
+        const userFriends = [];
+
+        friendsRes.forEach((friend) => {
+          userFriends.push(friend.target_id);
+        });
+
+        setMyFriends(userFriends);
+      })
+      .catch((error) => {
+        setMyFriends([]);
+        console.log(error.response.data);
+      });
+  };
 
   //=================================
-  // const getAllFriends = () => {
-  //   axios
-  //     .get(`http://localhost:5000/user/list/friends/${userId}`, {
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //     })
-  //     .then((result) => {
-  //       console.log(result);
 
-  //       if (result.data.success) {
-  //         dispatch(setFriends(result.data.result));
-  //         console.log("friends", friends);
-  //         setShow(true);
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       setShow(false);
-  //       console.log(error.response.data);
-  //     });
-  // };
+  const getAllFriends = () => {
+    axios
+      .get(`http://localhost:5000/user/list/friends/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((result) => {
+        const friendsRes = result.data.result;
+
+        const userFriends = [];
+
+        friendsRes.forEach((friend) => {
+          userFriends.push(friend.target_id);
+        });
+
+        setUserFriends(userFriends);
+      })
+      .catch((error) => {
+        setUserFriends([]);
+        console.log(error.response.data);
+      });
+  };
+
+  const followFriend = (id) => {
+    axios
+      .put(
+        `http://localhost:5000/user/follow/${id}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((result) => {
+        getMyFriends();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  // ==========================
+  const unFollowFriend = (id) => {
+    console.log("ID", id);
+    axios
+      .delete(`http://localhost:5000/user/delete/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((result) => {
+        getMyFriends();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   //=================================
   const getPostByUserId = (id) => {
     axios
       .get(`http://localhost:5000/posts/user/${id}`)
       .then((result) => {
-        console.log("result",result.data.result);
         if (result.data.success) {
           dispatch(setPosts(result.data.result.reverse()));
           setShow(true);
@@ -138,7 +190,6 @@ const UserProfile = () => {
         },
       })
       .then((result) => {
-        console.log(result);
         if (result.data.success) {
           // setUsers(result.data.result);
           dispatch(setUsers(result.data.result));
@@ -151,8 +202,6 @@ const UserProfile = () => {
       });
   };
 
-
-
   const updateForm = (e, postcontent) => {
     setShowUpdate(!showUpdate);
     setDropdownId(e.target.id);
@@ -163,8 +212,6 @@ const UserProfile = () => {
     setOpen(!open);
     setDropdownId(e.target.id);
   };
-
-
 
   const getAllComments = async () => {
     axios
@@ -221,7 +268,7 @@ const UserProfile = () => {
         }
       });
   };
-  
+
   //=================================
 
   const deleteComment = (id) => {
@@ -240,7 +287,6 @@ const UserProfile = () => {
         }
       });
   };
-
 
   const getAllLikes = async () => {
     axios
@@ -279,6 +325,8 @@ const UserProfile = () => {
     getUserById(id);
     getPostByUserId(id);
     getAllLikes();
+    getAllFriends();
+    getMyFriends();
   }, []);
 
   return (
@@ -287,28 +335,38 @@ const UserProfile = () => {
         {users.map((el) => {
           return <img key={el.id} src={el.cover} />;
         })}
-        </div>
+      </div>
       <div className="profilePic">
         {users.map((el) => {
           return <img key={el.id} src={el.image} />;
         })}
-       
       </div>
       <div className="profilePic">
-        {users.map((el,i) => {
-          return    <div  key={i}>
-         <h1> {el.userName}</h1>
-        </div>;
+        {users.map((el, i) => {
+          return (
+            <div key={i}>
+              <h1> {el.userName}</h1>
+            </div>
+          );
         })}
-       
       </div>
-  
-      <div className="post-container">
-        </div>
+
+      <button
+        className="like"
+        onClick={() => {
+          myFriends.includes(parseInt(id))
+            ? unFollowFriend(id)
+            : followFriend(id);
+        }}
+      >
+        {myFriends.includes(parseInt(id)) ? "Unfollow" : "Follow"}
+      </button>
+
+      <div className="post-container"></div>
       <div className="left-info">
         <div className="left-container">
           <div className="INFO">
-            <h1>INFO</h1>        
+            <h1>INFO</h1>
             {users.map((user, i) => {
               return (
                 <div key={i}>
@@ -321,9 +379,9 @@ const UserProfile = () => {
                   <h1>{user.bio}</h1>
 
                   <p>{user.country} </p>
-                
+
                   <p>{user.birthdate}</p>
-          
+
                   <div></div>
                 </div>
               );
@@ -350,15 +408,10 @@ const UserProfile = () => {
           return (
             <div key={index}>
               <div className="post">
-                <div className="dd-container">
-
- 
-                </div>
+                <div className="dd-container"></div>
                 <p>{post.content}</p>
 
                 <img className="prof_img" src={post.image} />
-
-
               </div>
               <div className="like-div">
                 {!liked ? (
