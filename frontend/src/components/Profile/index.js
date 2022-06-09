@@ -111,24 +111,24 @@ const Profile = () => {
           Authorization: `Bearer ${token}`,
         },
       })
-      // .then((result) => {
-      //   console.log(result);
 
-      //   if (result.data.success) {
-      //     dispatch(setFriends(result.data.result));
-      //     console.log("friends", friends);
-      //     setShow(true);
-      //   }
-      // })
-      // .catch((error) => {
-      //   setShow(false);
-      //   console.log(error.response.data);
-      // });
       .then((result) => {
         const friendsRes = result.data.result;
-
+         
+   console.log(friendsRes);
         if (result.data.success) {
-          dispatch(setFriends(result.data.result));
+          let arrayofFriends=[];
+
+          if(friendsRes.length>6){
+            const filteredFriends=friendsRes.filter((el,i)=>{
+              return i<=5;
+            });
+            arrayofFriends=[...filteredFriends];
+          } else if (friendsRes.length <=6){
+            arrayofFriends =[...friendsRes];
+          }
+     
+          dispatch(setFriends(arrayofFriends));
           console.log("friends", friends);
           setShow(true);
         }
