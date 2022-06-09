@@ -15,11 +15,14 @@ import { addLike, setLikes } from "../Redux/reducers/like";
 import jwt_decode from "jwt-decode";
 import { setUsers, updateUserById } from "../Redux/reducers/users";
 import { deleteFriendById, setFriends } from "../Redux/reducers/friends";
+import { IoMdCloseCircle } from "react-icons/io";
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
   const [content, setContent] = useState("");
   const [show, setShow] = useState(false);
-  const [show2, setShow2] = useState(false);
+  const [PopupFriend, setPopupFriend] = useState(false);
+  const [PopupIntro, setPopupIntro] = useState(false);
   const [showUpdate, setShowUpdate] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -43,7 +46,8 @@ const Profile = () => {
 
   const [urlCover, seturlCover] = useState("");
   const [urlImage, seturlImage] = useState("");
-
+  //======================================
+  const Navigate = useNavigate();
   //=================================
   const dispatch = useDispatch();
 
@@ -115,27 +119,26 @@ const Profile = () => {
 
       .then((result) => {
         const friendsRes = result.data.result;
-         
-   console.log(friendsRes);
-        if (result.data.success) {
-          let arrayofFriends=[];
 
-          if(friendsRes.length>6){
-            const filteredFriends=friendsRes.filter((el,i)=>{
-              return i<=5;
+        console.log(friendsRes);
+        if (result.data.success) {
+          let arrayofFriends = [];
+
+          if (friendsRes.length > 6) {
+            const filteredFriends = friendsRes.filter((el, i) => {
+              return i <= 5;
             });
-            arrayofFriends=[...filteredFriends];
-          } else if (friendsRes.length <=6){
-            arrayofFriends =[...friendsRes];
+            arrayofFriends = [...filteredFriends];
+          } else if (friendsRes.length <= 6) {
+            arrayofFriends = [...friendsRes];
           }
-     
+
           dispatch(setFriends(arrayofFriends));
           console.log("friends", friends);
           setShow(true);
         }
       })
       .catch((error) => {
-     
         dispatch(setFriends([]));
         console.log(error.response.data);
       });
@@ -288,7 +291,7 @@ const Profile = () => {
       })
       .then((result) => {
         console.log(result);
-        dispatch(deleteFriendById(id))
+        dispatch(deleteFriendById(id));
         getAllFriends();
       })
       .catch((error) => {
@@ -358,9 +361,13 @@ const Profile = () => {
 
   return (
     <div className="post-container">
-       {show2? (
-            <div className="popup">
-               {friends.length ? (
+      {PopupFriend ? (
+        <div className="popup">
+          <button className="close" onClick={() => Navigate(-1)}>
+            <IoMdCloseCircle />
+          </button>
+
+          {friends.length ? (
             friends.map((friend, i) => {
               console.log(friend);
               return (
@@ -370,21 +377,23 @@ const Profile = () => {
                   <button
                     className="like"
                     onClick={() => {
-                       console.log(friend.id);
-                      unFollowFriend(friend.target_id)
+                      console.log(friend.id);
+                      unFollowFriend(friend.target_id);
                     }}
                   >
                     Unfollow
                   </button>
-            
                 </div>
-
               );
             })
           ) : (
             <p>You have no friends</p>
           )}
-   </div> ) : ("")}
+        </div>
+      ) : (
+        ""
+      )}
+
       <div className="cover">
         {users.map((el) => {
           return <img key={el.id} src={el.cover} />;
@@ -444,56 +453,72 @@ const Profile = () => {
       <div className="left-info">
         <div className="left-container">
           <div className="INFO">
-            <h1>INFO</h1>
-            <button onClick={editProfile}>UPDATE INFO</button>
+            <h1>Intro</h1>
+
             {users.map((user, i) => {
               return (
                 <div key={i}>
-                  {/* <input
-                    defaultValue={users.bio}
-                    onChange={(e) => {
-                      setUpdateBio(e.target.value);
-                    }}
-                  /> */}
-                  <h1>{user.bio}</h1>
-                  <textarea
-                    defaultValue={user.bio}
-                    onChange={(e) => setUpdateBio(e.target.value)}
-                  ></textarea>
-                  <p>{user.country} </p>
-                  <textarea
-                    defaultValue={user.country}
-                    onChange={(e) => setUpdatecountry(e.target.value)}
-                  ></textarea>
-
-                  <p>{user.birthdate}</p>
-                  <input
-                    type={"date"}
-                    onChange={(e) => {
-                      setUpdatebirthdate(e.target.value);
-                    }}
-                  />
-                  <div></div>
+                  <label>Bio :</label> <h1>{user.bio}</h1>
+                  <label>Country :</label> <p>{user.country} </p>
+                  <label>Birthdate :</label> <p>{user.birthdate}</p>
                 </div>
               );
             })}
+            <button
+              onClick={() => {
+                setPopupIntro(true);
+              
+              }}
+            >
+              Edit details
+            </button>
+            {PopupIntro ? (
+              <div className="popup">
+                <button className="close" onClick={() => Navigate(-1)}>
+                  <IoMdCloseCircle />
+                </button>
+                {users.map((user, i) => {
+                  return (
+                    <div key={i}>
+                      <label>Bio :</label>
+                      <textarea
+                        defaultValue={user.bio}
+                        onChange={(e) => setUpdateBio(e.target.value)}
+                      ></textarea>
+                      <label>Country :</label> 
+                      <textarea
+                        defaultValue={user.country}
+                        onChange={(e) => setUpdatecountry(e.target.value)}
+                      ></textarea>
+                      <label>Birthdate :</label> 
+                      <input
+                        type={"date"}
+                        onChange={(e) => {
+                          setUpdatebirthdate(e.target.value);
+                        }}
+                      />
+                      <button className="updateInfo" onClick={editProfile}>update</button>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              ""
+            )}
           </div>
           <br />
           <div>
-         
             <h1> Friend List</h1>
           </div>
-          <div >
-   
-          <button
-            onClick={(e) => {
-              setShow2(true);
-            }}
-          >
-           see allFriends
-          </button>
-         
-        </div>
+          <div>
+            <button
+              onClick={(e) => {
+                setPopupFriend(true);
+              }}
+            >
+              see allFriends
+            </button>
+          </div>
           {friends.length ? (
             friends.map((friend, i) => {
               console.log(friend);
@@ -504,15 +529,12 @@ const Profile = () => {
                   <button
                     className="like"
                     onClick={() => {
-                       console.log(friend.id);
-                      unFollowFriend(friend.target_id)
+                      unFollowFriend(friend.target_id);
                     }}
                   >
                     Unfollow
                   </button>
-            
                 </div>
-
               );
             })
           ) : (
