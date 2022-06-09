@@ -114,7 +114,7 @@ const SearchResult = () => {
                     : followFriend(user.id);
                 }}
               >
-                {userFriends.includes(user.id) ? "Unfollow" : "Follow"}
+                {userFriends.includes(user.id) ? "Unfollow": "Follow"}
               </button>
               {/* <img className="prof_img" src={user.image} /> */}
             </div>

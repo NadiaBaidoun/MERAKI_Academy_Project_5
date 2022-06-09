@@ -14,19 +14,20 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { addLike, setLikes } from "../Redux/reducers/like";
 import jwt_decode from "jwt-decode";
 import { setUsers, updateUserById } from "../Redux/reducers/users";
-import { setFriends } from "../Redux/reducers/friends";
+import { deleteFriendById, setFriends } from "../Redux/reducers/friends";
 
 const Profile = () => {
   const [content, setContent] = useState("");
   const [show, setShow] = useState(false);
+  const [show2, setShow2] = useState(false);
   const [showUpdate, setShowUpdate] = useState(false);
   const [open, setOpen] = useState(false);
 
   const [dropdownId, setDropdownId] = useState("");
   const [updatecontent, setUpdatecontent] = useState("");
   const [updatecountry, setUpdatecountry] = useState("");
-  // const [updateimage, setUpdateImage] = useState(
-  //   "https://www.icmetl.org/wp-content/uploads/2020/11/user-icon-human-person-sign-vector-10206693.png"
+  const [userFriends, setUserFriends] = useState([]);
+
   // );
   const [updatebirthdate, setUpdatebirthdate] = useState("");
   const [updatebio, setUpdateBio] = useState("");
@@ -111,17 +112,31 @@ const Profile = () => {
           Authorization: `Bearer ${token}`,
         },
       })
-      .then((result) => {
-        console.log(result);
 
+      .then((result) => {
+        const friendsRes = result.data.result;
+         
+   console.log(friendsRes);
         if (result.data.success) {
-          dispatch(setFriends(result.data.result));
+          let arrayofFriends=[];
+
+          if(friendsRes.length>6){
+            const filteredFriends=friendsRes.filter((el,i)=>{
+              return i<=5;
+            });
+            arrayofFriends=[...filteredFriends];
+          } else if (friendsRes.length <=6){
+            arrayofFriends =[...friendsRes];
+          }
+     
+          dispatch(setFriends(arrayofFriends));
           console.log("friends", friends);
           setShow(true);
         }
       })
       .catch((error) => {
-        setShow(false);
+     
+        dispatch(setFriends([]));
         console.log(error.response.data);
       });
   };
@@ -263,6 +278,23 @@ const Profile = () => {
         console.log(error.response.data.message);
       });
   };
+  // ==========================
+  const unFollowFriend = (id) => {
+    axios
+      .delete(`http://localhost:5000/user/delete/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((result) => {
+        console.log(result);
+        dispatch(deleteFriendById(id))
+        getAllFriends();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   //=================================
 
   const uploadImage = () => {
@@ -326,6 +358,33 @@ const Profile = () => {
 
   return (
     <div className="post-container">
+       {show2? (
+            <div className="popup">
+               {friends.length ? (
+            friends.map((friend, i) => {
+              console.log(friend);
+              return (
+                <div className="firend" key={i}>
+                  <p>{friend.userName} </p>
+                  <img className="friendimg" src={friend.image} />
+                  <button
+                    className="like"
+                    onClick={() => {
+                       console.log(friend.id);
+                      unFollowFriend(friend.target_id)
+                    }}
+                  >
+                    Unfollow
+                  </button>
+            
+                </div>
+
+              );
+            })
+          ) : (
+            <p>You have no friends</p>
+          )}
+   </div> ) : ("")}
       <div className="cover">
         {users.map((el) => {
           return <img key={el.id} src={el.cover} />;
@@ -420,14 +479,40 @@ const Profile = () => {
             })}
           </div>
           <br />
-          <div>Friend List</div>
+          <div>
+         
+            <h1> Friend List</h1>
+          </div>
+          <div >
+   
+          <button
+            onClick={(e) => {
+              setShow2(true);
+            }}
+          >
+           see allFriends
+          </button>
+         
+        </div>
           {friends.length ? (
             friends.map((friend, i) => {
               console.log(friend);
               return (
-                <div key={i}>
-                  <p>{friend.userName}</p>
+                <div className="firend" key={i}>
+                  <p>{friend.userName} </p>
+                  <img className="friendimg" src={friend.image} />
+                  <button
+                    className="like"
+                    onClick={() => {
+                       console.log(friend.id);
+                      unFollowFriend(friend.target_id)
+                    }}
+                  >
+                    Unfollow
+                  </button>
+            
                 </div>
+
               );
             })
           ) : (
