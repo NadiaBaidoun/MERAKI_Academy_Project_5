@@ -32,6 +32,7 @@ const Dashboard = () => {
   const [comment, setComment] = useState("");
   const [updatecontent, setUpdatecontent] = useState("");
   const [updatecomment, setupdatecomment] = useState("");
+  const [friendsNum, setFriendsNum] = useState(false);
 
   const formRef = useRef("");
   const addPostRef = useRef("");
@@ -93,6 +94,7 @@ const Dashboard = () => {
         console.log(error);
       });
   };
+
   //=================================
 
   const uploadImage = () => {
@@ -131,39 +133,63 @@ const Dashboard = () => {
       .get("http://localhost:5000/posts")
       .then((res) => {
         axios
-          .get(`http://localhost:5000/likes`)
-          .then((response) => {
-            const postsRes = res.data.result.reverse();
-            const likeRes = response.data.result;
+          .get(`http://localhost:5000/user/list/friends/${userId}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+          .then((result) => {
+            axios
+              .get(`http://localhost:5000/likes`)
+              .then((response) => {
+                const postsRes = res.data.result.reverse();
+                const likeRes = response.data.result;
+                const friendRes = result.data.result;
 
-            const postWithLike = [];
+                const postWithLike = [];
 
-            postsRes.forEach((post) => {
-              postWithLike.push({ ...post, like: [] });
-            });
-            postWithLike.forEach((post) => {
-              likeRes.forEach((like) => {
-                if (post.id == like.post_id) {
-                  post.like.push(like.user_id);
+                postsRes.forEach((post) => {
+                  friendRes.forEach((friend) => {
+                    if (post.user_id === friend.target_id) {
+                      postWithLike.push({ ...post, like: [] });
+                    }
+                  });
+                });
+
+                postWithLike.forEach((post) => {
+                  likeRes.forEach((like) => {
+                    if (post.id == like.post_id) {
+                      post.like.push(like.user_id);
+                    }
+                  });
+                });
+                dispatch(setPosts(postWithLike));
+                setShow(true);
+                setFriendsNum(false);
+              })
+              .catch((error) => {
+                if (error.response.data.massage.includes("likes")) {
+                  const postsRes = res.data.result.reverse();
+                  const friendRes = result.data.result;
+
+                  const postWithLike = [];
+
+                  postsRes.forEach((post) => {
+                    friendRes.forEach((friend) => {
+                      if (post.user_id === friend.target_id) {
+                        postWithLike.push({ ...post, like: [] });
+                      }
+                    });
+                  });
+                  dispatch(setPosts(postWithLike));
+                  setShow(true);
+                  setFriendsNum(false);
                 }
               });
-            });
-            dispatch(setPosts(postWithLike));
-            setShow(true);
           })
           .catch((error) => {
-            if (error.response.data.massage.includes("likes")) {
-              const postsRes = res.data.result.reverse();
-              console.log(postsRes);
-
-              const postWithLike = [];
-
-              postsRes.forEach((post) => {
-                postWithLike.push({ ...post, like: [] });
-              });
-              dispatch(setPosts(postWithLike));
-              setShow(true);
-            }
+            console.log(error.response.data);
+            setFriendsNum(true);
           });
       })
       .catch((error) => {
@@ -629,7 +655,7 @@ const Dashboard = () => {
             </div>
           );
         })}
-      {!posts.length ? <h1>No posts</h1> : ""}
+      {!posts.length || friendsNum ? <h1>No posts</h1> : ""}
     </div>
   );
 };
