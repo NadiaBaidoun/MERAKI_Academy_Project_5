@@ -211,6 +211,7 @@ const Profile = () => {
       })
       .then((result) => {
         if (result.data.success) {
+        
           dispatch(updatePostById({ content: updatecontent, id }));
         }
       })
@@ -363,13 +364,21 @@ const Profile = () => {
     <div className="post-container">
       {PopupFriend ? (
         <div className="popup">
-          <button className="close" onClick={() => Navigate(-1)}>
-            <IoMdCloseCircle />
+          <button
+            className="close"
+            onClick={() => {
+              setPopupFriend(false);
+            }}
+          >
+            <IoMdCloseCircle
+              onClick={() => {
+                setPopupFriend(false);
+              }}
+            />
           </button>
-
+          )
           {friends.length ? (
             friends.map((friend, i) => {
-              console.log(friend);
               return (
                 <div className="firend" key={i}>
                   <p>{friend.userName} </p>
@@ -377,7 +386,6 @@ const Profile = () => {
                   <button
                     className="like"
                     onClick={() => {
-                      console.log(friend.id);
                       unFollowFriend(friend.target_id);
                     }}
                   >
@@ -467,15 +475,23 @@ const Profile = () => {
             <button
               onClick={() => {
                 setPopupIntro(true);
-              
               }}
             >
               Edit details
             </button>
             {PopupIntro ? (
               <div className="popup">
-                <button className="close" onClick={() => Navigate(-1)}>
-                  <IoMdCloseCircle />
+                <button
+                  className="close"
+                  onClick={() => {
+                    setPopupIntro(false);
+                  }}
+                >
+                  <IoMdCloseCircle
+                    onClick={() => {
+                      setPopupIntro(false);
+                    }}
+                  />
                 </button>
                 {users.map((user, i) => {
                   return (
@@ -485,19 +501,22 @@ const Profile = () => {
                         defaultValue={user.bio}
                         onChange={(e) => setUpdateBio(e.target.value)}
                       ></textarea>
-                      <label>Country :</label> 
+                      <label>Country :</label>
                       <textarea
                         defaultValue={user.country}
                         onChange={(e) => setUpdatecountry(e.target.value)}
                       ></textarea>
-                      <label>Birthdate :</label> 
+                      <label>Birthdate :</label>
                       <input
                         type={"date"}
                         onChange={(e) => {
                           setUpdatebirthdate(e.target.value);
                         }}
                       />
-                      <button className="updateInfo" onClick={editProfile}>update</button>
+                      <button className="updateInfo" onClick={()=> { setPopupIntro(false);
+                        editProfile()}}>
+                        update
+                      </button>
                     </div>
                   );
                 })}
@@ -526,14 +545,14 @@ const Profile = () => {
                 <div className="firend" key={i}>
                   <p>{friend.userName} </p>
                   <img className="friendimg" src={friend.image} />
-                  <button
+                  {/* <button
                     className="like"
                     onClick={() => {
                       unFollowFriend(friend.target_id);
                     }}
                   >
                     Unfollow
-                  </button>
+                  </button> */}
                 </div>
               );
             })
