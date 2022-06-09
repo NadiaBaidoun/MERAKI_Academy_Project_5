@@ -14,7 +14,7 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { addLike, setLikes } from "../Redux/reducers/like";
 import jwt_decode from "jwt-decode";
 import { setUsers, updateUserById } from "../Redux/reducers/users";
-import { setFriends } from "../Redux/reducers/friends";
+import { deleteFriendById, setFriends } from "../Redux/reducers/friends";
 
 const Profile = () => {
   const [content, setContent] = useState("");
@@ -25,8 +25,8 @@ const Profile = () => {
   const [dropdownId, setDropdownId] = useState("");
   const [updatecontent, setUpdatecontent] = useState("");
   const [updatecountry, setUpdatecountry] = useState("");
-  // const [updateimage, setUpdateImage] = useState(
-  //   "https://www.icmetl.org/wp-content/uploads/2020/11/user-icon-human-person-sign-vector-10206693.png"
+  const [userFriends, setUserFriends] = useState([]);
+
   // );
   const [updatebirthdate, setUpdatebirthdate] = useState("");
   const [updatebio, setUpdateBio] = useState("");
@@ -111,8 +111,21 @@ const Profile = () => {
           Authorization: `Bearer ${token}`,
         },
       })
+      // .then((result) => {
+      //   console.log(result);
+
+      //   if (result.data.success) {
+      //     dispatch(setFriends(result.data.result));
+      //     console.log("friends", friends);
+      //     setShow(true);
+      //   }
+      // })
+      // .catch((error) => {
+      //   setShow(false);
+      //   console.log(error.response.data);
+      // });
       .then((result) => {
-        console.log(result);
+        const friendsRes = result.data.result;
 
         if (result.data.success) {
           dispatch(setFriends(result.data.result));
@@ -121,7 +134,8 @@ const Profile = () => {
         }
       })
       .catch((error) => {
-        setShow(false);
+     
+        dispatch(setFriends([]));
         console.log(error.response.data);
       });
   };
@@ -261,6 +275,23 @@ const Profile = () => {
       })
       .catch((error) => {
         console.log(error.response.data.message);
+      });
+  };
+  // ==========================
+  const unFollowFriend = (id) => {
+    axios
+      .delete(`http://localhost:5000/user/delete/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((result) => {
+        console.log(result);
+        dispatch(deleteFriendById(id))
+        getAllFriends();
+      })
+      .catch((error) => {
+        console.log(error);
       });
   };
   //=================================
@@ -420,14 +451,29 @@ const Profile = () => {
             })}
           </div>
           <br />
-          <div>Friend List</div>
+          <div>
+            {" "}
+            <h1> Friend List</h1>
+          </div>
           {friends.length ? (
             friends.map((friend, i) => {
               console.log(friend);
               return (
-                <div key={i}>
-                  <p>{friend.userName}</p>
+                <div className="firend" key={i}>
+                  <p>{friend.userName} </p>
+                  <img className="friendimg" src={friend.image} />
+                  <button
+                    className="like"
+                    onClick={() => {
+                       console.log(friend.id);
+                      unFollowFriend(friend.target_id)
+                    }}
+                  >
+                    Unfollow
+                  </button>
+            
                 </div>
+
               );
             })
           ) : (

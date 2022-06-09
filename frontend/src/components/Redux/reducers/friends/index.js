@@ -9,11 +9,15 @@ const friendSlice = createSlice({
     setFriends: (state, action) => {
       state.friends = action.payload;
     },
-  
+    deleteFriendById: (state, action) => {
+      state.friends = state.friends.filter((friend) => {
+        return friend.id != action.payload;
+      });
+    },
   },
 });
 
-export const { setFriends, } =
+export const { setFriends,deleteFriendById } =
 friendSlice.actions;
 
 export default friendSlice.reducer;
