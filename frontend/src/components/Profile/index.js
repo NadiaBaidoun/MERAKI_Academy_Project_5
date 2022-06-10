@@ -96,7 +96,7 @@ const Profile = () => {
 
   const userId = jwt_decode(token).userId;
   //=================================
-  const newPost = async (e) => {
+  const newPost = (e) => {
     e.preventDefault();
 
     axios
@@ -112,7 +112,7 @@ const Profile = () => {
       .then((res) => {
         if (res.data.success) {
           dispatch(addPost({ content, image: url }));
-
+          getPostByUserId(userId);
           formRef.current.reset();
         }
       })
