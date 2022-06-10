@@ -2,8 +2,106 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+  width: 24vw;
+}
+
+.search-action {
+  z-index: 3;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
 }
 
 .search-container input {
   border-radius: 50px;
+  width: 21rem;
+}
+
+.logo {
+  color: blue;
+  width: 50px;
+  height: 50px;
+  background-color: white;
+  border-radius: 50%;
+  border: 1px solid rgb(54, 54, 54);
+  cursor: pointer;
+}
+
+.search-div {
+  background-color: rgb(54, 54, 54);
+  height: 30rem;
+  width: 26.3rem;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 10%;
+  border-radius: 5px;
+  box-shadow: 0 1px 5px;
+}
+
+.users {
+  margin-top: 5em;
+  padding: 10px;
+  /* position: absolute; */
+  /* left: 50%;
+  top: 70%;
+  transform: translate(-50%, -50%); */
+
+  color: white;
+  background-color: red;
+}
+
+/* .result {
+  position: absolute;
+} */
+
+.back-icon {
+  color: rgb(122, 122, 122);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.hide {
+  display: none;
+}
+
+.search {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  bottom: 0;
+}
+
+.input-container {
+  position: relative;
+  display: flex;
+  font-size: 1.2em;
+  background-color: transparent;
+  align-items: center;
+  border-radius: 50px;
+  height: 100%;
+}
+
+.search-icon {
+  width: 20px;
+  height: 20px;
+  margin-left: 10px;
+  border-radius: 50%;
+  position: absolute;
+  left: 0;
+  opacity: 0.4;
+}
+
+.bottom-icon {
+  background-color: blue;
+  color: white;
+  width: 40px;
+  height: 40px;
+  padding: 10px;
+  margin: 5px;
+  border-radius: 50%;
 }

@@ -26,14 +26,6 @@ const Navbar = () => {
       {isLoggedIn ? (
         <div className="navbar">
           <div className="left-navbar">
-            <div
-              className="facebook-logo"
-              onClick={() => {
-                navigate("/home");
-              }}
-            >
-              <FaFacebook className="logo" />
-            </div>
             <div className="search-container">
               <Search />
             </div>
