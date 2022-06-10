@@ -73,7 +73,7 @@ const Dashboard = () => {
   const userId = jwt_decode(token).userId;
   //=================================
 
-  const newPost = async (e) => {
+  const newPost = (e) => {
     e.preventDefault();
     if (content || postUrl) {
       axios
@@ -88,9 +88,9 @@ const Dashboard = () => {
         )
         .then((res) => {
           if (res.data.success) {
-            getAllPosts();
             setContent("");
             setPostUrl("");
+            getAllPosts();
             addPostRef.current.reset();
           }
         })
@@ -154,11 +154,11 @@ const Dashboard = () => {
                 const postWithLike = [];
 
                 postsRes.forEach((post) => {
+                  if (post.user_id === userId) {
+                    postWithLike.push({ ...post, like: [] });
+                  }
                   friendRes.forEach((friend) => {
                     if (post.user_id === friend.target_id) {
-                      postWithLike.push({ ...post, like: [] });
-                    }
-                    if (post.user_id === userId) {
                       postWithLike.push({ ...post, like: [] });
                     }
                   });
@@ -183,11 +183,12 @@ const Dashboard = () => {
                   const postWithLike = [];
 
                   postsRes.forEach((post) => {
+                    if (post.user_id === userId) {
+                      postWithLike.push({ ...post, like: [] });
+                    }
+
                     friendRes.forEach((friend) => {
                       if (post.user_id === friend.target_id) {
-                        postWithLike.push({ ...post, like: [] });
-                      }
-                      if (post.user_id === userId) {
                         postWithLike.push({ ...post, like: [] });
                       }
                     });
@@ -503,7 +504,7 @@ const Dashboard = () => {
                     className="link"
                     to={`/profile`}
                   >
-                    {post.userName}
+                    <h3>{post.userName}</h3>
                   </Link>
                 ) : (
                   <Link
@@ -511,7 +512,7 @@ const Dashboard = () => {
                     className="link"
                     to={`/users/${post.user_id}`}
                   >
-                    {post.userName}
+                    <h3>{post.userName}</h3>
                   </Link>
                 )}
 
