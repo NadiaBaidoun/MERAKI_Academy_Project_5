@@ -36,6 +36,7 @@ const Dashboard = () => {
 
   const formRef = useRef("");
   const addPostRef = useRef("");
+  const addCommentRef = useRef("");
 
   const imageRef = useRef("");
   const [postUrl, setPostUrl] = useState("");
@@ -74,25 +75,29 @@ const Dashboard = () => {
 
   const newPost = async (e) => {
     e.preventDefault();
-    axios
-      .post(
-        "http://localhost:5000/posts/",
-        { content, image: postUrl },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-      .then((res) => {
-        if (res.data.success) {
-          getAllPosts();
-          addPostRef.current.reset();
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    if (content || postUrl) {
+      axios
+        .post(
+          "http://localhost:5000/posts/",
+          { content, image: postUrl },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+        .then((res) => {
+          if (res.data.success) {
+            getAllPosts();
+            setContent("");
+            setPostUrl("");
+            addPostRef.current.reset();
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   };
 
   //=================================
@@ -153,6 +158,9 @@ const Dashboard = () => {
                     if (post.user_id === friend.target_id) {
                       postWithLike.push({ ...post, like: [] });
                     }
+                    if (post.user_id === userId) {
+                      postWithLike.push({ ...post, like: [] });
+                    }
                   });
                 });
 
@@ -177,6 +185,9 @@ const Dashboard = () => {
                   postsRes.forEach((post) => {
                     friendRes.forEach((friend) => {
                       if (post.user_id === friend.target_id) {
+                        postWithLike.push({ ...post, like: [] });
+                      }
+                      if (post.user_id === userId) {
                         postWithLike.push({ ...post, like: [] });
                       }
                     });
@@ -327,28 +338,31 @@ const Dashboard = () => {
 
   //=================================
 
-  const newComment = async (e, id) => {
+  const newComment = (e, id) => {
     e.preventDefault();
-    axios
-      .post(
-        `http://localhost:5000/comments/${id}`,
-        { comment },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-      .then((res) => {
-        if (res.data.success) {
-          dispatch(addComment({ comment, post_id: id }));
-          getAllComments();
-          formRef.current.reset();
-        }
-      })
-      .catch((error) => {
-        console.log(error.response.data.message);
-      });
+    if (comment) {
+      axios
+        .post(
+          `http://localhost:5000/comments/${id}`,
+          { comment },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+        .then((res) => {
+          if (res.data.success) {
+            dispatch(addComment({ comment, post_id: id }));
+            getAllComments();
+            setComment("");
+            addCommentRef.current.reset();
+          }
+        })
+        .catch((error) => {
+          console.log(error.response.data.message);
+        });
+    }
   };
 
   //=================================
@@ -401,7 +415,7 @@ const Dashboard = () => {
           {jwt_decode(token).firstName} {jwt_decode(token).lastName}
         </h1>
 
-        <form ref={addPostRef} className="addPost">
+        <form ref={addPostRef} className="addPost" onSubmit={newPost}>
           <textarea
             placeholder="article description here"
             onChange={(e) => setContent(e.target.value)}
@@ -415,9 +429,11 @@ const Dashboard = () => {
               }}
             />
             <button
-              onClick={(e) => {
-                newPost(e);
-              }}
+
+            // onSubmit={(e) => {
+            //   e.preventDefault();
+            //   newPost(e);
+            // }}
             >
               Add
             </button>
@@ -531,22 +547,20 @@ const Dashboard = () => {
                   <h1>
                     {jwt_decode(token).firstName} {jwt_decode(token).lastName}
                   </h1>
-                  <form ref={formRef} className="addComment">
+                  <form ref={addCommentRef} className="addComment">
                     <textarea
                       placeholder="comment  here"
                       onChange={(e) => {
                         setComment(e.target.value);
                       }}
                     ></textarea>
-                    <div className="comment-action">
-                      <button
-                        onClick={(e) => {
-                          newComment(e, post.id);
-                        }}
-                      >
-                        Add
-                      </button>
-                    </div>
+                    <button
+                      onClick={(e) => {
+                        newComment(e, post.id);
+                      }}
+                    >
+                      Add
+                    </button>
                   </form>
                 </div>
                 {show &&

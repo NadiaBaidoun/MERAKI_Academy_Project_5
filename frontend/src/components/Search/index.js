@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 
 import axios from "axios";
 import "./style.css";
@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 
 const Search = () => {
   const [name, setName] = useState("");
+  // const nameRef = useRef("");
 
   const { token } = useSelector((state) => {
     return {
@@ -21,6 +22,7 @@ const Search = () => {
   const dispatch = useDispatch();
 
   const getUserByName = () => {
+    console.log(name);
     axios
       .get(`http://localhost:5000/user/search/${name}`, {
         headers: {
@@ -28,9 +30,9 @@ const Search = () => {
         },
       })
       .then((result) => {
-        console.log(result);
         if (result.data.success) {
           dispatch(setUserName(result.data.result));
+          setName("");
         }
       })
       .catch((error) => {
@@ -41,20 +43,27 @@ const Search = () => {
   return (
     <div className="search-container">
       <input
-        type={"search"}
+        placeholder="Search"
         onChange={(e) => {
           setName(e.target.value);
         }}
       />
-      <Link
-        to={"/search/users"}
-        className="link"
-        onClick={() => {
-          name ? getUserByName() : <></>;
-        }}
-      >
-        SEARCH
-      </Link>
+
+      {name ? (
+        <Link
+          to={"/search/users"}
+          className="link"
+          onClick={() => {
+            name ? getUserByName() : <></>;
+          }}
+        >
+          SEARCH
+        </Link>
+      ) : (
+        <Link to={{}} className="link">
+          SEARCH
+        </Link>
+      )}
     </div>
   );
 };
