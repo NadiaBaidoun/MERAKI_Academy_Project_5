@@ -98,35 +98,40 @@ const SearchResult = () => {
         return (
           <div key={index}>
             <div className="user">
-            {userId === user.id ? 
-               <Link
-               style={{ color: "black" }}
-               className="link"
-               to={`/profile`}
-             >
-               {user.userName}
-             </Link>
-             :
-             <Link
-             style={{ color: "black" }}
-             className="link"
-             to={`/users/${user.id}`}
-           >
-             {user.userName}
-           </Link>
-}
+              {userId === user.id ? (
+                <Link
+                  style={{ color: "black" }}
+                  className="link"
+                  to={`/profile`}
+                >
+                  {user.userName}
+                </Link>
+              ) : (
+                <Link
+                  style={{ color: "black" }}
+                  className="link"
+                  to={`/users/${user.id}`}
+                >
+                  {user.userName}
+                </Link>
+              )}
 
-              <button
-                className="like"
-                onClick={() => {
-                  userFriends.includes(user.id)
-                    ? unFollowFriend(user.id)
-                    : followFriend(user.id);
-                }}
-              >
-                {userFriends.includes(user.id) ? "Unfollow": "Follow"}
-              </button>
-              {/* <img className="prof_img" src={user.image} /> */}
+              {user.id === userId ? (
+                ""
+              ) : (
+                <>
+                  <button
+                    className="like"
+                    onClick={() => {
+                      userFriends.includes(user.id)
+                        ? unFollowFriend(user.id)
+                        : followFriend(user.id);
+                    }}
+                  >
+                    {userFriends.includes(user.id) ? "Unfollow" : "Follow"}
+                  </button>
+                </>
+              )}
             </div>
           </div>
         );

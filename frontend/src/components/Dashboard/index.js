@@ -18,6 +18,7 @@ import {
   deleteCommentById,
 } from "../Redux/reducers/comments";
 import jwt_decode from "jwt-decode";
+import { Link } from "react-router-dom";
 
 const Dashboard = () => {
   const [content, setContent] = useState("");
@@ -31,9 +32,11 @@ const Dashboard = () => {
   const [comment, setComment] = useState("");
   const [updatecontent, setUpdatecontent] = useState("");
   const [updatecomment, setupdatecomment] = useState("");
+  const [friendsNum, setFriendsNum] = useState(false);
 
   const formRef = useRef("");
   const addPostRef = useRef("");
+  const addCommentRef = useRef("");
 
   const imageRef = useRef("");
   const [postUrl, setPostUrl] = useState("");
@@ -72,26 +75,31 @@ const Dashboard = () => {
 
   const newPost = async (e) => {
     e.preventDefault();
-    axios
-      .post(
-        "http://localhost:5000/posts/",
-        { content, image: postUrl },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-      .then((res) => {
-        if (res.data.success) {
-          getAllPosts();
-          addPostRef.current.reset();
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    if (content || postUrl) {
+      axios
+        .post(
+          "http://localhost:5000/posts/",
+          { content, image: postUrl },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+        .then((res) => {
+          if (res.data.success) {
+            getAllPosts();
+            setContent("");
+            setPostUrl("");
+            addPostRef.current.reset();
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   };
+
   //=================================
 
   const uploadImage = () => {
@@ -130,39 +138,69 @@ const Dashboard = () => {
       .get("http://localhost:5000/posts")
       .then((res) => {
         axios
-          .get(`http://localhost:5000/likes`)
-          .then((response) => {
-            const postsRes = res.data.result.reverse();
-            const likeRes = response.data.result;
+          .get(`http://localhost:5000/user/list/friends/${userId}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+          .then((result) => {
+            axios
+              .get(`http://localhost:5000/likes`)
+              .then((response) => {
+                const postsRes = res.data.result.reverse();
+                const likeRes = response.data.result;
+                const friendRes = result.data.result;
 
-            const postWithLike = [];
+                const postWithLike = [];
 
-            postsRes.forEach((post) => {
-              postWithLike.push({ ...post, like: [] });
-            });
-            postWithLike.forEach((post) => {
-              likeRes.forEach((like) => {
-                if (post.id == like.post_id) {
-                  post.like.push(like.user_id);
+                postsRes.forEach((post) => {
+                  friendRes.forEach((friend) => {
+                    if (post.user_id === friend.target_id) {
+                      postWithLike.push({ ...post, like: [] });
+                    }
+                    if (post.user_id === userId) {
+                      postWithLike.push({ ...post, like: [] });
+                    }
+                  });
+                });
+
+                postWithLike.forEach((post) => {
+                  likeRes.forEach((like) => {
+                    if (post.id == like.post_id) {
+                      post.like.push(like.user_id);
+                    }
+                  });
+                });
+                dispatch(setPosts(postWithLike));
+                setShow(true);
+                setFriendsNum(false);
+              })
+              .catch((error) => {
+                if (error.response.data.massage.includes("likes")) {
+                  const postsRes = res.data.result.reverse();
+                  const friendRes = result.data.result;
+
+                  const postWithLike = [];
+
+                  postsRes.forEach((post) => {
+                    friendRes.forEach((friend) => {
+                      if (post.user_id === friend.target_id) {
+                        postWithLike.push({ ...post, like: [] });
+                      }
+                      if (post.user_id === userId) {
+                        postWithLike.push({ ...post, like: [] });
+                      }
+                    });
+                  });
+                  dispatch(setPosts(postWithLike));
+                  setShow(true);
+                  setFriendsNum(false);
                 }
               });
-            });
-            dispatch(setPosts(postWithLike));
-            setShow(true);
           })
           .catch((error) => {
-            if (error.response.data.massage.includes("likes")) {
-              const postsRes = res.data.result.reverse();
-              console.log(postsRes);
-
-              const postWithLike = [];
-
-              postsRes.forEach((post) => {
-                postWithLike.push({ ...post, like: [] });
-              });
-              dispatch(setPosts(postWithLike));
-              setShow(true);
-            }
+            console.log(error.response.data);
+            setFriendsNum(true);
           });
       })
       .catch((error) => {
@@ -300,28 +338,31 @@ const Dashboard = () => {
 
   //=================================
 
-  const newComment = async (e, id) => {
+  const newComment = (e, id) => {
     e.preventDefault();
-    axios
-      .post(
-        `http://localhost:5000/comments/${id}`,
-        { comment },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-      .then((res) => {
-        if (res.data.success) {
-          dispatch(addComment({ comment, post_id: id }));
-          getAllComments();
-          formRef.current.reset();
-        }
-      })
-      .catch((error) => {
-        console.log(error.response.data.message);
-      });
+    if (comment) {
+      axios
+        .post(
+          `http://localhost:5000/comments/${id}`,
+          { comment },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+        .then((res) => {
+          if (res.data.success) {
+            dispatch(addComment({ comment, post_id: id }));
+            getAllComments();
+            setComment("");
+            addCommentRef.current.reset();
+          }
+        })
+        .catch((error) => {
+          console.log(error.response.data.message);
+        });
+    }
   };
 
   //=================================
@@ -374,7 +415,7 @@ const Dashboard = () => {
           {jwt_decode(token).firstName} {jwt_decode(token).lastName}
         </h1>
 
-        <form ref={addPostRef} className="addPost">
+        <form ref={addPostRef} className="addPost" onSubmit={newPost}>
           <textarea
             placeholder="article description here"
             onChange={(e) => setContent(e.target.value)}
@@ -388,9 +429,11 @@ const Dashboard = () => {
               }}
             />
             <button
-              onClick={(e) => {
-                newPost(e);
-              }}
+
+            // onSubmit={(e) => {
+            //   e.preventDefault();
+            //   newPost(e);
+            // }}
             >
               Add
             </button>
@@ -447,7 +490,13 @@ const Dashboard = () => {
                 ) : (
                   ""
                 )}
-                <h2>{post.userName}</h2>
+                <Link
+                  style={{ color: "black" }}
+                  className="link"
+                  to={`/users/${post.user_id}`}
+                >
+                  {post.userName}
+                </Link>
                 <p>{post.content}</p>
                 <img className="prof_img" src={post.image} />
 
@@ -498,22 +547,20 @@ const Dashboard = () => {
                   <h1>
                     {jwt_decode(token).firstName} {jwt_decode(token).lastName}
                   </h1>
-                  <form ref={formRef} className="addComment">
+                  <form ref={addCommentRef} className="addComment">
                     <textarea
                       placeholder="comment  here"
                       onChange={(e) => {
                         setComment(e.target.value);
                       }}
                     ></textarea>
-                    <div className="comment-action">
-                      <button
-                        onClick={(e) => {
-                          newComment(e, post.id);
-                        }}
-                      >
-                        Add
-                      </button>
-                    </div>
+                    <button
+                      onClick={(e) => {
+                        newComment(e, post.id);
+                      }}
+                    >
+                      Add
+                    </button>
                   </form>
                 </div>
                 {show &&
@@ -569,7 +616,23 @@ const Dashboard = () => {
                               ) : (
                                 ""
                               )}
-                              <h3>{comment.userName}</h3>
+                              {comment.commenter_id === userId ? (
+                                <Link
+                                  style={{ color: "black" }}
+                                  className="link"
+                                  to={`/profile`}
+                                >
+                                  {comment.userName}
+                                </Link>
+                              ) : (
+                                <Link
+                                  style={{ color: "black" }}
+                                  className="link"
+                                  to={`/users/${comment.commenter_id}`}
+                                >
+                                  {comment.userName}
+                                </Link>
+                              )}
                               <p className="comment">{comment.comment}</p>
                             </div>
                           ) : (
@@ -606,7 +669,7 @@ const Dashboard = () => {
             </div>
           );
         })}
-      {!posts.length ? <h1>No posts</h1> : ""}
+      {!posts.length || friendsNum ? <h1>No posts</h1> : ""}
     </div>
   );
 };

@@ -16,7 +16,7 @@ import jwt_decode from "jwt-decode";
 import { setUsers, updateUserById } from "../Redux/reducers/users";
 import { deleteFriendById, setFriends } from "../Redux/reducers/friends";
 import { IoMdCloseCircle } from "react-icons/io";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   addComment,
   setComments,
@@ -33,7 +33,7 @@ const Profile = () => {
   const [open, setOpen] = useState(false);
 
   const [dropdownId, setDropdownId] = useState("");
- 
+
   const [updatecountry, setUpdatecountry] = useState("");
   const [userFriends, setUserFriends] = useState([]);
 
@@ -96,7 +96,7 @@ const Profile = () => {
 
   const userId = jwt_decode(token).userId;
   //=================================
-  const newPost = async (e) => {
+  const newPost = (e) => {
     e.preventDefault();
 
     axios
@@ -112,7 +112,7 @@ const Profile = () => {
       .then((res) => {
         if (res.data.success) {
           dispatch(addPost({ content, image: url }));
-
+          getPostByUserId(userId);
           formRef.current.reset();
         }
       })
@@ -233,7 +233,6 @@ const Profile = () => {
       .then((result) => {
         const friendsRes = result.data.result;
 
-        console.log(friendsRes);
         if (result.data.success) {
           let arrayofFriends = [];
 
@@ -247,7 +246,6 @@ const Profile = () => {
           }
 
           dispatch(setFriends(arrayofFriends));
-          console.log("friends", friends);
           setShow(true);
         }
       })
@@ -273,7 +271,6 @@ const Profile = () => {
   };
   //=================================
   const getUserById = (id) => {
-    console.log(id);
     axios
       .get(`http://localhost:5000/user/${id}`, {
         headers: {
@@ -281,7 +278,6 @@ const Profile = () => {
         },
       })
       .then((result) => {
-        console.log(result);
         if (result.data.success) {
           // setUsers(result.data.result);
           dispatch(setUsers(result.data.result));
@@ -324,7 +320,6 @@ const Profile = () => {
       })
       .then((result) => {
         if (result.data.success) {
-        
           dispatch(updatePostById({ content: updatecontent, id }));
         }
       })
@@ -343,7 +338,6 @@ const Profile = () => {
         },
       })
       .then((result) => {
-        console.log(result);
         dispatch(deletePostById(id));
       })
       .catch((error) => {
@@ -404,7 +398,6 @@ const Profile = () => {
         },
       })
       .then((result) => {
-        console.log(result);
         dispatch(deleteFriendById(id));
         getAllFriends();
       })
@@ -626,8 +619,13 @@ const Profile = () => {
                           setUpdatebirthdate(e.target.value);
                         }}
                       />
-                      <button className="updateInfo" onClick={()=> { setPopupIntro(false);
-                        editProfile()}}>
+                      <button
+                        className="updateInfo"
+                        onClick={() => {
+                          setPopupIntro(false);
+                          editProfile();
+                        }}
+                      >
                         update
                       </button>
                     </div>
@@ -653,19 +651,16 @@ const Profile = () => {
           </div>
           {friends.length ? (
             friends.map((friend, i) => {
-              console.log(friend);
               return (
                 <div className="firend" key={i}>
-                  <p>{friend.userName} </p>
-                  <img className="friendimg" src={friend.image} />
-                  {/* <button
-                    className="like"
-                    onClick={() => {
-                      unFollowFriend(friend.target_id);
-                    }}
+                  <Link
+                    style={{ color: "black" }}
+                    className="link"
+                    to={`/users/${friend.target_id}`}
                   >
-                    Unfollow
-                  </button> */}
+                    <img className="friendimg" src={friend.image} />
+                    <p>{friend.userName}</p>
+                  </Link>
                 </div>
               );
             })
@@ -684,14 +679,12 @@ const Profile = () => {
                     id={post.id}
                     className="dd-button"
                     onClick={(e) => {
-                      console.log(post.id);
                       showDD(e);
                     }}
                   >
                     <BsThreeDotsVertical
                       id={post.id}
                       onClick={(e) => {
-                        console.log(post.id);
                         showDD(e);
                       }}
                     />
@@ -844,7 +837,24 @@ const Profile = () => {
                               ) : (
                                 ""
                               )}
-                              <h3>{comment.userName}</h3>
+                              {comment.commenter_id === userId ? (
+                                <Link
+                                  style={{ color: "black" }}
+                                  className="link"
+                                  to={`/profile`}
+                                >
+                                  {comment.userName}
+                                </Link>
+                              ) : (
+                                <Link
+                                  style={{ color: "black" }}
+                                  className="link"
+                                  to={`/users/${comment.commenter_id}`}
+                                >
+                                  {comment.userName}
+                                </Link>
+                              )}
+
                               <p className="comment">{comment.comment}</p>
                             </div>
                           ) : (
@@ -879,7 +889,6 @@ const Profile = () => {
                 {!comments.length ? <h1>No comments</h1> : ""}
               </div>
             </div>
-            
           );
         })}
       {!posts.length ? <h1>No posts</h1> : ""}

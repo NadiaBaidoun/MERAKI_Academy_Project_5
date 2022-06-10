@@ -86,71 +86,25 @@ const UserProfile = () => {
 
   const userId = jwt_decode(token).userId;
 
-  const getAllPosts = () => {
-    axios
-      .get("http://localhost:5000/posts")
-      .then((res) => {
-        axios
-          .get(`http://localhost:5000/likes`)
-          .then((response) => {
-            const postsRes = res.data.result.reverse();
-            const likeRes = response.data.result;
-
-            const postWithLike = [];
-
-            postsRes.forEach((post) => {
-              postWithLike.push({ ...post, like: [] });
-            });
-            postWithLike.forEach((post) => {
-              likeRes.forEach((like) => {
-                if (post.id == like.post_id) {
-                  post.like.push(like.user_id);
-                }
-              });
-            });
-            dispatch(setPosts(postWithLike));
-            setShow(true);
-          })
-          .catch((error) => {
-            if (error.response.data.massage.includes("likes")) {
-              const postsRes = res.data.result.reverse();
-              console.log(postsRes);
-
-              const postWithLike = [];
-
-              postsRes.forEach((post) => {
-                postWithLike.push({ ...post, like: [] });
-              });
-              dispatch(setPosts(postWithLike));
-              setShow(true);
-            }
-          });
-      })
-      .catch((error) => {
-        setShow(false);
-        console.log(error.response.data.massage);
-      });
-  };
-
   // ======================================
 
-  const unLikePost = (id) => {
+  const unLikePost = (postId) => {
     axios
-      .delete(`http://localhost:5000/likes/delete/${id}`, {
+      .delete(`http://localhost:5000/likes/delete/${postId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
       .then((result) => {
-        dispatch(removeLike({ post_id: id }));
-        getAllPosts();
+        dispatch(removeLike({ post_id: postId }));
+        getPostByUserId(id);
       })
       .catch((error) => {
         console.log(error.response.data.message);
       });
   };
 
-//=================================
+  //=================================
 
   const getMyFriends = () => {
     axios
@@ -218,6 +172,8 @@ const UserProfile = () => {
       });
   };
 
+  //=================================
+
   const followFriend = (id) => {
     axios
       .put(
@@ -282,7 +238,6 @@ const UserProfile = () => {
           .catch((error) => {
             if (error.response.data.massage.includes("likes")) {
               const postsRes = res.data.result.reverse();
-              console.log(postsRes);
 
               const postWithLike = [];
 
@@ -302,7 +257,6 @@ const UserProfile = () => {
 
   //=================================
   const getUserById = (id) => {
-    console.log(id);
     axios
       .get(`http://localhost:5000/user/${id}`, {
         headers: {
@@ -321,19 +275,9 @@ const UserProfile = () => {
         console.log(error.response.data.message);
       });
   };
+  //=================================
 
-  const updateForm = (e, postcontent) => {
-    setShowUpdate(!showUpdate);
-    setDropdownId(e.target.id);
-    setOpen(!open);
-  };
-
-  const showDD = (e) => {
-    setOpen(!open);
-    setDropdownId(e.target.id);
-  };
-
-  const getAllComments = async () => {
+  const getAllComments = () => {
     axios
       .get(`http://localhost:5000/comments`)
       .then((result) => {
@@ -346,7 +290,7 @@ const UserProfile = () => {
 
   //=================================
 
-  const newComment = async (e, id) => {
+  const newComment = (e, id) => {
     e.preventDefault();
     axios
       .post(
@@ -408,23 +352,12 @@ const UserProfile = () => {
       });
   };
 
-  const getAllLikes = async () => {
-    axios
-      .get(`http://localhost:5000/likes`)
-      .then((result) => {
-        dispatch(setLikes(result.data.result));
-      })
-      .catch((error) => {
-        console.log(error.response.data.message);
-      });
-  };
-
   //=================================
 
-  const likePost = (id) => {
+  const likePost = (postId) => {
     axios
       .post(
-        `http://localhost:5000/likes/${id}`,
+        `http://localhost:5000/likes/${postId}`,
         {},
         {
           headers: {
@@ -433,8 +366,8 @@ const UserProfile = () => {
         }
       )
       .then((result) => {
-        dispatch(addLike({ post_id: id }));
-        getAllPosts();
+        dispatch(addLike({ post_id: postId }));
+        getPostByUserId(id);
       })
       .catch((error) => {
         console.log(error.response.data.message);
@@ -445,7 +378,7 @@ const UserProfile = () => {
   useEffect(() => {
     getUserById(id);
     getPostByUserId(id);
-    getAllLikes();
+    getAllComments();
     getAllFriends();
     getMyFriends();
   }, []);
@@ -526,7 +459,6 @@ const UserProfile = () => {
       </div>
       {show &&
         posts.map((post, index) => {
-          console.log("USERPOSTS", post);
           return (
             <div key={index}>
               <div className="post">
@@ -536,17 +468,23 @@ const UserProfile = () => {
                 <img className="prof_img" src={post.image} />
               </div>
               <div className="like-div">
-                <button
-                  className="like"
-                  onClick={(e) => {
-                    post.like.includes(userId)
-                      ? unLikePost(post.id)
-                      : likePost(post.id);
-                  }}
-                >
-                  {post.like.includes(userId) ? "Unlike" : "Like"}
-                </button>
-                <p>{post.like.length}</p>
+                {post.like ? (
+                  <>
+                    <button
+                      className="like"
+                      onClick={(e) => {
+                        post.like.includes(userId)
+                          ? unLikePost(post.id)
+                          : likePost(post.id);
+                      }}
+                    >
+                      {post.like.includes(userId) ? "Unlike" : "Like"}
+                    </button>
+                    <p>{post.like.length}</p>
+                  </>
+                ) : (
+                  ""
+                )}
               </div>
               <div className="comment-div">
                 <div className="comment-container">
