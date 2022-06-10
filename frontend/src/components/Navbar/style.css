@@ -1,15 +1,14 @@
 .navbar-container {
+  position: sticky;
+  top: 0;
+  z-index: 4;
   display: flex;
-  border-bottom: 1px solid gray;
-  background-color: rgb(54, 54, 54);
-  height: 9vh;
 }
 
 .left-navbar {
   display: flex;
   align-items: center;
   justify-content: center;
-
   width: 25%;
 }
 
@@ -28,9 +27,12 @@
 
 .navbar {
   display: flex;
+  height: 9vh;
   justify-content: space-between;
   width: 100%;
   align-items: center;
+  background-color: rgb(54, 54, 54);
+  border-bottom: 1px solid gray;
 }
 
 /* .facebook-logo {

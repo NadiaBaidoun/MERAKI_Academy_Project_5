@@ -23,7 +23,15 @@ button {
   display: flex;
   flex-direction: column;
   width: 280px;
+  background-color: white;
+  padding: 0px 60px;
+  border-radius: 10px;
 }
+.signUp {
+  background-color: #42b72a;
+}
+
+
 
 input {
   padding: 15px;

@@ -179,7 +179,7 @@ const Register = () => {
           focused={repeatPassword}
         />
         <span className="repeatPasswordError">Passwords don't match!</span>
-        <button>Sign Up</button>
+        <button className="signUp">Sign Up</button>
       </form>
     </div>
   );

@@ -50,7 +50,7 @@ const Login = () => {
 
   return (
     <div>
-      <form className="formInput" onSubmit={signIn}>
+      <form className="signInput" onSubmit={signIn}>
         <input
           type={"email"}
           placeholder="Email"
@@ -106,7 +106,7 @@ const Login = () => {
         <span className="passwordError">{passwordMessage}</span>
         <span className={passError ? "notExist" : ""}>{passError}</span>
 
-        <button>Log In</button>
+        <button className="login">Log In</button>
       </form>
     </div>
   );

@@ -15,8 +15,12 @@ const Home = () => {
         </div>
 
         <div className="home-actions">
-          <Login />
+            <Login />
+          <div className="login-div">
+          </div>
+
           <button
+            className="register"
             onClick={(e) => {
               setShow(true);
             }}

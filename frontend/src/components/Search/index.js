@@ -3,13 +3,14 @@ import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import "./style.css";
 
-import { setUserName } from "../Redux/reducers/users";
+import { setAllUsers, setUserName } from "../Redux/reducers/users";
 import { FiArrowLeft } from "react-icons/fi";
 import { FaFacebook } from "react-icons/fa";
 import { AiOutlineSearch } from "react-icons/ai";
 
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import jwt_decode from "jwt-decode";
 
 const Search = () => {
   const [name, setName] = useState("");
@@ -19,14 +20,24 @@ const Search = () => {
   const searchName = useRef("");
   const navigate = useNavigate();
 
+  //=================================
+
   const { token } = useSelector((state) => {
     return {
       token: state.auth.token,
     };
   });
 
+  const { allUser } = useSelector((state) => {
+    return {
+      allUser: state.users.allUsers,
+    };
+  });
+
   //=================================
   const dispatch = useDispatch();
+  const userId = jwt_decode(token).userId;
+
   //=================================
 
   const getUserByName = () => {
@@ -58,6 +69,7 @@ const Search = () => {
       .then((result) => {
         if (result.data.success) {
           setLive(result.data.result);
+          dispatch(setAllUsers(result.data.result));
         }
       })
       .catch((error) => {
@@ -112,49 +124,44 @@ const Search = () => {
       </div>
       <div className={searchBox ? "search-div" : "hide"}>
         <div className="users">
-          {live
+          {allUser
             .filter((el) => {
-              return el.userName.includes(searchName.current.value) || el;
+              return el.userName.includes(searchName.current.value);
             })
             .map((user) => {
-              console.log(user);
               return (
-                <div key={user.id}>
-                  <p style={{ color: "white" }}>{user.userName}</p>
+                <div
+                  id="Link"
+                  className={`user-search ${user.id}`}
+                  key={user.id}
+                  onClick={(e) => {
+                    const id = parseInt(e.target.className.split(" ")[1]);
+                    userId === id
+                      ? navigate("/profile")
+                      : navigate(`/users/${id}`);
+                    nameRef.current.reset();
+                    setSearchBox(false);
+                  }}
+                >
+                  {user.userName}
                 </div>
               );
             })}
         </div>
 
         {name ? (
-          <>
-            {/* <div className="result">
-              {live
-                .filter((el) => {
-                  return el.userName.includes(searchName.current.value);
-                })
-                .map((el) => {
-                  console.log(el);
-                  return (
-                    <p key={el.id} style={{ color: "white" }}>
-                      {el.userName}
-                    </p>
-                  );
-                })}
-            </div> */}
-            <Link
-              id={"Link"}
-              to={"/search/users"}
-              className="search link"
-              onClick={() => {
-                getUserByName();
-                nameRef.current.reset();
-                setSearchBox(false);
-              }}
-            >
-              <AiOutlineSearch className="bottom-icon" /> Search for {name}
-            </Link>
-          </>
+          <Link
+            id={"Link"}
+            to={"/search/users"}
+            className="search link"
+            onClick={() => {
+              getUserByName();
+              nameRef.current.reset();
+              setSearchBox(false);
+            }}
+          >
+            <AiOutlineSearch className="bottom-icon" /> Search for {name}
+          </Link>
         ) : (
           <Link
             id={"Link"}
