@@ -182,7 +182,6 @@ const Profile = () => {
         })
         .catch((error) => {
           console.log(error);
-         
         });
     }
   };
@@ -754,6 +753,18 @@ const Profile = () => {
                   )}
                 </div>
 
+                <Link
+                  style={{ color: "black" }}
+                  className="link"
+                  to={`/profile`}
+                  onClick={() => {
+                    window.scrollTo(0, 0);
+                  }}
+                >
+                  <h3>
+                    {jwt_decode(token).firstName} {jwt_decode(token).lastName}
+                  </h3>
+                </Link>
                 <p>{post.content}</p>
 
                 <img className="prof_img" src={post.image} />
