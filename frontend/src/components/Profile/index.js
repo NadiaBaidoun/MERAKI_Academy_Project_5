@@ -11,7 +11,7 @@ import {
 
 import "./style.css";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { addLike, setLikes } from "../Redux/reducers/like";
+import { addLike, removeLike, setLikes } from "../Redux/reducers/like";
 import jwt_decode from "jwt-decode";
 import { setUsers, updateUserById } from "../Redux/reducers/users";
 import { deleteFriendById, setFriends } from "../Redux/reducers/friends";
@@ -258,15 +258,45 @@ const Profile = () => {
   const getPostByUserId = (id) => {
     axios
       .get(`http://localhost:5000/posts/user/${id}`)
-      .then((result) => {
-        if (result.data.success) {
-          dispatch(setPosts(result.data.result));
-          setShow(true);
-        }
+      .then((res) => {
+        axios
+          .get(`http://localhost:5000/likes`)
+          .then((response) => {
+            const postsRes = res.data.result.reverse();
+            const likeRes = response.data.result;
+
+            const postWithLike = [];
+
+            postsRes.forEach((post) => {
+              postWithLike.push({ ...post, like: [] });
+            });
+            postWithLike.forEach((post) => {
+              likeRes.forEach((like) => {
+                if (post.id == like.post_id) {
+                  post.like.push(like.user_id);
+                }
+              });
+            });
+            dispatch(setPosts(postWithLike));
+            setShow(true);
+          })
+          .catch((error) => {
+            if (error.response.data.massage.includes("likes")) {
+              const postsRes = res.data.result.reverse();
+
+              const postWithLike = [];
+
+              postsRes.forEach((post) => {
+                postWithLike.push({ ...post, like: [] });
+              });
+              dispatch(setPosts(postWithLike));
+              setShow(true);
+            }
+          });
       })
       .catch((error) => {
         setShow(false);
-        console.log(error.response.data.message);
+        console.log(error.response.data.massage);
       });
   };
   //=================================
@@ -358,23 +388,10 @@ const Profile = () => {
 
   //=================================
 
-  const getAllLikes = async () => {
-    axios
-      .get(`http://localhost:5000/likes`)
-      .then((result) => {
-        dispatch(setLikes(result.data.result));
-      })
-      .catch((error) => {
-        console.log(error.response.data.message);
-      });
-  };
-
-  //=================================
-
-  const likePost = async (id) => {
+  const likePost = (postId) => {
     axios
       .post(
-        `http://localhost:5000/likes/${id}`,
+        `http://localhost:5000/likes/${postId}`,
         {},
         {
           headers: {
@@ -383,13 +400,31 @@ const Profile = () => {
         }
       )
       .then((result) => {
-        dispatch(addLike({ post_id: id }));
+        dispatch(addLike({ post_id: postId }));
+        getPostByUserId(userId);
       })
       .catch((error) => {
         console.log(error.response.data.message);
       });
   };
   // ==========================
+  const unLikePost = (postId) => {
+    axios
+      .delete(`http://localhost:5000/likes/delete/${postId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((result) => {
+        dispatch(removeLike({ post_id: postId }));
+        getPostByUserId(userId);
+      })
+      .catch((error) => {
+        console.log(error.response.data.message);
+      });
+  };
+  //=================================
+
   const unFollowFriend = (id) => {
     axios
       .delete(`http://localhost:5000/user/delete/${id}`, {
@@ -715,6 +750,7 @@ const Profile = () => {
                     <></>
                   )}
                 </div>
+
                 <p>{post.content}</p>
 
                 <img className="prof_img" src={post.image} />
@@ -742,24 +778,23 @@ const Profile = () => {
                 )}
               </div>
               <div className="like-div">
-                {!liked ? (
-                  <button
-                    className="like"
-                    onClick={(e) => {
-                      likePost(post.id);
-                    }}
-                  >
-                    Like
-                  </button>
+                {post.like ? (
+                  <>
+                    <button
+                      className="like"
+                      onClick={(e) => {
+                        post.like.includes(userId)
+                          ? unLikePost(post.id)
+                          : likePost(post.id);
+                      }}
+                    >
+                      {post.like.includes(userId) ? "Unlike" : "Like"}
+                    </button>
+                    <p>{post.like.length}</p>
+                  </>
                 ) : (
-                  <button className="like">Unlike</button>
+                  ""
                 )}
-
-                {
-                  likes.filter((el) => {
-                    return el.post_id == post.id;
-                  }).length
-                }
               </div>
               <div className="comment-div">
                 <div className="comment-container">
@@ -842,6 +877,9 @@ const Profile = () => {
                                   style={{ color: "black" }}
                                   className="link"
                                   to={`/profile`}
+                                  onClick={() => {
+                                    window.scrollTo(0, 0);
+                                  }}
                                 >
                                   {comment.userName}
                                 </Link>
