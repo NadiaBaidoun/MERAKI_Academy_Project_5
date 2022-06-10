@@ -354,7 +354,6 @@ const Dashboard = () => {
   //=================================
 
   const newComment = (e, id) => {
-    console.log(comment);
     e.preventDefault();
     if (comment) {
       axios
@@ -498,13 +497,24 @@ const Dashboard = () => {
                 ) : (
                   ""
                 )}
-                <Link
-                  style={{ color: "black" }}
-                  className="link"
-                  to={`/users/${post.user_id}`}
-                >
-                  {post.userName}
-                </Link>
+                {post.user_id === userId ? (
+                  <Link
+                    style={{ color: "black" }}
+                    className="link"
+                    to={`/profile`}
+                  >
+                    {post.userName}
+                  </Link>
+                ) : (
+                  <Link
+                    style={{ color: "black" }}
+                    className="link"
+                    to={`/users/${post.user_id}`}
+                  >
+                    {post.userName}
+                  </Link>
+                )}
+
                 <p>{post.content}</p>
                 <img className="prof_img" src={post.image} />
 
@@ -578,7 +588,6 @@ const Dashboard = () => {
                 >
                   Show all comments
                 </button>
-
                 <div
                   id={`commentDiv${post.id}`}
                   className="allComments"
@@ -689,6 +698,7 @@ const Dashboard = () => {
                         </div>
                       );
                     })}
+                  {!comments.length ? <h1>No comments</h1> : ""}
                 </div>
                 <div className="comment-container">
                   <h1>
@@ -703,8 +713,17 @@ const Dashboard = () => {
                       }}
                     ></textarea>
                     <button
+                      id={post.id}
                       className="like"
                       onClick={(e) => {
+                        const commentSection = document.getElementById(
+                          `comment${e.target.id}`
+                        );
+                        const commentDiv = document.getElementById(
+                          `commentDiv${e.target.id}`
+                        );
+                        commentDiv.style.display = "block";
+                        commentSection.focus();
                         newComment(e, post.id);
                       }}
                     >
@@ -712,7 +731,6 @@ const Dashboard = () => {
                     </button>
                   </form>
                 </div>
-                {!comments.length ? <h1>No comments</h1> : ""}
               </div>
             </div>
           );
