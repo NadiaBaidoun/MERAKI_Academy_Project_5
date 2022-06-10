@@ -2,6 +2,7 @@ import { useState } from "react";
 import "./style.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { IoCloseSharp } from "react-icons/io5";
 
 const Register = () => {
   const [firstName, setFirstName] = useState("null");
@@ -52,39 +53,49 @@ const Register = () => {
   };
 
   return (
-    <div>
+    <div className="form-container">
       <form className="formInput" onSubmit={createUser}>
-        <h1>Sign Up</h1>
-        <input
-          placeholder="First name"
-          required
-          className="firstName"
-          onChange={(e) => {
-            setFirstName(e.target.value);
-            setFocused(false);
-          }}
-          onBlur={() => {
-            handleFocus();
-            firstName !== "null" ? setFirstName(firstName) : setFirstName("");
-          }}
-          focused={firstName}
-        />
-        <span className="firstNameError">What's your first name?</span>
-        <input
-          placeholder="Last name"
-          required
-          className="lastName"
-          onChange={(e) => {
-            setLastName(e.target.value);
-            setFocused(false);
-          }}
-          onBlur={() => {
-            lastName !== "null" ? setLastName(lastName) : setLastName("");
-            handleFocus();
-          }}
-          focused={lastName}
-        />
-        <span className="lastNameError">What's your last name?</span>
+        <div className="signup-header">
+          <div>
+            <h2>Sign Up</h2>
+            <p>It’s quick and easy.</p>
+          </div>
+          <IoCloseSharp className="close-btn" />
+        </div>
+        <div className="border"></div>
+
+        <div className="user-name">
+          <input
+            placeholder="First name"
+            required
+            className="firstName"
+            onChange={(e) => {
+              setFirstName(e.target.value);
+              setFocused(false);
+            }}
+            onBlur={() => {
+              handleFocus();
+              firstName !== "null" ? setFirstName(firstName) : setFirstName("");
+            }}
+            focused={firstName}
+          />
+          <span className="firstNameError">What's your first name?</span>
+          <input
+            placeholder="Last name"
+            required
+            className="lastName"
+            onChange={(e) => {
+              setLastName(e.target.value);
+              setFocused(false);
+            }}
+            onBlur={() => {
+              lastName !== "null" ? setLastName(lastName) : setLastName("");
+              handleFocus();
+            }}
+            focused={lastName}
+          />
+          <span className="lastNameError">What's your last name?</span>
+        </div>
 
         <input
           placeholder="Country"
