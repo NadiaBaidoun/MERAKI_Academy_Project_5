@@ -9,6 +9,7 @@ const {
   deleteUserById,
   getUserByName,
   updateUserById,
+  getUserFriends,
 } = require("../controllers/user");
 
 // middleware
@@ -23,9 +24,10 @@ userRouter.delete("/delete/:target_id", authentication, unFollowUser);
 userRouter.get("/:user_id", authentication, getUserById);
 
 userRouter.get("/list/friends/:id", authentication, getAllFriends);
-userRouter.get("/search/:userName", authentication,getUserByName);
-userRouter.put("/:id",updateUserById)
+userRouter.get("/friends/:id", getUserFriends);
 
+userRouter.get("/search/:userName", authentication, getUserByName);
+userRouter.put("/:id", updateUserById);
 
 userRouter.delete(
   "/:user_id",

@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setPosts } from "../Redux/reducers/posts";
 
 import "./style.css";
+import { IoMdCloseCircle } from "react-icons/io";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { addLike, removeLike, setLikes } from "../Redux/reducers/like";
 import jwt_decode from "jwt-decode";
@@ -17,11 +18,12 @@ import {
   updateCommentById,
   deleteCommentById,
 } from "../Redux/reducers/comments";
-import { useParams } from "react-router-dom";
-
+import { Link, useParams } from "react-router-dom";
+import { deleteFriendById, setFriends } from "../Redux/reducers/friends";
 const UserProfile = () => {
   const [dropdownIdCom, setDropdownIdCom] = useState("");
   const [userFriends, setUserFriends] = useState([]);
+  const [PopupFriend, setPopupFriend] = useState(false);
   const [myFriends, setMyFriends] = useState([]);
   const [comment, setComment] = useState("");
   const [show, setShow] = useState(false);
@@ -42,6 +44,7 @@ const UserProfile = () => {
   const [liked, setLiked] = useState(false);
 
   const formRef = useRef("");
+  const addCommentRef = useRef("");
   const imageRef = useRef("");
   const coverRef = useRef("");
   const profileRef = useRef("");
@@ -60,9 +63,10 @@ const UserProfile = () => {
     };
   });
 
-  const { users } = useSelector((state) => {
+  const { users, friends } = useSelector((state) => {
     return {
       users: state.users.users,
+      friends: state.friends.friends,
     };
   });
 
@@ -124,8 +128,39 @@ const UserProfile = () => {
 
         setMyFriends(userFriends);
       })
+
       .catch((error) => {
         setMyFriends([]);
+        console.log(error.response.data);
+      });
+  };
+  //=================================
+
+  const getUserFriends = () => {
+    axios
+      .get(`http://localhost:5000/user/friends/${id}`)
+      .then((result) => {
+        const friendsRes = result.data.result;
+        console.log(friendsRes);
+
+        const userFriends = [];
+
+        if (result.data.success) {
+          let arrayofFriends = [];
+
+          if (friendsRes.length > 6) {
+            const filteredFriends = friendsRes.filter((el, i) => {
+              return i <= 5;
+            });
+            arrayofFriends = [...filteredFriends];
+          } else if (friendsRes.length <= 6) {
+            arrayofFriends = [...friendsRes];
+          }
+          setUserFriends(arrayofFriends);
+        }
+      })
+      .catch((error) => {
+        setUserFriends([]);
         console.log(error.response.data);
       });
   };
@@ -146,32 +181,38 @@ const UserProfile = () => {
     setOpenComment(!openComment);
   };
 
-  //=================================
+  // const getAllFriends = () => {
+  //   axios
+  //     .get(`http://localhost:5000/user/list/friends/${userId}`, {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     })
 
-  const getAllFriends = () => {
-    axios
-      .get(`http://localhost:5000/user/list/friends/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((result) => {
-        const friendsRes = result.data.result;
+  //     .then((result) => {
+  //       const friendsRes = result.data.result;
 
-        const userFriends = [];
+  //       if (result.data.success) {
+  //         let arrayofFriends = [];
 
-        friendsRes.forEach((friend) => {
-          userFriends.push(friend.target_id);
-        });
+  //         if (friendsRes.length > 6) {
+  //           const filteredFriends = friendsRes.filter((el, i) => {
+  //             return i <= 5;
+  //           });
+  //           arrayofFriends = [...filteredFriends];
+  //         } else if (friendsRes.length <= 6) {
+  //           arrayofFriends = [...friendsRes];
+  //         }
 
-        setUserFriends(userFriends);
-      })
-      .catch((error) => {
-        setUserFriends([]);
-        console.log(error.response.data);
-      });
-  };
-
+  //         dispatch(setFriends(arrayofFriends));
+  //         setShow(true);
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       dispatch(setFriends([]));
+  //       console.log(error.response.data);
+  //     });
+  // };
   //=================================
 
   const followFriend = (id) => {
@@ -306,7 +347,7 @@ const UserProfile = () => {
         if (res.data.success) {
           dispatch(addComment({ comment, post_id: id }));
           getAllComments();
-          formRef.current.reset();
+          addCommentRef.current.reset();
         }
       })
       .catch((error) => {
@@ -379,12 +420,51 @@ const UserProfile = () => {
     getUserById(id);
     getPostByUserId(id);
     getAllComments();
-    getAllFriends();
+    getUserFriends();
     getMyFriends();
   }, []);
 
   return (
     <div className="post-container">
+      {PopupFriend ? (
+        <div className="popup">
+          <button
+            className="close"
+            onClick={() => {
+              setPopupFriend(false);
+            }}
+          >
+            <IoMdCloseCircle
+              onClick={() => {
+                setPopupFriend(false);
+              }}
+            />
+          </button>
+
+          {friends.length ? (
+            friends.map((friend, i) => {
+              return (
+                <div className="firend" key={i}>
+                  <p>{friend.userName} </p>
+                  <img className="friendimg" src={friend.image} />
+                  <button
+                    className="like"
+                    onClick={() => {
+                      unFollowFriend(friend.target_id);
+                    }}
+                  >
+                    Unfollow
+                  </button>
+                </div>
+              );
+            })
+          ) : (
+            <p>You have no friends</p>
+          )}
+        </div>
+      ) : (
+        ""
+      )}
       <div className="cover">
         {users.map((el) => {
           return <img key={el.id} src={el.cover} />;
@@ -441,22 +521,39 @@ const UserProfile = () => {
               );
             })}
           </div>
-          <br />
-          <div>Friend List</div>
-          {/* {friends.length ? (
-            friends.map((friend, i) => {
-              console.log(friend);
+          <div>
+            <h1> Friend List</h1>
+          </div>
+          <div>
+            <button
+              onClick={(e) => {
+                setPopupFriend(true);
+              }}
+            >
+              see allFriends
+            </button>
+          </div>
+          {userFriends.length ? (
+            userFriends.map((friend, i) => {
               return (
-                <div key={i}>
-                  <p>{friend.userName}</p>
+                <div className="firend" key={i}>
+                  <Link
+                    style={{ color: "black" }}
+                    className="link"
+                    to={`/users/${friend.target_id}`}
+                  >
+                    <img className="friendimg" src={friend.image} />
+                    <p>{friend.userName}</p>
+                  </Link>
                 </div>
               );
             })
           ) : (
             <p>You have no friends</p>
-          )} */}
+          )}
         </div>
       </div>
+
       {show &&
         posts.map((post, index) => {
           return (
@@ -467,6 +564,26 @@ const UserProfile = () => {
 
                 <img className="prof_img" src={post.image} />
               </div>
+              {PopupFriend ? (
+                <div className="popup">
+                  <button
+                    className="close"
+                    onClick={() => {
+                      setPopupFriend(false);
+                    }}
+                  >
+                    <IoMdCloseCircle
+                      onClick={() => {
+                        setPopupFriend(false);
+                      }}
+                    />
+                  </button>
+                  )
+                </div>
+              ) : (
+                ""
+              )}
+
               <div className="like-div">
                 {post.like ? (
                   <>
@@ -481,120 +598,186 @@ const UserProfile = () => {
                       {post.like.includes(userId) ? "Unlike" : "Like"}
                     </button>
                     <p>{post.like.length}</p>
+
+                    <button
+                      id={post.id}
+                      className="like"
+                      onClick={(e) => {
+                        const commentSection = document.getElementById(
+                          `comment${e.target.id}`
+                        );
+                        const commentDiv = document.getElementById(
+                          `commentDiv${e.target.id}`
+                        );
+                        commentDiv.style.display = "block";
+                        commentSection.focus();
+                      }}
+                    >
+                      Comment
+                    </button>
                   </>
                 ) : (
                   ""
                 )}
               </div>
               <div className="comment-div">
-                <div className="comment-container">
-                  <h1>
-                    {jwt_decode(token).firstName} {jwt_decode(token).lastName}
-                  </h1>
-                  <form ref={formRef} className="addComment">
-                    <textarea
-                      placeholder="comment  here"
-                      onChange={(e) => {
-                        setComment(e.target.value);
-                      }}
-                    ></textarea>
-                    <div className="comment-action">
-                      <button
-                        onClick={(e) => {
-                          newComment(e, post.id);
-                        }}
-                      >
-                        Add
-                      </button>
-                    </div>
-                  </form>
-                </div>
-                {show &&
-                  comments.map((comment, index) => {
-                    return (
-                      <div key={index}>
-                        <div>
-                          {post.id === comment.post_id ? (
-                            <div className="comment-div-container">
-                              {comment.commenter_id == userId ? (
-                                <div className="dd-comment">
-                                  <button
-                                    id={comment.id}
-                                    className="dd-button"
-                                    onClick={(e) => {
-                                      showDDComment(e);
-                                    }}
-                                  >
-                                    <BsThreeDotsVertical
+                <button
+                  id={post.id}
+                  onClick={(e) => {
+                    const commentDiv = document.getElementById(
+                      `commentDiv${e.target.id}`
+                    );
+                    commentDiv.style.display = "block";
+                  }}
+                >
+                  Show all comments
+                </button>
+                <div
+                  id={`commentDiv${post.id}`}
+                  className="allComments"
+                  style={{ display: "none" }}
+                >
+                  {show &&
+                    comments.map((comment, index) => {
+                      return (
+                        <div key={index}>
+                          <div>
+                            {post.id === comment.post_id ? (
+                              <div className="comment-div-container">
+                                {comment.commenter_id == userId ? (
+                                  <div className="dd-comment">
+                                    <button
                                       id={comment.id}
+                                      className="dd-button"
                                       onClick={(e) => {
                                         showDDComment(e);
                                       }}
-                                    />
-                                  </button>
-                                  {openComment &&
-                                  dropdownIdComment == comment.id ? (
-                                    <div className="dropdown-comment">
-                                      <div
-                                        className="options-div"
+                                    >
+                                      <BsThreeDotsVertical
                                         id={comment.id}
                                         onClick={(e) => {
-                                          updateFormComment(e, comment.comment);
+                                          showDDComment(e);
                                         }}
-                                      >
-                                        Update
-                                      </div>
+                                      />
+                                    </button>
+                                    {openComment &&
+                                    dropdownIdComment == comment.id ? (
+                                      <div className="dropdown-comment">
+                                        <div
+                                          className="options-div"
+                                          id={comment.id}
+                                          onClick={(e) => {
+                                            updateFormComment(
+                                              e,
+                                              comment.comment
+                                            );
+                                          }}
+                                        >
+                                          Update
+                                        </div>
 
-                                      <div
-                                        className="options-div"
-                                        id={comment.id}
-                                        onClick={(e) => {
-                                          deleteComment(e.target.id);
-                                        }}
-                                      >
-                                        Delete
+                                        <div
+                                          className="options-div"
+                                          id={comment.id}
+                                          onClick={(e) => {
+                                            deleteComment(e.target.id);
+                                          }}
+                                        >
+                                          Delete
+                                        </div>
                                       </div>
-                                    </div>
-                                  ) : (
-                                    <></>
-                                  )}
-                                </div>
-                              ) : (
-                                ""
-                              )}
-                              <h3>{comment.userName}</h3>
-                              <p className="comment">{comment.comment}</p>
-                            </div>
+                                    ) : (
+                                      <></>
+                                    )}
+                                  </div>
+                                ) : (
+                                  ""
+                                )}
+                                {comment.commenter_id === userId ? (
+                                  <Link
+                                    style={{ color: "black" }}
+                                    className="link"
+                                    to={`/profile`}
+                                    onClick={() => {
+                                      window.scrollTo(0, 0);
+                                    }}
+                                  >
+                                    {comment.userName}
+                                  </Link>
+                                ) : (
+                                  <Link
+                                    style={{ color: "black" }}
+                                    className="link"
+                                    to={`/users/${comment.commenter_id}`}
+                                  >
+                                    {comment.userName}
+                                  </Link>
+                                )}
+
+                                <p className="comment">{comment.comment}</p>
+                              </div>
+                            ) : (
+                              ""
+                            )}
+                          </div>
+                          {comment.id == dropdownIdComment &&
+                          showCommentUpdate ? (
+                            <form
+                              className="update-form"
+                              onSubmit={(e) => {
+                                e.preventDefault();
+                                setShowCommentUpdate(false);
+                                editComment(comment.id);
+                              }}
+                              ref={formRef}
+                            >
+                              <input
+                                defaultValue={comment.comment}
+                                onChange={(e) => {
+                                  setupdatecomment(e.target.value);
+                                }}
+                              />
+                              <button>Update</button>
+                            </form>
                           ) : (
                             ""
                           )}
                         </div>
-                        {comment.id == dropdownIdComment &&
-                        showCommentUpdate ? (
-                          <form
-                            className="update-form"
-                            onSubmit={(e) => {
-                              e.preventDefault();
-                              setShowCommentUpdate(false);
-                              editComment(comment.id);
-                            }}
-                            ref={formRef}
-                          >
-                            <input
-                              defaultValue={comment.comment}
-                              onChange={(e) => {
-                                setupdatecomment(e.target.value);
-                              }}
-                            />
-                            <button>Update</button>
-                          </form>
-                        ) : (
-                          ""
-                        )}
-                      </div>
-                    );
-                  })}
-                {!comments.length ? <h1>No comments</h1> : ""}
+                      );
+                    })}
+                  {!comments.length ? <h1>No comments</h1> : ""}
+                </div>
+                <div className="comment-container">
+                  <h1>
+                    {jwt_decode(token).firstName} {jwt_decode(token).lastName}
+                  </h1>
+                  <form ref={addCommentRef} className="addComment">
+                    <textarea
+                      id={`comment${post.id}`}
+                      placeholder="comment here"
+                      onChange={(e) => {
+                        setComment(e.target.value);
+                      }}
+                    ></textarea>
+                    <button
+                      id={post.id}
+                      className="like"
+                      onClick={(e) => {
+                        const commentSection = document.getElementById(
+                          `comment${e.target.id}`
+                        );
+                        const commentDiv = document.getElementById(
+                          `commentDiv${e.target.id}`
+                        );
+                        commentDiv.style.display = "block";
+                        commentSection.focus();
+                        newComment(e, post.id);
+                      }}
+                    >
+                      Add
+                    </button>
+                  </form>
+                </div>
               </div>
             </div>
           );

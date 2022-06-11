@@ -131,6 +131,34 @@ const getAllFriends = (req, res) => {
   });
 };
 
+const getUserFriends = (req, res) => {
+  const sourceId = req.params.id;
+  const query = `SELECT * FROM users 
+  RIGHT JOIN friends on friends.target_id=users.id WHERE friends.source_id=? AND friends.is_deleted=0;`;
+  const data = [sourceId];
+  connection.query(query, data, (err, result) => {
+    if (err) {
+      return res.status(500).json({
+        success: false,
+        massage: "Server error",
+        err,
+      });
+    }
+    if (!result.length) {
+      return res.status(404).json({
+        success: false,
+        massage: "No friends",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      massage: "All User friends",
+      result,
+    });
+  });
+};
+
 // function to delete user by id
 const deleteUserById = (req, res) => {
   const id = req.params.user_id;
@@ -247,5 +275,6 @@ module.exports = {
   getAllFriends,
   deleteUserById,
   getUserByName,
-  updateUserById
+  updateUserById,
+  getUserFriends,
 };
