@@ -384,13 +384,13 @@ const UserProfile = () => {
   }, []);
 
   return (
-    <div className="post-container">
+    <div className="user-container">
       <div className="cover">
         {users.map((el) => {
           return <img key={el.id} src={el.cover} />;
         })}
       </div>
-      <div className="profilePic">
+      <div className="profilePic" >
         {users.map((el) => {
           return <img key={el.id} src={el.image} />;
         })}
