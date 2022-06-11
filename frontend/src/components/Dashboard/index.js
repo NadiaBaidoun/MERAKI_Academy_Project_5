@@ -37,6 +37,7 @@ const Dashboard = () => {
   const formRef = useRef("");
   const addPostRef = useRef("");
   const addCommentRef = useRef("");
+  const updatePostRef = useRef("");
 
   const imageRef = useRef("");
   const [postUrl, setPostUrl] = useState("");
@@ -73,7 +74,7 @@ const Dashboard = () => {
   const userId = jwt_decode(token).userId;
   //=================================
 
-  const newPost = async (e) => {
+  const newPost = (e) => {
     e.preventDefault();
     if (content || postUrl) {
       axios
@@ -88,9 +89,9 @@ const Dashboard = () => {
         )
         .then((res) => {
           if (res.data.success) {
-            getAllPosts();
             setContent("");
             setPostUrl("");
+            getAllPosts();
             addPostRef.current.reset();
           }
         })
@@ -154,11 +155,11 @@ const Dashboard = () => {
                 const postWithLike = [];
 
                 postsRes.forEach((post) => {
+                  if (post.user_id === userId) {
+                    postWithLike.push({ ...post, like: [] });
+                  }
                   friendRes.forEach((friend) => {
                     if (post.user_id === friend.target_id) {
-                      postWithLike.push({ ...post, like: [] });
-                    }
-                    if (post.user_id === userId) {
                       postWithLike.push({ ...post, like: [] });
                     }
                   });
@@ -183,11 +184,12 @@ const Dashboard = () => {
                   const postWithLike = [];
 
                   postsRes.forEach((post) => {
+                    if (post.user_id === userId) {
+                      postWithLike.push({ ...post, like: [] });
+                    }
+
                     friendRes.forEach((friend) => {
                       if (post.user_id === friend.target_id) {
-                        postWithLike.push({ ...post, like: [] });
-                      }
-                      if (post.user_id === userId) {
                         postWithLike.push({ ...post, like: [] });
                       }
                     });
@@ -226,17 +228,23 @@ const Dashboard = () => {
 
   //=================================
 
-  const editpost = (id) => {
+  const editpost = (id, image) => {
     axios
       .put(`http://localhost:5000/posts/${id}`, {
         content: updatecontent,
-        image: postEditUrl,
+        image: postEditUrl || image,
       })
       .then((result) => {
         if (result.data.success) {
           dispatch(
-            updatePostById({ content: updatecontent, image: postEditUrl, id })
+            updatePostById({
+              content: updatecontent,
+              image: postEditUrl || image,
+              id,
+            })
           );
+          setPostEditUrl("");
+          setContent("");
         }
       })
       .catch((error) => {
@@ -503,7 +511,7 @@ const Dashboard = () => {
                     className="link"
                     to={`/profile`}
                   >
-                    {post.userName}
+                    <h3>{post.userName}</h3>
                   </Link>
                 ) : (
                   <Link
@@ -511,7 +519,7 @@ const Dashboard = () => {
                     className="link"
                     to={`/users/${post.user_id}`}
                   >
-                    {post.userName}
+                    <h3>{post.userName}</h3>
                   </Link>
                 )}
 
@@ -520,13 +528,13 @@ const Dashboard = () => {
 
                 {post.id == dropdownId && showUpdate ? (
                   <form
+                    ref={updatePostRef}
                     className="update-form"
                     onSubmit={(e) => {
                       e.preventDefault();
                       setShowUpdate(false);
-                      editpost(post.id);
+                      editpost(post.id, post.image);
                     }}
-                    ref={formRef}
                   >
                     <input
                       type="file"

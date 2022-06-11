@@ -47,7 +47,10 @@ const Profile = () => {
   const coverRef = useRef("");
   const profileRef = useRef("");
 
-  const [url, setUrl] = useState("");
+  const imageEditRef = useRef("");
+  const [postEditUrl, setPostEditUrl] = useState("");
+
+  const [postUrl, setPostUrl] = useState("");
 
   const [urlCover, seturlCover] = useState("");
   const [urlImage, seturlImage] = useState("");
@@ -98,26 +101,30 @@ const Profile = () => {
   const newPost = (e) => {
     e.preventDefault();
 
-    axios
-      .post(
-        "http://localhost:5000/posts/",
-        { content, image: url },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-      .then((res) => {
-        if (res.data.success) {
-          dispatch(addPost({ content, image: url }));
-          getPostByUserId(userId);
-          formRef.current.reset();
-        }
-      })
-      .catch((error) => {
-        console.log(error.response.data.message);
-      });
+    if (content || postUrl) {
+      axios
+        .post(
+          "http://localhost:5000/posts/",
+          { content, image: postUrl },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+        .then((res) => {
+          if (res.data.success) {
+            dispatch(addPost({ content, image: postUrl }));
+            setContent("");
+            setPostUrl("");
+            getPostByUserId(userId);
+            formRef.current.reset();
+          }
+        })
+        .catch((error) => {
+          console.log(error.response.data.message);
+        });
+    }
   };
   //=================================
 
@@ -143,7 +150,6 @@ const Profile = () => {
     setOpenComment(!openComment);
   };
 
-  //=================================
   //=================================
 
   const getAllComments = async () => {
@@ -224,6 +230,8 @@ const Profile = () => {
       });
   };
 
+  //=================================
+
   const getAllFriends = () => {
     axios
       .get(`http://localhost:5000/user/list/friends/${userId}`, {
@@ -257,6 +265,7 @@ const Profile = () => {
       });
   };
   //=================================
+
   const getPostByUserId = (id) => {
     axios
       .get(`http://localhost:5000/posts/user/${id}`)
@@ -345,14 +354,23 @@ const Profile = () => {
   };
   //=================================
 
-  const editpost = (id) => {
+  const editpost = (id, image) => {
     axios
       .put(`http://localhost:5000/posts/${id}`, {
         content: updatecontent,
+        image: postEditUrl || image,
       })
       .then((result) => {
         if (result.data.success) {
-          dispatch(updatePostById({ content: updatecontent, id }));
+          dispatch(
+            updatePostById({
+              content: updatecontent,
+              image: postEditUrl || image,
+              id,
+            })
+          );
+          setPostEditUrl("");
+          setContent("");
         }
       })
       .catch((error) => {
@@ -362,6 +380,25 @@ const Profile = () => {
       });
   };
   //=================================
+
+  const editPostImage = () => {
+    const data = new FormData();
+
+    data.append("file", imageEditRef.current);
+    data.append("upload_preset", "olfkj7in");
+    data.append("cloud_name", "aa");
+    fetch("https://api.cloudinary.com/v1_1/dviqtfdwx/image/upload", {
+      method: "post",
+      body: data,
+    })
+      .then((resp) => resp.json())
+      .then((data) => {
+        setPostEditUrl(data.url);
+      })
+      .catch((err) => console.log(err));
+  };
+  //=================================
+
   const deletepost = (id) => {
     axios
       .delete(`http://localhost:5000/posts/${id}`, {
@@ -456,7 +493,7 @@ const Profile = () => {
     })
       .then((resp) => resp.json())
       .then((data) => {
-        setUrl(data.url);
+        setPostUrl(data.url);
       })
       .catch((err) => console.log(err));
   };
@@ -479,6 +516,9 @@ const Profile = () => {
       })
       .catch((err) => console.log(err));
   };
+
+  // ==================================
+
   const uploadUserImage = () => {
     const data = new FormData();
 
@@ -753,6 +793,18 @@ const Profile = () => {
                   )}
                 </div>
 
+                <Link
+                  style={{ color: "black" }}
+                  className="link"
+                  to={`/profile`}
+                  onClick={() => {
+                    window.scrollTo(0, 0);
+                  }}
+                >
+                  <h3>
+                    {jwt_decode(token).firstName} {jwt_decode(token).lastName}
+                  </h3>
+                </Link>
                 <p>{post.content}</p>
 
                 <img className="prof_img" src={post.image} />
@@ -763,10 +815,17 @@ const Profile = () => {
                     onSubmit={(e) => {
                       e.preventDefault();
                       setShowUpdate(false);
-                      editpost(post.id);
+                      editpost(post.id, post.image);
                     }}
                     ref={formRef}
                   >
+                    <input
+                      type="file"
+                      onChange={(e) => {
+                        imageEditRef.current = e.target.files[0];
+                        editPostImage();
+                      }}
+                    />
                     <input
                       defaultValue={post.content}
                       onChange={(e) => {
