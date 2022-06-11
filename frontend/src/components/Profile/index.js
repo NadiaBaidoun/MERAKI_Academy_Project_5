@@ -589,6 +589,7 @@ const Profile = () => {
         ""
       )}
       {/* ====================== */}
+
       <div className="profile-header">
         {urlCover ? (
           <div className="cover-choice">
@@ -643,7 +644,7 @@ const Profile = () => {
               {users.map((el) => {
                 return (
                   <div className="img-container" key={el.id}>
-                    <img className="image-photo" src={el.image} />;
+                    <img className="image-photo" src={el.image} />
                   </div>
                 );
               })}
@@ -667,31 +668,44 @@ const Profile = () => {
               {jwt_decode(token).firstName} {jwt_decode(token).lastName}
             </h1>
           </div>
-          <div className="profile-change">
-            <img src={urlImage} />
-            <div className="profile-choice">
-              <p>Change profile picture?</p>
-              <div className="choices">
-                <button
-                  className="cancel-profile"
-                  onClick={() => {
-                    seturlImage("");
-                  }}
-                >
-                  Cancel
-                </button>
-                <button className="profile-save" onClick={editProfile}>
-                  Save changes
-                </button>
+          {urlImage ? (
+            <div className="profile-change">
+              <img className="profile-new" src={urlImage} />
+              <div className="cover-choice">
+                <p>Change profile picture?</p>
+                <div className="choices-profile choices">
+                  <button
+                    className="cancel-cover cancel-profile"
+                    onClick={() => {
+                      seturlImage("");
+                    }}
+                  >
+                    Cancel
+                  </button>
+                  <button className="cover-save" onClick={editProfile}>
+                    Save changes
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
+          ) : (
+            <></>
+          )}
         </div>
       </div>
 
       {/* ================================= */}
 
-      <div className="post-container">
+      <div className="main-container">
+        <div className="left-container"></div>
+        <div className="mid-container">
+          <div className="mid-left">MIDDLE-LEFT</div>
+          <div className="mid-right">MIDDLE-RIGHT</div>
+        </div>
+        <div className="right-container"></div>
+      </div>
+
+      {/* <div className="post-container">
         <form ref={formRef} onSubmit={newPost} className="addPost">
           <h1>
             {jwt_decode(token).firstName} {jwt_decode(token).lastName}
@@ -1108,7 +1122,7 @@ const Profile = () => {
             </div>
           );
         })}
-      {!posts.length ? <h1>No posts</h1> : ""}
+      {!posts.length ? <h1>No posts</h1> : ""} */}
     </div>
   );
 };
