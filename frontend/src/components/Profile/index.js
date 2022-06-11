@@ -74,8 +74,7 @@ const Profile = () => {
       users: state.users.users,
       friends: state.friends.friends,
     };
-  } 
-  );
+  });
   const { comments } = useSelector((state) => {
     return {
       comments: state.comments.comments,
@@ -183,7 +182,6 @@ const Profile = () => {
         })
         .catch((error) => {
           console.log(error);
-         
         });
     }
   };
@@ -675,7 +673,7 @@ const Profile = () => {
               ""
             )}
           </div>
-         
+
           <div>
             <h1> Friend List</h1>
           </div>

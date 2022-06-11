@@ -143,7 +143,7 @@ const UserProfile = () => {
         const friendsRes = result.data.result;
         console.log(friendsRes);
 
-        const userFriends = [];
+        // const userFriends = [];
 
         if (result.data.success) {
           let arrayofFriends = [];
@@ -157,6 +157,8 @@ const UserProfile = () => {
             arrayofFriends = [...friendsRes];
           }
           setUserFriends(arrayofFriends);
+          // dispatch(setFriends(arrayofFriends));
+          //         setShow(true);
         }
       })
       .catch((error) => {
@@ -440,27 +442,43 @@ const UserProfile = () => {
               }}
             />
           </button>
-
-          {friends.length ? (
-            friends.map((friend, i) => {
-              return (
-                <div className="firend" key={i}>
-                  <p>{friend.userName} </p>
-                  <img className="friendimg" src={friend.image} />
-                  <button
-                    className="like"
-                    onClick={() => {
-                      unFollowFriend(friend.target_id);
-                    }}
-                  >
-                    Unfollow
-                  </button>
-                </div>
-              );
-            })
-          ) : (
-            <p>You have no friends</p>
-          )}
+          <div className="friendlist">
+            {userFriends.length ? (
+              userFriends.map((friend, i) => {
+                return (
+                  <div className="firend" key={i}>
+                    <a
+                      style={{ color: "black" }}
+                      className="link"
+                      href={`/users/${friend.target_id}`}
+                    >
+                      {" "}
+                      {friend.userName}
+                    </a>
+                    <img className="friendimg" src={friend.image} />
+                    {friend.target_id === userId ? (
+                      <></>
+                    ) : (
+                      <button
+                        className="like"
+                        onClick={() => {
+                          myFriends.includes(friend.target_id)
+                            ? unFollowFriend(friend.target_id)
+                            : followFriend(friend.target_id);
+                        }}
+                      >
+                        {myFriends.includes(friend.target_id)
+                          ? "Unfollow"
+                          : "Follow"}
+                      </button>
+                    )}
+                  </div>
+                );
+              })
+            ) : (
+              <p>You have no friends</p>
+            )}
+          </div>
         </div>
       ) : (
         ""
@@ -537,14 +555,25 @@ const UserProfile = () => {
             userFriends.map((friend, i) => {
               return (
                 <div className="firend" key={i}>
-                  <Link
-                    style={{ color: "black" }}
-                    className="link"
-                    to={`/users/${friend.target_id}`}
-                  >
-                    <img className="friendimg" src={friend.image} />
-                    <p>{friend.userName}</p>
-                  </Link>
+                  {friend.target_id === userId ? (
+                    <a
+                      style={{ color: "black" }}
+                      className="link"
+                      href={`/profile`}
+                    >
+                      <img className="friendimg" src={friend.image} />
+                      <p>{friend.userName}</p>
+                    </a>
+                  ) : (
+                    <a
+                      style={{ color: "black" }}
+                      className="link"
+                      href={`/users/${friend.target_id}`}
+                    >
+                      <img className="friendimg" src={friend.image} />
+                      <p>{friend.userName}</p>
+                    </a>
+                  )}
                 </div>
               );
             })
@@ -564,25 +593,6 @@ const UserProfile = () => {
 
                 <img className="prof_img" src={post.image} />
               </div>
-              {PopupFriend ? (
-                <div className="popup">
-                  <button
-                    className="close"
-                    onClick={() => {
-                      setPopupFriend(false);
-                    }}
-                  >
-                    <IoMdCloseCircle
-                      onClick={() => {
-                        setPopupFriend(false);
-                      }}
-                    />
-                  </button>
-                  )
-                </div>
-              ) : (
-                ""
-              )}
 
               <div className="like-div">
                 {post.like ? (
