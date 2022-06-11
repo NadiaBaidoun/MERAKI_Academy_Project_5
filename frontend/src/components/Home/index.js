@@ -18,31 +18,37 @@ const Home = () => {
   return (
     <div className="Home">
       <div className="home-elements">
-        <div className="facebook-logo">
-          <h1>facebook</h1>
-          <p>Connect with friends and the world around you on Facebook.</p>
+        <div
+          className="home-elements"
+          style={regForm ? { opacity: "0.4" } : { opacity: "1" }}
+        >
+          <div className="facebook-logo">
+            <h1>facebook</h1>
+            <p>Connect with friends and the world around you on Facebook.</p>
+          </div>
+
+          <div className="home-actions">
+            <Login />
+            <div className="login-div"></div>
+
+            <button
+              className="register"
+              onClick={(e) => {
+                dispatch(showForm(true));
+              }}
+            >
+              Create new account
+            </button>
+          </div>
         </div>
 
-        <div className="home-actions">
-          <Login />
-          <div className="login-div"></div>
-
-          <button
-            className="register"
-            onClick={(e) => {
-              dispatch(showForm(true));
-            }}
-          >
-            Create new account
-          </button>
-          {regForm ? (
-            <div className="register-container">
-              <Register />
-            </div>
-          ) : (
-            ""
-          )}
-        </div>
+        {regForm ? (
+          <div className="register-container">
+            <Register />
+          </div>
+        ) : (
+          ""
+        )}
       </div>
     </div>
   );
