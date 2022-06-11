@@ -42,6 +42,9 @@
   color: black;
   cursor: pointer;
 }
+.cover-input-label:hover {
+  background-color: rgb(212, 212, 212);
+}
 
 .camera {
   height: 20px;
@@ -140,6 +143,9 @@
   border-radius: 50%;
   cursor: pointer;
 }
+.profile-input-label:hover {
+  background-color: rgb(212, 212, 212);
+}
 
 .camera-profile {
   height: 25px;
@@ -172,17 +178,18 @@
 }
 
 .main-container {
-  margin-top: 1rem;
   display: flex;
   width: 100%;
   min-height: 50vh;
-  /* background-color: rgb(211, 211, 211); */
+  background-color: rgb(211, 211, 211);
 }
 
 .left-container {
   flex: 0.8;
 }
 .mid-container {
+  margin-top: 1rem;
+
   flex: 5;
   display: flex;
 }
