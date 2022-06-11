@@ -47,6 +47,9 @@ const Profile = () => {
   const coverRef = useRef("");
   const profileRef = useRef("");
 
+  const imageEditRef = useRef("");
+  const [postEditUrl, setPostEditUrl] = useState("");
+
   const [postUrl, setPostUrl] = useState("");
 
   const [urlCover, seturlCover] = useState("");
@@ -148,7 +151,6 @@ const Profile = () => {
   };
 
   //=================================
-  //=================================
 
   const getAllComments = async () => {
     axios
@@ -228,6 +230,8 @@ const Profile = () => {
       });
   };
 
+  //=================================
+
   const getAllFriends = () => {
     axios
       .get(`http://localhost:5000/user/list/friends/${userId}`, {
@@ -261,6 +265,7 @@ const Profile = () => {
       });
   };
   //=================================
+
   const getPostByUserId = (id) => {
     axios
       .get(`http://localhost:5000/posts/user/${id}`)
@@ -353,10 +358,13 @@ const Profile = () => {
     axios
       .put(`http://localhost:5000/posts/${id}`, {
         content: updatecontent,
+        image: postEditUrl,
       })
       .then((result) => {
         if (result.data.success) {
-          dispatch(updatePostById({ content: updatecontent, id }));
+          dispatch(
+            updatePostById({ content: updatecontent, image: postEditUrl, id })
+          );
         }
       })
       .catch((error) => {
@@ -366,6 +374,25 @@ const Profile = () => {
       });
   };
   //=================================
+
+  const editPostImage = () => {
+    const data = new FormData();
+
+    data.append("file", imageEditRef.current);
+    data.append("upload_preset", "olfkj7in");
+    data.append("cloud_name", "aa");
+    fetch("https://api.cloudinary.com/v1_1/dviqtfdwx/image/upload", {
+      method: "post",
+      body: data,
+    })
+      .then((resp) => resp.json())
+      .then((data) => {
+        setPostEditUrl(data.url);
+      })
+      .catch((err) => console.log(err));
+  };
+  //=================================
+
   const deletepost = (id) => {
     axios
       .delete(`http://localhost:5000/posts/${id}`, {
@@ -786,6 +813,13 @@ const Profile = () => {
                     }}
                     ref={formRef}
                   >
+                    <input
+                      type="file"
+                      onChange={(e) => {
+                        imageEditRef.current = e.target.files[0];
+                        editPostImage();
+                      }}
+                    />
                     <input
                       defaultValue={post.content}
                       onChange={(e) => {
