@@ -37,6 +37,7 @@ const Dashboard = () => {
   const formRef = useRef("");
   const addPostRef = useRef("");
   const addCommentRef = useRef("");
+  const updatePostRef = useRef("");
 
   const imageRef = useRef("");
   const [postUrl, setPostUrl] = useState("");
@@ -227,17 +228,23 @@ const Dashboard = () => {
 
   //=================================
 
-  const editpost = (id) => {
+  const editpost = (id, image) => {
     axios
       .put(`http://localhost:5000/posts/${id}`, {
         content: updatecontent,
-        image: postEditUrl,
+        image: postEditUrl || image,
       })
       .then((result) => {
         if (result.data.success) {
           dispatch(
-            updatePostById({ content: updatecontent, image: postEditUrl, id })
+            updatePostById({
+              content: updatecontent,
+              image: postEditUrl || image,
+              id,
+            })
           );
+          setPostEditUrl("");
+          setContent("");
         }
       })
       .catch((error) => {
@@ -521,13 +528,13 @@ const Dashboard = () => {
 
                 {post.id == dropdownId && showUpdate ? (
                   <form
+                    ref={updatePostRef}
                     className="update-form"
                     onSubmit={(e) => {
                       e.preventDefault();
                       setShowUpdate(false);
-                      editpost(post.id);
+                      editpost(post.id, post.image);
                     }}
-                    ref={formRef}
                   >
                     <input
                       type="file"
