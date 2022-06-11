@@ -47,7 +47,7 @@ const Profile = () => {
   const coverRef = useRef("");
   const profileRef = useRef("");
 
-  const [url, setUrl] = useState("");
+  const [postUrl, setPostUrl] = useState("");
 
   const [urlCover, seturlCover] = useState("");
   const [urlImage, seturlImage] = useState("");
@@ -98,26 +98,30 @@ const Profile = () => {
   const newPost = (e) => {
     e.preventDefault();
 
-    axios
-      .post(
-        "http://localhost:5000/posts/",
-        { content, image: url },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-      .then((res) => {
-        if (res.data.success) {
-          dispatch(addPost({ content, image: url }));
-          getPostByUserId(userId);
-          formRef.current.reset();
-        }
-      })
-      .catch((error) => {
-        console.log(error.response.data.message);
-      });
+    if (content || postUrl) {
+      axios
+        .post(
+          "http://localhost:5000/posts/",
+          { content, image: postUrl },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+        .then((res) => {
+          if (res.data.success) {
+            dispatch(addPost({ content, image: postUrl }));
+            setContent("");
+            setPostUrl("");
+            getPostByUserId(userId);
+            formRef.current.reset();
+          }
+        })
+        .catch((error) => {
+          console.log(error.response.data.message);
+        });
+    }
   };
   //=================================
 
@@ -456,7 +460,7 @@ const Profile = () => {
     })
       .then((resp) => resp.json())
       .then((data) => {
-        setUrl(data.url);
+        setPostUrl(data.url);
       })
       .catch((err) => console.log(err));
   };
@@ -479,6 +483,9 @@ const Profile = () => {
       })
       .catch((err) => console.log(err));
   };
+
+  // ==================================
+
   const uploadUserImage = () => {
     const data = new FormData();
 
