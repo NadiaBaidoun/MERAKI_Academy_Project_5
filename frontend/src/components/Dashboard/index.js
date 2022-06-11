@@ -20,6 +20,10 @@ import {
 import jwt_decode from "jwt-decode";
 import { Link } from "react-router-dom";
 
+import { MdOutlinePermMedia } from "react-icons/md";
+
+// import { PermMedia, Label, Room, EmojiEmotions } from "@material-ui/icons";
+
 const Dashboard = () => {
   const [content, setContent] = useState("");
   const [show, setShow] = useState(false);
@@ -427,31 +431,63 @@ const Dashboard = () => {
   return (
     <div className="post-container">
       <div className="post-container">
-        <h1>
-          {jwt_decode(token).firstName} {jwt_decode(token).lastName}
-        </h1>
-
-        <form ref={addPostRef} className="addPost" onSubmit={newPost}>
-          <textarea
-            placeholder="article description here"
-            onChange={(e) => setContent(e.target.value)}
-          ></textarea>
-          <div className="post-action">
-            <input
-              type="file"
-              onChange={(e) => {
-                imageRef.current = e.target.files[0];
-                uploadImage();
-              }}
-            />
-            <button>Add</button>
+        <div className="share">
+          <div className="shareWrapper">
+            <form ref={addPostRef} className="addPost" onSubmit={newPost}>
+              <div className="shareTop">
+                {" "}
+                <img
+                  className="shareProfileImg"
+                  src={`${jwt_decode(token).image}`}
+                  alt=""
+                />
+                <input
+                  placeholder={`What's on your mind ${
+                    jwt_decode(token).firstName
+                  }`}
+                  className="shareInput"
+                  onChange={(e) => setContent(e.target.value)}
+                />
+              </div>
+              <hr className="shareHr"></hr>
+              <div className="shareBottom">
+                <div className="shareOptions">
+                  <div className="shareOption">
+                    <label htmlFor="post-img" className="label-post-img">
+                      <input
+                        hidden
+                        id="post-img"
+                        type="file"
+                        onChange={(e) => {
+                          imageRef.current = e.target.files[0];
+                          uploadImage();
+                        }}
+                      />
+                      <MdOutlinePermMedia className="shareIcon" />
+                      <span className="shareOptionText">Photo</span>
+                    </label>
+                  </div>
+                  <button className="shareButton">Add</button>
+                </div>
+              </div>
+            </form>
           </div>
-        </form>
+        </div>
       </div>
       {show &&
         posts.map((post, index) => {
           return (
             <div key={index}>
+              <div className="post">
+                <div className="postWrapper">
+                  <div className="postTop">
+                    <div className="postTopLeft">     <img  className="posteProfileImg" src={`${post.image}`}  alt=""/></div>
+                    <div className="postTopRight"></div>
+                  </div>
+                  <div className="postCenter"></div>
+                  <div className="postBottom"></div>
+                </div>
+              </div>
               <div className="post">
                 {post.user_id == userId ? (
                   <div className="dd-container">
