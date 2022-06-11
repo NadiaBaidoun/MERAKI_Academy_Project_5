@@ -16,6 +16,8 @@ import jwt_decode from "jwt-decode";
 import { setUsers, updateUserById } from "../Redux/reducers/users";
 import { deleteFriendById, setFriends } from "../Redux/reducers/friends";
 import { IoMdCloseCircle } from "react-icons/io";
+import { ImCamera } from "react-icons/im";
+
 import { Link, useNavigate } from "react-router-dom";
 import {
   addComment,
@@ -152,7 +154,7 @@ const Profile = () => {
 
   //=================================
 
-  const getAllComments = async () => {
+  const getAllComments = () => {
     axios
       .get(`http://localhost:5000/comments`)
       .then((result) => {
@@ -345,6 +347,8 @@ const Profile = () => {
         if (result.data.success) {
           getUserById(userId);
         }
+        seturlCover("");
+        seturlImage("");
       })
       .catch((error) => {
         {
@@ -584,40 +588,109 @@ const Profile = () => {
       ) : (
         ""
       )}
+      {/* ====================== */}
+      <div className="profile-header">
+        {urlCover ? (
+          <div className="cover-choice">
+            <p>Change Cover?</p>
+            <div className="choices">
+              <button
+                className="cancel-cover"
+                onClick={() => {
+                  seturlCover("");
+                }}
+              >
+                Cancel
+              </button>
+              <button className="cover-save" onClick={editProfile}>
+                Save changes
+              </button>
+            </div>
+          </div>
+        ) : (
+          <></>
+        )}
+        <div className="header-container">
+          <div className="cover">
+            {users.map((el) => {
+              return (
+                <div key={el.id}>
+                  {urlCover ? (
+                    <img className="cover-img" src={urlCover} />
+                  ) : (
+                    <img className="cover-img" src={el.cover} />
+                  )}
+                </div>
+              );
+            })}
 
-      <div className="cover">
-        {users.map((el) => {
-          return <img key={el.id} src={el.cover} />;
-        })}
-        <div>
-          <input
-            type="file"
-            onChange={(e) => {
-              coverRef.current = e.target.files[0];
-              uploadCover();
-            }}
-          />
+            <label htmlFor="cover-input" className="cover-input-label">
+              <input
+                id="cover-input"
+                hidden
+                type="file"
+                onChange={(e) => {
+                  coverRef.current = e.target.files[0];
+                  uploadCover();
+                }}
+              />
+              <ImCamera className="camera" /> Edit cover photo
+            </label>
+          </div>
+          {/* ================================= */}
+          <div className="profile-container">
+            <div className="profile">
+              {users.map((el) => {
+                return (
+                  <div className="img-container" key={el.id}>
+                    <img className="image-photo" src={el.image} />;
+                  </div>
+                );
+              })}
 
-          <button onClick={editProfile}>UPDATE COVER</button>
+              <label htmlFor="profile-input" className="profile-input-label">
+                <input
+                  id="profile-input"
+                  type="file"
+                  hidden
+                  onChange={(e) => {
+                    profileRef.current = e.target.files[0];
+                    uploadUserImage();
+                  }}
+                />
+                <ImCamera className="camera-profile" />
+              </label>
+              {/* <button onClick={editProfile}>UpdatePhoto</button> */}
+            </div>
+
+            <h1>
+              {jwt_decode(token).firstName} {jwt_decode(token).lastName}
+            </h1>
+          </div>
+          <div className="profile-change">
+            <img src={urlImage} />
+            <div className="profile-choice">
+              <p>Change profile picture?</p>
+              <div className="choices">
+                <button
+                  className="cancel-profile"
+                  onClick={() => {
+                    seturlImage("");
+                  }}
+                >
+                  Cancel
+                </button>
+                <button className="profile-save" onClick={editProfile}>
+                  Save changes
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <div className="profilePic">
-        {users.map((el) => {
-          return <img key={el.id} src={el.image} />;
-        })}
-        <input
-          type="file"
-          onChange={(e) => {
-            profileRef.current = e.target.files[0];
-            uploadUserImage();
-          }}
-        />
 
-        <button onClick={editProfile}>UpdatePhoto</button>
-      </div>
-      <h1>
-        {jwt_decode(token).firstName} {jwt_decode(token).lastName}
-      </h1>
+      {/* ================================= */}
+
       <div className="post-container">
         <form ref={formRef} onSubmit={newPost} className="addPost">
           <h1>

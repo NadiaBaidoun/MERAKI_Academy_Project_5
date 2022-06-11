@@ -1,3 +1,174 @@
+.profile-header {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background-color: whitesmoke;
+  box-shadow: 0 1px 3px rgb(188, 188, 188);
+}
+.header-container {
+  width: 80%;
+  height: 800px;
+}
+
+.cover {
+  position: relative;
+  border-radius: 10px;
+  height: 550px;
+  width: 100%;
+  transform: translateY(-10%);
+  background-color: rgba(190, 190, 190, 0.312);
+  border-style: none;
+}
+
+.cover-input-label {
+  border: 1px solid #ccc;
+  width: 12rem;
+  height: 3rem;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 5px;
+  position: absolute;
+  right: 2%;
+  bottom: 2%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  background-color: white;
+  color: black;
+  cursor: pointer;
+}
+
+.camera {
+  height: 20px;
+  width: 20px;
+}
+
+.cover-choice {
+  background-color: rgba(0, 0, 0, 0.533);
+  width: 100%;
+  position: absolute;
+  top: 0;
+  z-index: 2;
+  height: 5rem;
+  padding: 0 15px;
+  display: flex;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: bold;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.choices {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 25%;
+  height: 100%;
+  gap: 1rem;
+}
+
+.cancel-cover {
+  width: 10vw;
+  height: 2.8rem;
+  margin: auto;
+  background-color: transparent;
+  background-color: rgba(255, 255, 255, 0.204);
+}
+.cancel-cover:hover {
+  background-color: rgba(255, 255, 255, 0.37);
+}
+
+.cover-save {
+  margin: auto;
+  background-color: #2374e1;
+}
+.cover-save:hover {
+  background-color: #2980f1;
+}
+
+.cover-img {
+  object-fit: cover;
+  width: 100%;
+  height: 550px;
+  border-radius: 10px;
+}
+
+.profile-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  position: absolute;
+  top: 55%;
+  left: 12%;
+}
+
+.profile {
+  border-radius: 50%;
+  height: 255px;
+  width: 248px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-photo {
+  object-fit: cover;
+  width: 250px;
+  height: 250px;
+  border: 8px solid white;
+  border-radius: 50%;
+}
+
+.profile-input-label {
+  position: absolute;
+  bottom: 2%;
+  right: 5%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(195, 195, 195);
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.camera-profile {
+  height: 25px;
+  width: 25px;
+  color: black;
+}
+
+.profile-change {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 1px 5px;
+  width: 600px;
+  height: 500px;
+  background-color: rgb(210, 210, 210);
+  display: flex;
+  align-items: center;
+}
+
+.profile-choice {
+  position: absolute;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.533);
+}
+
 .left-info {
   position: sticky;
   top: 0;
@@ -11,14 +182,9 @@
   justify-content: center;
 }
 
-.cover {
-  background-color: rgba(190, 190, 190, 0.312);
-  border: 1px black solid;
+/* .prof_img {
   width: 100%;
-}
-.prof_img {
-  width: 100%;
-}
+} */
 .upload_cover {
   background-color: rgb(255, 255, 255);
   color: gray;
@@ -31,38 +197,19 @@
   background-color: red;
 }
 
-.profilePic {
+/* .profilePic {
   margin: 10px;
   height: 300px;
   width: 150px;
 
   display: flex;
   flex-direction: column;
-}
+} */
 
 .profilePic img {
   border: 5px solid black;
   border-radius: 50%;
   height: 150px;
-  width: 100%;
-}
-
-.cover {
-  height: 500px;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.cover input {
-  height: 60px;
-  width: 110px;
-}
-
-.cover img {
-  height: 350px;
-  object-fit: fill;
   width: 100%;
 }
 
