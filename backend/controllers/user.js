@@ -240,6 +240,34 @@ const updateUserById = (req, res) => {
     }
   });
 };
+
+// function to get all users
+const getAllUsers = (req, res) => {
+  const query = `SELECT * FROM users WHERE is_deleted=0;`;
+
+  connection.query(query, (err, result) => {
+    if (err) {
+      return res.status(500).json({
+        success: false,
+        massage: "Server error",
+        err,
+      });
+    }
+    if (!result.length) {
+      return res.status(404).json({
+        success: false,
+        massage: "user not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      massage: "All users",
+      result,
+    });
+  });
+};
+
 module.exports = {
   followUser,
   unFollowUser,
@@ -247,5 +275,6 @@ module.exports = {
   getAllFriends,
   deleteUserById,
   getUserByName,
-  updateUserById
+  updateUserById,
+  getAllUsers,
 };
