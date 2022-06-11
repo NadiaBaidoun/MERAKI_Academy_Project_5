@@ -29,8 +29,11 @@ button {
 .user-name {
   display: flex;
   align-items: center;
-  width: 100%;
   gap: 1em;
+  padding: 0 18px;
+}
+.reg-names {
+  width: 100%;
 }
 
 .formInput h2 {
@@ -146,4 +149,9 @@ span {
 
 .notExist {
   display: block;
+}
+
+.input-div {
+  margin: 0 10px;
+  padding: 0 10px;
 }

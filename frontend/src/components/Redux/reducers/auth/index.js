@@ -5,6 +5,7 @@ const authSlice = createSlice({
   initialState: {
     token: localStorage.getItem("token") || "",
     isLoggedIn: localStorage.getItem("token") ? true : false,
+    regForm: false,
   },
   reducers: {
     login: (state, action) => {
@@ -17,9 +18,12 @@ const authSlice = createSlice({
       state.isLoggedIn = false;
       localStorage.clear();
     },
+    showForm: (state, action) => {
+      state.regForm = action.payload;
+    },
   },
 });
 
-export const { login, logout } = authSlice.actions;
+export const { login, logout, showForm } = authSlice.actions;
 
 export default authSlice.reducer;
