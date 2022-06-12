@@ -427,6 +427,9 @@ const UserProfile = () => {
   }, []);
 
   return (
+
+    <div className="user-container">
+
     <div className="post-container">
       {PopupFriend ? (
         <div className="popup">
@@ -483,12 +486,13 @@ const UserProfile = () => {
       ) : (
         ""
       )}
+
       <div className="cover">
         {users.map((el) => {
           return <img key={el.id} src={el.cover} />;
         })}
       </div>
-      <div className="profilePic">
+      <div className="profilePic" >
         {users.map((el) => {
           return <img key={el.id} src={el.image} />;
         })}
