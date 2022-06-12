@@ -599,40 +599,7 @@ const Dashboard = () => {
                     </div>
                   <div className="postBottom"></div>
                   <div className="postBottomLeft">
-
-                  </div>
-                  <div className="postBottomRight"></div>
-                </div>
-              </div>{post.id == dropdownId && showUpdate ? (
-                  <form
-                    className="update-form"
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      setShowUpdate(false);
-                      editpost(post.id);
-                    }}
-                    ref={formRef}
-                  >
-                    <input
-                      type="file"
-                      onChange={(e) => {
-                        imageEditRef.current = e.target.files[0];
-                        editPostImage();
-                      }}
-                    />
-                    <input
-                      defaultValue={post.content}
-                      onChange={(e) => {
-                        setUpdatecontent(e.target.value);
-                      }}
-                    />
-                    <button>Update</button>
-                  </form>
-                ) : (
-                  ""
-                )}
-              <div className="like-div">
-                <button
+                  <button
                   className="like"
                   onClick={(e) => {
                     post.like.includes(userId)
@@ -642,7 +609,7 @@ const Dashboard = () => {
                 >
                   {post.like.includes(userId) ? "Unlike" : "Like"}
                 </button>
-                <p>{post.like.length}</p>
+                <span className="postLikeCounter">{post.like.length}</span>
                 <button
                   id={post.id}
                   className="like"
@@ -656,10 +623,10 @@ const Dashboard = () => {
                     commentDiv.style.display = "block";
                     commentSection.focus();
                   }}
-                >
-                  Comment
+                >   Comment
                 </button>
-              </div>
+                  </div>
+                  <div className="postBottomRight">
               <div className="comment-div">
                 <button
                   id={post.id}
@@ -816,6 +783,37 @@ const Dashboard = () => {
                   </form>
                 </div>
               </div>
+                  </div>
+                </div>
+              </div>{post.id == dropdownId && showUpdate ? (
+                  <form
+                    className="update-form"
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      setShowUpdate(false);
+                      editpost(post.id);
+                    }}
+                    ref={formRef}
+                  >
+                    <input
+                      type="file"
+                      onChange={(e) => {
+                        imageEditRef.current = e.target.files[0];
+                        editPostImage();
+                      }}
+                    />
+                    <input
+                      defaultValue={post.content}
+                      onChange={(e) => {
+                        setUpdatecontent(e.target.value);
+                      }}
+                    />
+                    <button>Update</button>
+                  </form>
+                ) : (
+                  ""
+                )}
+
             </div>
           );
         })}
