@@ -516,21 +516,33 @@ const Dashboard = () => {
                 <div className="postWrapper">
                   <div className="postTop">
                     <div className="postTopLeft">
-                      {" "}
                       <img
-                        className="posteProfileImg"
+                        className="postProfileImg"
                         src={`${post.image}`}
                         alt=""
                       />
-                    </div>
-                    <div className="postTopRight"></div>
-                  </div>
-                  <div className="postCenter"></div>
-                  <div className="postBottom"></div>
-                </div>
+                      <span className="postUsername">
+                        {post.user_id === userId ? (
+                  <Link
+                    style={{ color: "black" }}
+                    className="link"
+                    to={`/profile`}
+                  >
+                    <h3>{post.userName}</h3>
+                  </Link>
+                ) : (
+                  <Link
+                    style={{ color: "black" }}
+                    className="link"
+                    to={`/users/${post.user_id}`}
+                  >
+                    <h3>{post.userName}</h3>
+                  </Link>
+                )}
+                </span>                      
               </div>
-              <div className="post">
-                {post.user_id == userId ? (
+                    <div className="postTopRight">
+                    {post.user_id == userId ? (
                   <div className="dd-container">
                     <button
                       id={post.id}
@@ -575,28 +587,23 @@ const Dashboard = () => {
                 ) : (
                   ""
                 )}
-                {post.user_id === userId ? (
-                  <Link
-                    style={{ color: "black" }}
-                    className="link"
-                    to={`/profile`}
-                  >
-                    <h3>{post.userName}</h3>
-                  </Link>
-                ) : (
-                  <Link
-                    style={{ color: "black" }}
-                    className="link"
-                    to={`/users/${post.user_id}`}
-                  >
-                    <h3>{post.userName}</h3>
-                  </Link>
-                )}
+                    </div>
+                  </div>
+                  <div className="postCenter">
+                    <span className="postText">{post.content}</span>
+                    <img
+                        className="postImg"
+                        src={`${post.image}`}
+                        alt=""
+                      />
+                    </div>
+                  <div className="postBottom"></div>
+                  <div className="postBottomLeft">
 
-                <p>{post.content}</p>
-                <img className="prof_img" src={post.image} />
-
-                {post.id == dropdownId && showUpdate ? (
+                  </div>
+                  <div className="postBottomRight"></div>
+                </div>
+              </div>{post.id == dropdownId && showUpdate ? (
                   <form
                     className="update-form"
                     onSubmit={(e) => {
@@ -624,7 +631,6 @@ const Dashboard = () => {
                 ) : (
                   ""
                 )}
-              </div>
               <div className="like-div">
                 <button
                   className="like"
