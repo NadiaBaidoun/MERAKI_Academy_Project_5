@@ -124,29 +124,59 @@ const Search = () => {
       </div>
       <div className={searchBox ? "search-div" : "hide"}>
         <div className="users">
-          {allUser
-            .filter((el) => {
-              return el.userName.includes(searchName.current.value);
-            })
-            .map((user) => {
-              return (
-                <div
-                  id="Link"
-                  className={`user-search ${user.id}`}
-                  key={user.id}
-                  onClick={(e) => {
-                    const id = parseInt(e.target.className.split(" ")[1]);
-                    userId === id
-                      ? navigate("/profile")
-                      : navigate(`/users/${id}`);
-                    nameRef.current.reset();
-                    setSearchBox(false);
-                  }}
-                >
-                  {user.userName}
-                </div>
-              );
-            })}
+          {searchName.current.value ? (
+            <>
+              {allUser
+                .filter((el) => {
+                  return el.userName.includes(searchName.current.value);
+                })
+                .map((user) => {
+                  return (
+                    <div
+                      id="Link"
+                      className={`user-search ${user.id}`}
+                      key={user.id}
+                      onClick={(e) => {
+                        const id = parseInt(e.target.className.split(" ")[1]);
+                        userId === id
+                          ? navigate("/profile")
+                          : navigate(`/users/${id}`);
+                        nameRef.current.reset();
+                        setSearchBox(false);
+                      }}
+                    >
+                      {user.userName}
+                    </div>
+                  );
+                })}
+            </>
+          ) : (
+            <>
+              {allUser
+                .filter((el, i) => {
+                  return i < 5;
+                })
+                .map((user) => {
+                  return (
+                    <div
+                      id="Link"
+                      className={`user-search ${user.id}`}
+                      key={user.id}
+                      onClick={(e) => {
+                        const id = parseInt(e.target.className.split(" ")[1]);
+                        userId === id
+                          ? navigate("/profile")
+                          : navigate(`/users/${id}`);
+                        nameRef.current.reset();
+                        setSearchBox(false);
+                      }}
+                    >
+                      {user.userName}
+                    </div>
+                  );
+                })}
+            </>
+          )}
         </div>
 
         {name ? (
