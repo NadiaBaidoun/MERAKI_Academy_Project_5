@@ -20,6 +20,11 @@ import {
 import jwt_decode from "jwt-decode";
 import { Link } from "react-router-dom";
 
+import { MdOutlinePermMedia } from "react-icons/md";
+import { setUsers } from "../Redux/reducers/users";
+
+// import { PermMedia, Label, Room, EmojiEmotions } from "@material-ui/icons";
+
 const Dashboard = () => {
   const [content, setContent] = useState("");
   const [show, setShow] = useState(false);
@@ -71,8 +76,34 @@ const Dashboard = () => {
     };
   });
 
+  const { users } = useSelector((state) => {
+    return {
+      users: state.users.users,
+    };
+  });
+
   const userId = jwt_decode(token).userId;
   //=================================
+
+  const getUserById = (id) => {
+    axios
+      .get(`http://localhost:5000/user/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((result) => {
+        if (result.data.success) {
+          // setUsers(result.data.result);
+          dispatch(setUsers(result.data.result));
+          setShow(true);
+        }
+      })
+      .catch((error) => {
+        setShow(false);
+        console.log(error.response.data.message);
+      });
+  };
 
   const newPost = (e) => {
     e.preventDefault();
@@ -429,38 +460,96 @@ const Dashboard = () => {
   useEffect(() => {
     getAllPosts();
     getAllComments();
+    getUserById(userId);
   }, []);
 
   return (
     <div className="post-container">
       <div className="post-container">
-        <h1>
-          {jwt_decode(token).firstName} {jwt_decode(token).lastName}
-        </h1>
-
-        <form ref={addPostRef} className="addPost" onSubmit={newPost}>
-          <textarea
-            placeholder="article description here"
-            onChange={(e) => setContent(e.target.value)}
-          ></textarea>
-          <div className="post-action">
-            <input
-              type="file"
-              onChange={(e) => {
-                imageRef.current = e.target.files[0];
-                uploadImage();
-              }}
-            />
-            <button>Add</button>
+        <div className="share">
+          <div className="shareWrapper">
+            <form ref={addPostRef} className="addPost" onSubmit={newPost}>
+              <div className="shareTop">
+                {show &&
+                  users.map((user,index) => {
+                    console.log("User", user);
+                    return (
+                      <img
+                      key={index}
+                        className="shareProfileImg"
+                        src={user.image}
+                        alt=""
+                      />
+                    );
+                  })}
+                <input
+                  placeholder={`What's on your mind ${
+                    jwt_decode(token).firstName
+                  }`}
+                  className="shareInput"
+                  onChange={(e) => setContent(e.target.value)}
+                />
+              </div>
+              <hr className="shareHr"></hr>
+              <div className="shareBottom">
+                <div className="shareOptions">
+                  <div className="shareOption">
+                    <label htmlFor="post-img" className="label-post-img">
+                      <input
+                        hidden
+                        id="post-img"
+                        type="file"
+                        onChange={(e) => {
+                          imageRef.current = e.target.files[0];
+                          uploadImage();
+                        }}
+                      />
+                      <MdOutlinePermMedia className="shareIcon" />
+                      <span className="shareOptionText">Photo</span>
+                    </label>
+                  </div>
+                  <button className="shareButton">Add</button>
+                </div>
+              </div>
+            </form>
           </div>
-        </form>
+        </div>
       </div>
       {show &&
         posts.map((post, index) => {
           return (
             <div key={index}>
               <div className="post">
-                {post.user_id == userId ? (
+                <div className="postWrapper">
+                  <div className="postTop">
+                    <div className="postTopLeft">
+                      <img
+                        className="postProfileImg"
+                        src={`${post.image}`}
+                        alt=""
+                      />
+                      <span className="postUsername">
+                        {post.user_id === userId ? (
+                  <Link
+                    style={{ color: "black" }}
+                    className="link"
+                    to={`/profile`}
+                  >
+                    <h3>{post.userName}</h3>
+                  </Link>
+                ) : (
+                  <Link
+                    style={{ color: "black" }}
+                    className="link"
+                    to={`/users/${post.user_id}`}
+                  >
+                    <h3>{post.userName}</h3>
+                  </Link>
+                )}
+                </span>                      
+              </div>
+                    <div className="postTopRight">
+                    {post.user_id == userId ? (
                   <div className="dd-container">
                     <button
                       id={post.id}
@@ -505,6 +594,20 @@ const Dashboard = () => {
                 ) : (
                   ""
                 )}
+
+                    </div>
+                  </div>
+                  <div className="postCenter">
+                    <span className="postText">{post.content}</span>
+                    <img
+                        className="postImg"
+                        src={`${post.image}`}
+                        alt=""
+                      />
+                    </div>
+                  <div className="postBottom"></div>
+                  <div className="postBottomLeft">
+                  <button
                 {post.user_id === userId ? (
                   <Link
                     style={{ color: "black" }}
@@ -557,6 +660,7 @@ const Dashboard = () => {
               </div>
               <div className="like-div">
                 <button
+
                   className="like"
                   onClick={(e) => {
                     post.like.includes(userId)
@@ -566,7 +670,7 @@ const Dashboard = () => {
                 >
                   {post.like.includes(userId) ? "Unlike" : "Like"}
                 </button>
-                <p>{post.like.length}</p>
+                <span className="postLikeCounter">{post.like.length}</span>
                 <button
                   id={post.id}
                   className="like"
@@ -580,10 +684,10 @@ const Dashboard = () => {
                     commentDiv.style.display = "block";
                     commentSection.focus();
                   }}
-                >
-                  Comment
+                >   Comment
                 </button>
-              </div>
+                  </div>
+                  <div className="postBottomRight">
               <div className="comment-div">
                 <button
                   id={post.id}
@@ -740,6 +844,37 @@ const Dashboard = () => {
                   </form>
                 </div>
               </div>
+                  </div>
+                </div>
+              </div>{post.id == dropdownId && showUpdate ? (
+                  <form
+                    className="update-form"
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      setShowUpdate(false);
+                      editpost(post.id);
+                    }}
+                    ref={formRef}
+                  >
+                    <input
+                      type="file"
+                      onChange={(e) => {
+                        imageEditRef.current = e.target.files[0];
+                        editPostImage();
+                      }}
+                    />
+                    <input
+                      defaultValue={post.content}
+                      onChange={(e) => {
+                        setUpdatecontent(e.target.value);
+                      }}
+                    />
+                    <button>Update</button>
+                  </form>
+                ) : (
+                  ""
+                )}
+
             </div>
           );
         })}
