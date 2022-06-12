@@ -21,6 +21,7 @@ import jwt_decode from "jwt-decode";
 import { Link } from "react-router-dom";
 
 import { MdOutlinePermMedia } from "react-icons/md";
+import { setUsers } from "../Redux/reducers/users";
 
 // import { PermMedia, Label, Room, EmojiEmotions } from "@material-ui/icons";
 
@@ -74,8 +75,34 @@ const Dashboard = () => {
     };
   });
 
+  const { users } = useSelector((state) => {
+    return {
+      users: state.users.users,
+    };
+  });
+
   const userId = jwt_decode(token).userId;
   //=================================
+
+  const getUserById = (id) => {
+    axios
+      .get(`http://localhost:5000/user/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((result) => {
+        if (result.data.success) {
+          // setUsers(result.data.result);
+          dispatch(setUsers(result.data.result));
+          setShow(true);
+        }
+      })
+      .catch((error) => {
+        setShow(false);
+        console.log(error.response.data.message);
+      });
+  };
 
   const newPost = (e) => {
     e.preventDefault();
@@ -426,6 +453,7 @@ const Dashboard = () => {
   useEffect(() => {
     getAllPosts();
     getAllComments();
+    getUserById(userId);
   }, []);
 
   return (
@@ -435,12 +463,18 @@ const Dashboard = () => {
           <div className="shareWrapper">
             <form ref={addPostRef} className="addPost" onSubmit={newPost}>
               <div className="shareTop">
-                {" "}
-                <img
-                  className="shareProfileImg"
-                  src={`${jwt_decode(token).image}`}
-                  alt=""
-                />
+                {show &&
+                  users.map((user,index) => {
+                    console.log("User", user);
+                    return (
+                      <img
+                      key={index}
+                        className="shareProfileImg"
+                        src={user.image}
+                        alt=""
+                      />
+                    );
+                  })}
                 <input
                   placeholder={`What's on your mind ${
                     jwt_decode(token).firstName
@@ -481,7 +515,14 @@ const Dashboard = () => {
               <div className="post">
                 <div className="postWrapper">
                   <div className="postTop">
-                    <div className="postTopLeft">     <img  className="posteProfileImg" src={`${post.image}`}  alt=""/></div>
+                    <div className="postTopLeft">
+                      {" "}
+                      <img
+                        className="posteProfileImg"
+                        src={`${post.image}`}
+                        alt=""
+                      />
+                    </div>
                     <div className="postTopRight"></div>
                   </div>
                   <div className="postCenter"></div>
