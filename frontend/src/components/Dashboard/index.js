@@ -42,6 +42,7 @@ const Dashboard = () => {
   const formRef = useRef("");
   const addPostRef = useRef("");
   const addCommentRef = useRef("");
+  const updatePostRef = useRef("");
 
   const imageRef = useRef("");
   const [postUrl, setPostUrl] = useState("");
@@ -258,17 +259,23 @@ const Dashboard = () => {
 
   //=================================
 
-  const editpost = (id) => {
+  const editpost = (id, image) => {
     axios
       .put(`http://localhost:5000/posts/${id}`, {
         content: updatecontent,
-        image: postEditUrl,
+        image: postEditUrl || image,
       })
       .then((result) => {
         if (result.data.success) {
           dispatch(
-            updatePostById({ content: updatecontent, image: postEditUrl, id })
+            updatePostById({
+              content: updatecontent,
+              image: postEditUrl || image,
+              id,
+            })
           );
+          setPostEditUrl("");
+          setContent("");
         }
       })
       .catch((error) => {
@@ -587,6 +594,7 @@ const Dashboard = () => {
                 ) : (
                   ""
                 )}
+
                     </div>
                   </div>
                   <div className="postCenter">
@@ -600,6 +608,59 @@ const Dashboard = () => {
                   <div className="postBottom"></div>
                   <div className="postBottomLeft">
                   <button
+                {post.user_id === userId ? (
+                  <Link
+                    style={{ color: "black" }}
+                    className="link"
+                    to={`/profile`}
+                  >
+                    <h3>{post.userName}</h3>
+                  </Link>
+                ) : (
+                  <Link
+                    style={{ color: "black" }}
+                    className="link"
+                    to={`/users/${post.user_id}`}
+                  >
+                    <h3>{post.userName}</h3>
+                  </Link>
+                )}
+
+                <p>{post.content}</p>
+                <img className="prof_img" src={post.image} />
+
+                {post.id == dropdownId && showUpdate ? (
+                  <form
+                    ref={updatePostRef}
+                    className="update-form"
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      setShowUpdate(false);
+                      editpost(post.id, post.image);
+                    }}
+                  >
+                    <input
+                      type="file"
+                      onChange={(e) => {
+                        imageEditRef.current = e.target.files[0];
+                        editPostImage();
+                      }}
+                    />
+                    <input
+                      defaultValue={post.content}
+                      onChange={(e) => {
+                        setUpdatecontent(e.target.value);
+                      }}
+                    />
+                    <button>Update</button>
+                  </form>
+                ) : (
+                  ""
+                )}
+              </div>
+              <div className="like-div">
+                <button
+
                   className="like"
                   onClick={(e) => {
                     post.like.includes(userId)
