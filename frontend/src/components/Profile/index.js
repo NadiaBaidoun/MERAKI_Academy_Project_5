@@ -834,6 +834,7 @@ const Profile = () => {
                 className="edit-info"
                 onClick={() => {
                   setPopupIntro(true);
+                  setPopupFriend(false);
                 }}
               >
                 Edit details
@@ -852,6 +853,7 @@ const Profile = () => {
                 <button
                   onClick={(e) => {
                     setPopupFriend(true);
+                    setPopupIntro(false);
                   }}
                 >
                   See all friends

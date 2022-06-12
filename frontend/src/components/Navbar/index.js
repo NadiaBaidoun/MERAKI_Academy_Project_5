@@ -7,6 +7,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../Redux/reducers/auth";
 import Search from "../Search";
 import { FaFacebook } from "react-icons/fa";
+import { AiFillHome } from "react-icons/ai";
+import { BsMessenger } from "react-icons/bs";
+import { MdNotifications } from "react-icons/md";
+import { ImExit } from "react-icons/im";
 const Navbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -19,6 +23,7 @@ const Navbar = () => {
 
   const signOut = () => {
     dispatch(logout());
+    navigate("/");
   };
 
   return (
@@ -30,16 +35,33 @@ const Navbar = () => {
               <Search />
             </div>
           </div>
+          <div className="navbar-icons">
+            <div
+              className="nav-mid-div"
+              onClick={() => {
+                navigate("/home");
+              }}
+            >
+              <AiFillHome className="nav-mid-icon" />
+            </div>
+
+            <div className="nav-mid-div">
+              <BsMessenger className="nav-mid-icon" />
+            </div>
+
+            <div className="nav-mid-div">
+              <MdNotifications className="nav-mid-icon" />
+            </div>
+          </div>
+
           <div className="Links-container">
-            <Link className="link" to={"/home"}>
-              Home
-            </Link>
             <Link className="link" to={"/profile"}>
               Profile
             </Link>
-            <Link className="link" to={"/"} onClick={signOut}>
-              Logout
-            </Link>
+
+            <div className="logout" onClick={signOut}>
+              <ImExit className="logout-icons" /> Logout
+            </div>
           </div>
         </div>
       ) : (
