@@ -761,7 +761,6 @@ const Profile = () => {
                           <p>{friend.userName}</p>
                         </Link>
                         <button
-                          className="like"
                           onClick={() => {
                             unFollowFriend(friend.target_id);
                           }}

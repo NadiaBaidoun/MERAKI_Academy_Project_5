@@ -275,6 +275,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 10px;
+  margin: 10px;
 }
 
 .detalis-conatiner {
@@ -329,6 +330,15 @@ textarea::-webkit-scrollbar {
   border-radius: 5px;
   max-height: 330px;
   border: 1px solid #bfbfbf;
+}
+
+.info-popup button{
+  background-color: #2374e1;
+  font-size: 1.4rem;
+}
+
+.info-popup button:hover{
+  opacity: 0.9;
 }
 
 .friend-left {
@@ -426,4 +436,22 @@ textarea::-webkit-scrollbar {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
+}
+
+.friend-div button {
+  background-color: transparent;
+  width: 8rem;
+  color: black;
+  margin: 0 10px;
+  background-color: rgba(63, 63, 63, 0.204);
+}
+
+.friend-div button:hover {
+  /* background-color: rgb(195, 195, 195); */
+  background-color: rgb(253, 54, 54);
+}
+
+.close-btn:hover {
+  background-color: rgb(212, 212, 212);
+  border-radius: 50%;
 }
