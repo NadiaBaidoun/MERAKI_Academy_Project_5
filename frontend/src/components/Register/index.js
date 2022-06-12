@@ -55,7 +55,8 @@ const Register = () => {
       })
       .then((result) => {
         setMessage(result.data.massage);
-        // navigate("/login");
+
+        dispatch(showForm(false));
       })
       .catch((error) => {
         setError(error.response.data.massage);

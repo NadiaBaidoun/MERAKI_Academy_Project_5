@@ -381,7 +381,7 @@ const UserProfile = () => {
     getAllComments();
     getAllFriends();
     getMyFriends();
-  }, []);
+  }, [id]);
 
   return (
     <div className="post-container">
