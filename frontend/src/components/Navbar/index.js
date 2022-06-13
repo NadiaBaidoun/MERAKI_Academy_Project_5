@@ -29,12 +29,13 @@ const Navbar = () => {
       token: state.auth.token,
     };
   });
-  const userId = jwt_decode(token).userId;
+
+  const userId = token ? jwt_decode(token).userId : null;
 
   //=================================
-  const getUserById = (id) => {
+  const getUserById = () => {
     axios
-      .get(`http://localhost:5000/user/${id}`, {
+      .get(`http://localhost:5000/user/${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -55,14 +56,17 @@ const Navbar = () => {
   };
 
   useEffect(() => {
-    getUserById(userId);
+    if (token) {
+      getUserById();
+    }
+
     document.addEventListener("mousedown", (e) => {
       if (e.target.id !== "Link") {
         setShowNotification(false);
         setShowMessages(false);
       }
     });
-  }, []);
+  }, [token]);
 
   return (
     <div className="navbar-container">
@@ -134,7 +138,7 @@ const Navbar = () => {
               );
             })}
 
-            <div className="logout" onClick={signOut}>
+            <div className="logout" onClick={() => signOut()}>
               <ImExit className="logout-icons" />
             </div>
           </div>
