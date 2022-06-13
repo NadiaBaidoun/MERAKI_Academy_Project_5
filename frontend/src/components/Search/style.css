@@ -3,7 +3,7 @@
   align-items: center;
   justify-content: center;
   position: relative;
-  width: 24vw;
+  width: 22vw;
 }
 
 .search-action {
@@ -16,7 +16,9 @@
 
 .search-container input {
   border-radius: 50px;
-  width: 21rem;
+  width: 18.5rem;
+  background-color: rgb(238, 238, 238);
+  height: 3.2rem;
 }
 
 .logo {
@@ -25,48 +27,71 @@
   height: 50px;
   background-color: white;
   border-radius: 50%;
-  border: 1px solid rgb(54, 54, 54);
   cursor: pointer;
 }
 
 .search-div {
-  background-color: rgb(54, 54, 54);
-  height: 34rem;
-  width: 26.3rem;
+  background-color: #fff;
+  min-height: 10rem;
+  width: 26rem;
   display: flex;
   flex-direction: column;
   position: absolute;
   top: 2%;
-  border-radius: 5px;
-  box-shadow: 0 1px 5px;
+  left: -8%;
+  border-radius: 8px;
+  box-shadow: 0 1px 9px rgba(122, 122, 122, 0.439);
 }
 
 .users {
-  margin-top: 5em;
-  padding-left: 2em;
+  margin-top: 3.8em;
+  padding: 10px;
+  margin-left: 1em;
   height: 75%;
   display: flex;
   flex-direction: column;
-  color: white;
 }
+
+.search-result {
+  display: flex;
+  flex-direction: column;
+}
+
 .user-search {
-  height: 5em;
-  margin: 10px;
-  font-size: 1.5em;
+  height: 4em;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0 7px;
+  word-wrap: break-word;
 }
 
 .user-search:hover {
-  background-color: rgb(74, 74, 74);
-  border-radius: 5px;
+  background-color: rgb(225, 225, 225);
+  border-radius: 8px;
   cursor: pointer;
 }
 
+.left-arrow {
+  height: 45px;
+  width: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
 .back-icon {
-  color: rgb(122, 122, 122);
-  width: 30px;
-  height: 30px;
+  color: rgb(96, 96, 96);
+  width: 25px;
+  height: 25px;
   border-radius: 50%;
   cursor: pointer;
+}
+
+.left-arrow:hover {
+  background-color: rgb(237, 237, 237);
 }
 
 .hide {
@@ -74,10 +99,9 @@
 }
 
 .search {
-  position: absolute;
   display: flex;
   align-items: center;
-  bottom: 0;
+  margin-top: 5px;
   font-size: 1.5em;
 }
 
@@ -92,13 +116,12 @@
 }
 
 .search-icon {
-  width: 20px;
-  height: 20px;
-  margin-left: 10px;
+  width: 25px;
+  height: 25px;
   border-radius: 50%;
   position: absolute;
-  left: 0;
-  opacity: 0.4;
+  left: 4%;
+  opacity: 0.7;
 }
 
 .bottom-icon {
@@ -108,5 +131,20 @@
   height: 40px;
   padding: 10px;
   margin: 5px;
+  border-radius: 50%;
+}
+
+.search-box {
+  border-style: none;
+  background-color: rgb(232, 232, 232);
+}
+
+.search-box:focus {
+  outline: rgb(190, 190, 200);
+}
+.user-search-icon {
+  object-fit: contain;
+  height: 50px;
+  width: 50px;
   border-radius: 50%;
 }

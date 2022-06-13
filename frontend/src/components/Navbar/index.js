@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { logout } from "../Redux/reducers/auth";
 import Search from "../Search";
-import { FaFacebook } from "react-icons/fa";
+
 import { AiFillHome } from "react-icons/ai";
 import { BsMessenger } from "react-icons/bs";
 import { MdNotifications } from "react-icons/md";
@@ -14,19 +14,18 @@ import { ImExit } from "react-icons/im";
 import axios from "axios";
 
 import jwt_decode from "jwt-decode";
-import { setUsers } from "../Redux/reducers/users";
 
 const Navbar = () => {
   const [showMessages, setShowMessages] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
+  const [user, setUser] = useState([]);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { isLoggedIn, user, token } = useSelector((state) => {
+  const { isLoggedIn, token } = useSelector((state) => {
     return {
       isLoggedIn: state.auth.isLoggedIn,
-      user: state.users.users,
       token: state.auth.token,
     };
   });
@@ -42,8 +41,7 @@ const Navbar = () => {
       })
       .then((result) => {
         if (result.data.success) {
-          // setUsers(result.data.result);
-          dispatch(setUsers(result.data.result));
+          setUser(result.data.result);
         }
       })
       .catch((error) => {
@@ -123,7 +121,13 @@ const Navbar = () => {
           <div className="Links-container">
             {user.map((el) => {
               return (
-                <div className="user-container-navbar" key={el.id}>
+                <div
+                  className="user-container-navbar"
+                  key={el.id}
+                  onClick={() => {
+                    navigate("/profile");
+                  }}
+                >
                   <img className="navbar-user" src={el.image} />
                   <p>{el.firstName}</p>
                 </div>

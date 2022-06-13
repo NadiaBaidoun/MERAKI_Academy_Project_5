@@ -15,7 +15,6 @@ import { addLike, removeLike, setLikes } from "../Redux/reducers/like";
 import jwt_decode from "jwt-decode";
 import { setUsers, updateUserById } from "../Redux/reducers/users";
 import { deleteFriendById, setFriends } from "../Redux/reducers/friends";
-import { IoMdCloseCircle } from "react-icons/io";
 import { ImCamera } from "react-icons/im";
 
 import { IoHomeSharp } from "react-icons/io5";
