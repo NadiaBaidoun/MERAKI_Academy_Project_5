@@ -47,10 +47,14 @@ const Navbar = () => {
 
             <div className="nav-mid-div">
               <BsMessenger className="nav-mid-icon" />
+              <div className="notification-number">2</div>
+              <div className="popup-navbar">No notification</div>
             </div>
 
             <div className="nav-mid-div">
-              <MdNotifications className="nav-mid-icon" />
+              <MdNotifications className="nav-mid-icon notification-icon" />
+              <div className="notification-number">2</div>
+              <div>No messages</div>
             </div>
           </div>
 
