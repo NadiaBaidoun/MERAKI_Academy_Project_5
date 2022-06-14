@@ -152,3 +152,46 @@
   .info-icon {
     color: rgb(161, 161, 161);
   }
+
+  
+  .left-details {
+    display: flex;
+    gap: 0.5em;
+    font-size: 1.3rem;
+    margin: 15px 0;
+  }
+  
+  .info-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    width: 500px;
+    box-sizing: border-box;
+    box-shadow: 0 1px 5px rgb(161, 161, 161);
+    background-color: #fff;
+    border-radius: 8px;
+    z-index: 2;
+  }
+  
+  .info-div {
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    padding: 20px;
+  }
+  
+  .popup-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    margin: 10px;
+  }
+  
+  .detalis-conatiner {
+    margin-bottom: 10px;
+    padding: 5px;
+  }
