@@ -87,6 +87,7 @@
   background-color: rgba(255, 255, 255, 0.37);
 }
 
+
 .cover-save {
   margin: auto;
   background-color: #2374e1;
@@ -102,6 +103,7 @@
   border-radius: 10px;
 }
 
+
 .profile-container {
   display: flex;
   align-items: center;
@@ -111,6 +113,7 @@
   top: 55%;
   left: 12%;
 }
+
 
 .profile {
   border-radius: 50%;
