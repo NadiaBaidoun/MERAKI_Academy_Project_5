@@ -1,6 +1,7 @@
 const express = require("express");
 require("dotenv").config();
 const cors = require("cors");
+const socket = require("socket.io");
 
 //routers
 const postsRouter = require("./routes/posts");
@@ -30,6 +31,29 @@ app.use("/user", userRouter);
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`server run on PORT ${PORT}`);
+});
+
+const io = socket(server, {
+  cors: {
+    origin: "http://localhost:3000",
+    method: ["GET", "POST"],
+  },
+});
+
+io.on("connection", (socket) => {
+  console.log("user connected");
+  socket.on("JOIN_ROOM", (data) => {
+    console.log("ROOM", data);
+    socket.join(data);
+  });
+  socket.on("SEND_MESSAGE", (data) => {
+    console.log("MESSAGE", data);
+    socket.to(data.room).emit("RECEIVE_MESSAGE", data.content);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("user disconnected");
+  });
 });
