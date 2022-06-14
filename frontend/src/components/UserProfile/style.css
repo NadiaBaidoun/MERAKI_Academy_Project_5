@@ -117,3 +117,38 @@
   .mid-right {
     flex: 2.5;
   }
+
+  .left {
+    width: 100%;
+    background-color: #fff;
+    min-height: 400px;
+    border-radius: 8px;
+    margin: 20px;
+    box-shadow: 0 1px 9px rgb(195, 195, 195);
+  }
+  
+  .info-left {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .edit-info {
+    align-self: flex-end;
+  }
+  
+  .details {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .bio-left {
+    align-self: center;
+    padding: 0;
+    font-size: 1.2rem;
+  }
+  
+  .info-icon {
+    color: rgb(161, 161, 161);
+  }
