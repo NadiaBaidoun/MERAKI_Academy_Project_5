@@ -6,6 +6,10 @@
 }
 
 .user {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
   box-shadow: 0 1px 5px;
   width: 400px;
   height: 100px;
