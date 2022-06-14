@@ -1,97 +1,460 @@
-.left-info {
-  position: sticky;
-  top: 0;
-  margin-right: 50%;
-}
-
-.left-container {
+.profile-header {
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  position: relative;
+  background-color: whitesmoke;
+
+  border-bottom: 2px solid rgba(129, 129, 129, 0.585);
+}
+.header-container {
+  width: 80%;
+  height: 800px;
 }
 
 .cover {
+  position: relative;
+  border-radius: 10px;
+  height: 550px;
+  width: 100%;
+  transform: translateY(-10%);
   background-color: rgba(190, 190, 190, 0.312);
-  border: 1px black solid;
-  width: 100%;
-}
-.prof_img {
-  width: 100%;
-}
-.upload_cover {
-  background-color: rgb(255, 255, 255);
-  color: gray;
-  border: 1px black solid;
-  width: 100px;
-  height: 30px;
-  font-size: small;
-}
-.h1 {
-  background-color: red;
+  border-style: none;
 }
 
-.profilePic {
-  padding-bottom: 150px;
-  height: 100px;
-  width: 150px;
-
+.cover-input-label {
+  border: 1px solid #ccc;
+  width: 12rem;
+  height: 3rem;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 5px;
+  position: absolute;
+  right: 2%;
+  bottom: 2%;
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  background-color: white;
+  color: black;
+  cursor: pointer;
+}
+.cover-input-label:hover {
+  background-color: rgb(212, 212, 212);
 }
 
-.profilePic img {
+.camera {
+  height: 20px;
+  width: 20px;
+}
 
-  border: 5px solid black;
+.cover-choice {
+  background-color: rgba(0, 0, 0, 0.326);
+  width: 100%;
+  position: absolute;
+  top: 0;
+  z-index: 2;
+  height: 5rem;
+  padding: 0 15px;
+  display: flex;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: bold;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.choices {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 25%;
+  height: 100%;
+  gap: 1rem;
+}
+
+.cancel-cover {
+  width: 10vw;
+  height: 2.8rem;
+  margin: auto;
+  background-color: transparent;
+  background-color: rgba(255, 255, 255, 0.204);
+}
+.cancel-cover:hover {
+  background-color: rgba(255, 255, 255, 0.37);
+}
+
+
+.cover-save {
+  margin: auto;
+  background-color: #2374e1;
+}
+.cover-save:hover {
+  background-color: #2980f1;
+}
+
+.cover-img {
+  object-fit: cover;
+  width: 100%;
+  height: 550px;
+  border-radius: 10px;
+}
+
+
+.profile-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  position: absolute;
+  top: 55%;
+  left: 12%;
+}
+
+
+.profile {
   border-radius: 50%;
-  height: 150px;
-  width: 100%;
+  height: 253px;
+  width: 248px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.cover {
+.image-photo {
+  object-fit: cover;
+  width: 250px;
+  height: 250px;
+  border: 8px solid white;
+  border-radius: 50%;
+}
+
+.profile-input-label {
+  position: absolute;
+  bottom: 2%;
+  right: 5%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(195, 195, 195);
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.profile-input-label:hover {
+  background-color: rgb(212, 212, 212);
+}
+
+.camera-profile {
+  height: 25px;
+  width: 25px;
+  color: black;
+}
+
+.profile-change {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 1px 5px gray;
   height: 500px;
+  width: 600px;
+  border-radius: 8px;
+  background-color: rgb(240, 239, 239);
+}
+
+.choices-profile {
+  display: flex;
+  width: 50%;
+}
+
+.profile-new {
+  object-fit: cover;
+  border-radius: 8px;
+  height: 500px;
+  width: 600px;
+}
+
+.main-container {
+  display: flex;
   width: 100%;
+  min-height: 100vh;
+  background-color: rgb(225, 225, 225);
+  padding-bottom: 20vh;
+}
+
+.left-container {
+  flex: 0.8;
+}
+.mid-container {
+  margin-top: 1rem;
+  flex: 5;
+  display: flex;
+  position: relative;
+}
+.right-container {
+  flex: 0.8;
+}
+
+.mid-left {
+  flex: 1.5;
+}
+
+.mid-right {
+  flex: 2.5;
+}
+
+.left {
+  width: 100%;
+  background-color: #fff;
+  min-height: 400px;
+  border-radius: 8px;
+  margin: 20px;
+  box-shadow: 0 1px 9px rgb(195, 195, 195);
+}
+
+.info-left {
+  padding: 20px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
 
-.cover input {
-  height: 60px;
-  width: 110px;
+.edit-info {
+  align-self: flex-end;
 }
 
-.cover img {
-  height: 350px;
-  object-fit: fill;
-  width: 100%;
+.details {
+  display: flex;
+  flex-direction: column;
 }
 
-.friendimg {
-  width: 50px;
-  height: 50px;
+.bio-left {
+  align-self: center;
+  padding: 0;
+  font-size: 1.2rem;
 }
-.popup {
-  background-color: rgba(211, 202, 202, 0.779);
-  width: 500px;
-  height: 500px;
-  z-index: 2;
+
+.info-icon {
+  color: rgb(161, 161, 161);
+}
+
+.left-details {
+  display: flex;
+  gap: 0.5em;
+  font-size: 1.3rem;
+  margin: 15px 0;
+}
+
+.info-popup {
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  overflow-y: scroll;
-  /* display: flex;
-flex-direction: column; */
+  display: flex;
+  flex-direction: column;
+  width: 500px;
+  box-sizing: border-box;
+  box-shadow: 0 1px 5px rgb(161, 161, 161);
+  background-color: #fff;
+  border-radius: 8px;
+  z-index: 2;
 }
-.close {
-  background-color: rgba(255, 255, 255, 0);
+
+.info-div {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  padding: 20px;
+}
+
+.popup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  margin: 10px;
+}
+
+.detalis-conatiner {
+  margin-bottom: 10px;
+  padding: 5px;
+}
+
+.detalis-conatiner label {
+  font-size: 1.2rem;
   color: black;
-  width: 30px;
-  height: 30px;
-  float: right;
-  margin-top: 0px;
+  font-weight: bold;
 }
-.updateInfo {
-  background-color: gray;
+
+.detalis-conatiner input {
+  height: 8vh;
+  padding: 15px;
+  font-size: 1rem;
+  margin-top: 10px;
+  border: 1px solid #bfbfbf;
+}
+
+.edit-info {
+  background-color: rgb(225, 225, 225);
+  color: black;
+}
+
+.edit-info:hover {
+  background-color: rgb(212, 212, 212);
+}
+
+.with-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.edit-btn {
+  color: black;
+}
+
+textarea::-webkit-scrollbar {
+  width: 0px;
+}
+
+.info-popup textarea {
+  height: 8vh;
+  resize: none;
+  padding: 15px;
+  font-size: 1rem;
+  margin-top: 10px;
+  border-radius: 5px;
+  max-height: 330px;
+  border: 1px solid #bfbfbf;
+}
+
+.info-popup button{
+  background-color: #2374e1;
+  font-size: 1.4rem;
+}
+
+.info-popup button:hover{
+  opacity: 0.9;
+}
+
+.friend-left {
+  padding: 20px;
+}
+
+.friendlist {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  width: 100%;
+}
+
+.friend-left-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 3rem;
+}
+
+.friend-left-header button {
+  width: 10rem;
+  font-size: 1.3rem;
+  margin: 0;
+  padding: 0;
+  background-color: transparent;
+  color: #2374e1;
+  height: 100%;
+}
+
+.friend-left-header p {
+  font-size: 1.3rem;
+  color: rgb(105, 105, 105);
+}
+
+.friend-link {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 8px;
+  background-color: transparent;
+  width: 120px;
+  color: black;
+}
+
+.friendimg {
+  object-fit: fill;
+  height: 120px;
+  width: 120px;
+  border-radius: 8px;
+}
+
+.friends-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  width: 600px;
+  height: 600px;
+  box-sizing: border-box;
+  box-shadow: 0 1px 5px rgb(161, 161, 161);
+  background-color: #fff;
+  border-radius: 8px;
+  z-index: 2;
+}
+
+.friend-div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 20px;
+  border: 1px solid rgba(207, 207, 207, 0.22);
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(168, 168, 168, 0.22);
+}
+
+.friendlist-scroll {
+  overflow-y: scroll;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.friend-div button {
+  background-color: transparent;
+  width: 8rem;
+  color: black;
+  margin: 0 10px;
+  background-color: rgba(63, 63, 63, 0.204);
+}
+
+.friend-div button:hover {
+  /* background-color: rgb(195, 195, 195); */
+  background-color: rgb(253, 54, 54);
+}
+
+.close-btn:hover {
+  background-color: rgb(212, 212, 212);
+  border-radius: 50%;
 }

@@ -92,15 +92,18 @@ const Search = () => {
     <div className="search-container">
       <div className="search-action">
         {searchBox ? (
-          <FiArrowLeft
-            className="back-icon"
+          <div
+            className="left-arrow"
             onClick={() => {
               nameRef.current.reset();
               setSearchBox(false);
             }}
-          />
+          >
+            <FiArrowLeft className="back-icon" />
+          </div>
         ) : (
-          <FaFacebook
+          <img
+            src="https://upload.wikimedia.org/wikipedia/en/thumb/0/04/Facebook_f_logo_%282021%29.svg/800px-Facebook_f_logo_%282021%29.svg.png"
             className="logo"
             onClick={() => {
               nameRef.current.reset();
@@ -112,7 +115,8 @@ const Search = () => {
           <AiOutlineSearch className={searchBox ? "hide" : "search-icon"} />
           <input
             ref={searchName}
-            placeholder="   Search Facebook"
+            className="search-box"
+            placeholder="     Search Facebook"
             onClick={() => {
               setSearchBox(true);
             }}
@@ -124,57 +128,107 @@ const Search = () => {
       </div>
       <div className={searchBox ? "search-div" : "hide"}>
         <div className="users">
-          {allUser
-            .filter((el) => {
-              return el.userName.includes(searchName.current.value);
-            })
-            .map((user) => {
-              return (
+          {searchName.current.value ? (
+            <div className="search-result">
+              {allUser
+                .filter((el) => {
+                  return el.userName
+                    .toLowerCase()
+                    .includes(searchName.current.value.toLowerCase());
+                })
+                .map((user, i) => {
+                  if (i < 5) {
+                    return (
+                      <div
+                        id="Link"
+                        className={`user-search ${user.id}`}
+                        key={user.id}
+                        onClick={(e) => {
+                          const id = parseInt(e.target.className.split(" ")[1]);
+                          userId === id
+                            ? navigate("/profile")
+                            : navigate(`/users/${id}`);
+                          nameRef.current.reset();
+                          setSearchBox(false);
+                        }}
+                      >
+                        <img src={user.image} className="user-search-icon" />
+                        {user.userName}
+                      </div>
+                    );
+                  }
+                })}
+              {name ? (
                 <div
-                  id="Link"
-                  className={`user-search ${user.id}`}
-                  key={user.id}
-                  onClick={(e) => {
-                    const id = parseInt(e.target.className.split(" ")[1]);
-                    userId === id
-                      ? navigate("/profile")
-                      : navigate(`/users/${id}`);
+                  id={"Link"}
+                  className="user-search"
+                  onClick={() => {
+                    navigate("/search/users");
+                    getUserByName();
                     nameRef.current.reset();
                     setSearchBox(false);
                   }}
                 >
-                  {user.userName}
+                  <AiOutlineSearch className="bottom-icon" /> Search for {name}
                 </div>
-              );
-            })}
+              ) : (
+                <div
+                  id={"Link"}
+                  onClick={() => {
+                    setSearchBox(false);
+                    nameRef.current.reset();
+                  }}
+                  className="user-search"
+                >
+                  <AiOutlineSearch className="bottom-icon" /> Search for {name}
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="search-result">
+              {allUser
+                .filter((el, i) => {
+                  return i < 6;
+                })
+                .map((user) => {
+                  return (
+                    <div
+                      id="Link"
+                      className={`user-search ${user.id}`}
+                      key={user.id}
+                      onClick={(e) => {
+                        const id = parseInt(e.target.className.split(" ")[1]);
+                        userId === id
+                          ? navigate("/profile")
+                          : navigate(`/users/${id}`);
+                        nameRef.current.reset();
+                        setSearchBox(false);
+                      }}
+                    >
+                      <img src={user.image} className="user-search-icon" />
+                      {user.userName}
+                    </div>
+                  );
+                })}
+              {name ? (
+                <div
+                  id={"Link"}
+                  className="user-search"
+                  onClick={() => {
+                    navigate("/search/users");
+                    getUserByName();
+                    nameRef.current.reset();
+                    setSearchBox(false);
+                  }}
+                >
+                  <AiOutlineSearch className="bottom-icon" /> Search for {name}
+                </div>
+              ) : (
+                <></>
+              )}
+            </div>
+          )}
         </div>
-
-        {name ? (
-          <Link
-            id={"Link"}
-            to={"/search/users"}
-            className="search link"
-            onClick={() => {
-              getUserByName();
-              nameRef.current.reset();
-              setSearchBox(false);
-            }}
-          >
-            <AiOutlineSearch className="bottom-icon" /> Search for {name}
-          </Link>
-        ) : (
-          <Link
-            id={"Link"}
-            to={{}}
-            onClick={() => {
-              setSearchBox(false);
-              nameRef.current.reset();
-            }}
-            className="search link"
-          >
-            <AiOutlineSearch className="bottom-icon" /> Search for {name}
-          </Link>
-        )}
       </div>
     </div>
   );
