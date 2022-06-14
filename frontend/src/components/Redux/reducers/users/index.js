@@ -28,9 +28,7 @@ const userSlice = createSlice({
         return user;
       });
     },
-    setUsers: (state, action) => {
-      state.users = action.payload;
-    },
+   
     setUserName: (state, action) => {
       state.users = action.payload;
     },

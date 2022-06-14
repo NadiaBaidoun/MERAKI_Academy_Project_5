@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState, useRef } from "react";
 
 import axios from "axios";
@@ -17,10 +16,13 @@ import {
   MdOutlineFindInPage,
   MdSchool,
 } from "react-icons/md";
+
+import { AiFillLike } from "react-icons/ai";
+import { FaRegCommentAlt } from "react-icons/fa";
 import { BsQuestionSquare } from "react-icons/bs";
 // import { HiOutlineStatusOnline } from "react-icons/hi";
 import "./style.css";
-// import { BsThreeDotsVertical } from "react-icons/bs";
+import { BsThreeDotsVertical } from "react-icons/bs";
 import { addLike, removeLike, setLikes } from "../Redux/reducers/like";
 import {
   addComment,
@@ -30,11 +32,12 @@ import {
 } from "../Redux/reducers/comments";
 import jwt_decode from "jwt-decode";
 import { Link, useNavigate } from "react-router-dom";
-import { setUsers } from "../Redux/reducers/users";
+import { setAllUsers, setUsers } from "../Redux/reducers/users";
 import { setFriends } from "../Redux/reducers/friends";
 
 import { MdOutlinePermMedia } from "react-icons/md";
 // import { setUsers } from "../Redux/reducers/users";
+import { IoCloseSharp } from "react-icons/io5";
 
 const Dashboard = () => {
   const [content, setContent] = useState("");
@@ -49,7 +52,6 @@ const Dashboard = () => {
   const [updatecontent, setUpdatecontent] = useState("");
   const [updatecomment, setupdatecomment] = useState("");
   const [friendsNum, setFriendsNum] = useState(false);
-
   const formRef = useRef("");
   const addPostRef = useRef("");
   const addCommentRef = useRef("");
@@ -67,6 +69,11 @@ const Dashboard = () => {
   const { posts } = useSelector((state) => {
     return {
       posts: state.posts.posts,
+    };
+  });
+  const { allUser } = useSelector((state) => {
+    return {
+      allUser: state.users.allUsers,
     };
   });
 
@@ -501,12 +508,46 @@ const Dashboard = () => {
         console.log(error.response.data);
       });
   };
+
   //=================================
+  const getAllUsers = () => {
+    axios
+      .get(`http://localhost:5000/user/search_2/users`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((result) => {
+        if (result.data.success) {
+          dispatch(setAllUsers(result.data.result));
+        }
+      })
+      .catch((error) => {
+        console.log(error.response.data.message);
+      });
+  };
+  //=================================
+
+  const handelCheckUser = (id) => {
+    if (id == userId) {
+      navigate("/profile");
+    } else {
+      navigate(`/users/${id}`);
+    }
+  };
+
+  const resize = (e) => {
+    const textarea = document.getElementById(e.target.id);
+    textarea.style.height = "40px";
+    let scHeight = e.target.scrollHeight;
+    textarea.style.height = `${scHeight - 0}px`;
+  };
 
   useEffect(() => {
     getAllPosts();
     getAllComments();
     getUserById();
+    getAllUsers();
     getAllFriends();
   }, []);
 
@@ -516,7 +557,6 @@ const Dashboard = () => {
         <ul className="sidebarList">
           <li className="sidebarListItem">
             {users.map((user, i) => {
-              console.log(users);
               return (
                 <div
                   className="profileName"
@@ -570,95 +610,448 @@ const Dashboard = () => {
       </div>
       <div className="feed">
         <div className="post-container">
-          <div className="post-container">
-            <div className="share">
-              <div className="shareWrapper">
-                <form ref={addPostRef} className="addPost" onSubmit={newPost}>
-                  <div className="shareTop">
-                    {show &&
-                      users.map((user, index) => {
-                        console.log("User", user);
-                        return (
-                          <img
-                            key={index}
-                            className="shareProfileImg"
-                            src={user.image}
-                            alt=""
-                          />
-                        );
-                      })}
-                    <input
-                      placeholder={`What's on your mind ${
-                        jwt_decode(token).firstName
-                      }`}
-                      className="shareInput"
-                      onChange={(e) => setContent(e.target.value)}
-                    />
-                  </div>
-                  <hr className="shareHr"></hr>
-                  <div className="shareBottom">
-                    <div className="shareOptions">
-                      <div className="shareOption">
-                        <label htmlFor="post-img" className="label-post-img">
-                          <input
-                            hidden
-                            id="post-img"
-                            type="file"
-                            onChange={(e) => {
-                              imageRef.current = e.target.files[0];
-                              uploadImage();
-                            }}
-                          />
-                          <MdOutlinePermMedia className="shareIcon" />
-                          <span className="shareOptionText">Photo</span>
-                        </label>
-                      </div>
-                      <button className="shareButton">Add</button>
+          <div className="share">
+            <div className="shareWrapper">
+              <form ref={addPostRef} className="addPost" onSubmit={newPost}>
+                <div className="shareTop">
+                  {show &&
+                    users.map((user, index) => {
+                      console.log("User", user);
+                      return (
+                        <img
+                          key={index}
+                          className="shareProfileImg"
+                          src={user.image}
+                          alt=""
+                        />
+                      );
+                    })}
+                  <input
+                    placeholder={`What's on your mind ${
+                      jwt_decode(token).firstName
+                    }`}
+                    className="shareInput"
+                    onChange={(e) => setContent(e.target.value)}
+                  />
+                </div>
+                <hr className="shareHr"></hr>
+                <div className="shareBottom">
+                  <div className="shareOptions">
+                    <div className="shareOption">
+                      <label htmlFor="post-img" className="label-post-img">
+                        <input
+                          hidden
+                          id="post-img"
+                          type="file"
+                          onChange={(e) => {
+                            imageRef.current = e.target.files[0];
+                            uploadImage();
+                          }}
+                        />
+                        <MdOutlinePermMedia className="shareIcon" />
+                        <span className="shareOptionText">Photo</span>
+                      </label>
                     </div>
+                    <button className="shareButton">Add</button>
                   </div>
-                </form>
-              </div>
+                </div>
+              </form>
             </div>
           </div>
 
-          {show &&
-            posts.map((post, index) => {
-              return (
-                <div key={index}>
-                  <div className="post">
-                    <div className="postWrapper">
-                      <div className="postTop">
-                        <div className="postTopLeft">
-                          <span className="postUsername">
-                            {post.user_id === userId ? (
-                              <Link
-                                style={{ color: "black" }}
-                                className="link"
-                                to={`/profile`}
-                              >
-                                <h3>{post.userName}</h3>
-                              </Link>
-                            ) : (
-                              <Link
-                                style={{ color: "black" }}
-                                className="link"
-                                to={`/users/${post.user_id}`}
-                              >
-                                <h3>{post.userName}</h3>
-                              </Link>
-                            )}
-                          </span>
-                        </div>
-                        <div className="postTopRight"></div>
-                      </div>
+          <div className="container-post">
+            {" "}
+            {show &&
+              posts.map((post, index) => {
+                return (
+                  <div key={index}>
+                    <div className="post">
+                      <div className="postWrapper">
+                        <div className="postTop">
+                          {/* DIV TOP */}
+                          {allUser.map((user, i) => {
+                            if (post.user_id === user.id) {
+                              return (
+                                <div key={user.id}>
+                                  <div
+                                    className="profileName"
+                                    onClick={() => {
+                                      navigate(`/users/${post.user_id}`);
+                                    }}
+                                  >
+                                    <img className="Icon" src={user.image} />
+                                    <p>{user.userName} </p>
+                                  </div>
+                                </div>
+                              );
+                            }
+                          })}
+                          {/* flex+center+spacebetween */}
 
-                      <div className="postBottom"></div>
-                      <div className="postBottomLeft"></div>
+                          <div className="dd-container">
+                            <button
+                              id={post.id}
+                              className="dd-button"
+                              onClick={(e) => {
+                                showDD(e);
+                              }}
+                            >
+                              <BsThreeDotsVertical
+                                id={post.id}
+                                onClick={(e) => {
+                                  showDD(e);
+                                }}
+                              />
+                            </button>
+                            {open && dropdownId == post.id ? (
+                              <div className="dropdown">
+                                <div
+                                  className="options-div"
+                                  id={post.id}
+                                  onClick={(e) => {
+                                    updateForm(e, post.content);
+                                  }}
+                                >
+                                  Update
+                                </div>
+
+                                <div
+                                  className="options-div"
+                                  id={post.id}
+                                  onClick={(e) => {
+                                    deletepost(e.target.id);
+                                  }}
+                                >
+                                  Delete
+                                </div>
+                              </div>
+                            ) : (
+                              <></>
+                            )}
+                          </div>
+                          {/* ------------------------------------------------------------ */}
+                          {/*DIV TOP  */}
+                        </div>
+                        <div className="postCenter">
+                          <p>{post.content}</p>
+                          {post.image ? <img src={post.image} /> : ""}
+                        </div>
+                        <div>
+                          {post.id == dropdownId && showUpdate ? (
+                            <div className={"update-post-popup"}>
+                              <div className="update-post-header">
+                                <h1>Update post</h1>
+                                <IoCloseSharp
+                                  className="close-btn"
+                                  onClick={() => setShowUpdate(false)}
+                                />
+                              </div>
+                              <form
+                                className="update-form"
+                                onSubmit={(e) => {
+                                  e.preventDefault();
+                                  setShowUpdate(false);
+
+                                  editpost(post.id, post.image);
+                                }}
+                                ref={formRef}
+                              >
+                                <label
+                                  htmlFor="update-post-image"
+                                  className="update-post-image-label"
+                                >
+                                  <input
+                                    id="update-post-image"
+                                    hidden
+                                    type="file"
+                                    onChange={(e) => {
+                                      imageEditRef.current = e.target.files[0];
+                                      editPostImage();
+                                    }}
+                                  />
+                                  UPDATE IMAGE
+                                </label>
+
+                                <input
+                                  defaultValue={post.content}
+                                  onChange={(e) => {
+                                    setUpdatecontent(e.target.value);
+                                  }}
+                                />
+                                <button>Update</button>
+                              </form>
+                              <img
+                                className="iamge-post"
+                                src={
+                                  postEditUrl ||
+                                  "https://image.shutterstock.com/image-vector/camera-add-icon-260nw-1054194038.jpg"
+                                }
+                              />
+                            </div>
+                          ) : (
+                            ""
+                          )}
+                        </div>
+
+                        <div className="postLike">
+                          <div className="postLike-header">
+                            <p>{post.like.length} people like it</p>
+                            {/* <hr className="shareHr"></hr> */}
+                          </div>
+
+                          <div className="like-div">
+                            {post.like ? (
+                              <>
+                                <button
+                                  className="like like-btn"
+                                  onClick={(e) => {
+                                    post.like.includes(userId)
+                                      ? unLikePost(post.id)
+                                      : likePost(post.id);
+                                  }}
+                                >
+                                  {post.like.includes(userId) ? (
+                                    <div className="iconUnlike">
+                                      <AiFillLike className="Unlike" /> Like
+                                    </div>
+                                  ) : (
+                                    <div className="iconUnlike">
+                                      <AiFillLike /> Like
+                                    </div>
+                                  )}
+                                </button>
+
+                                <button
+                                  id={post.id}
+                                  className="like comment-btn"
+                                  onClick={(e) => {
+                                    const commentSection =
+                                      document.getElementById(
+                                        `comment-${e.target.id}`
+                                      );
+
+                                    commentSection.focus();
+                                  }}
+                                >
+                                  <FaRegCommentAlt />
+                                  Comment
+                                </button>
+                              </>
+                            ) : (
+                              ""
+                            )}
+                          </div>
+                        </div>
+                        {/* ------------------------------------------------------------------------------ */}
+
+                        <div className="postComment">
+                          <div className="comment-div ">
+                            <button
+                              className="allComments-btn"
+                              id={post.id}
+                              onClick={(e) => {
+                                const commentDiv = document.getElementById(
+                                  `commentDiv${e.target.id}`
+                                );
+                                commentDiv.style.display = "block";
+                              }}
+                            >
+                              View all comments
+                            </button>
+                            <div
+                              id={`commentDiv${post.id}`}
+                              className="allComments"
+                              style={{ display: "none" }}
+                            >
+                              {show &&
+                                comments.map((comment, index) => {
+                                  return (
+                                    <div key={index}>
+                                      <div>
+                                        {post.id === comment.post_id ? (
+                                          <div className="comment-div-container">
+                                            {comment.commenter_id == userId ? (
+                                              <div className="dd-comment">
+                                                <button
+                                                  id={comment.id}
+                                                  className="dd-button"
+                                                  onClick={(e) => {
+                                                    showDDComment(e);
+                                                  }}
+                                                >
+                                                  <BsThreeDotsVertical
+                                                    id={comment.id}
+                                                    onClick={(e) => {
+                                                      showDDComment(e);
+                                                    }}
+                                                  />
+                                                </button>
+                                                {openComment &&
+                                                dropdownIdComment ==
+                                                  comment.id ? (
+                                                  <div className="dropdown-comment">
+                                                    <div
+                                                      className="options-div"
+                                                      id={comment.id}
+                                                      onClick={(e) => {
+                                                        updateFormComment(
+                                                          e,
+                                                          comment.comment
+                                                        );
+                                                      }}
+                                                    >
+                                                      Update
+                                                    </div>
+
+                                                    <div
+                                                      className="options-div"
+                                                      id={comment.id}
+                                                      onClick={(e) => {
+                                                        deleteComment(
+                                                          e.target.id
+                                                        );
+                                                      }}
+                                                    >
+                                                      Delete
+                                                    </div>
+                                                  </div>
+                                                ) : (
+                                                  <></>
+                                                )}
+                                              </div>
+                                            ) : (
+                                              ""
+                                            )}
+
+                                            <div className="comment">
+                                              <img
+                                                className="Icon"
+                                                src={comment.image}
+                                              />
+                                             
+                                             <div> <p
+                                                onClick={() =>
+                                                  handelCheckUser(
+                                                    comment.commenter_id
+                                                  )
+                                                }
+                                              >
+                                                {comment.userName}
+                                              </p>
+                                              <p>{comment.comment}</p></div>
+                                            </div>
+                                        
+                                          </div>
+                                        ) : (
+                                          ""
+                                        )}
+                                      </div>
+                                      {comment.id == dropdownIdComment &&
+                                      showCommentUpdate ? (
+                                        <form
+                                          className="update-form"
+                                          onSubmit={(e) => {
+                                            e.preventDefault();
+                                            setShowCommentUpdate(false);
+                                            editComment(comment.id);
+                                          }}
+                                          ref={formRef}
+                                        >
+                                          <input
+                                            defaultValue={comment.comment}
+                                            onChange={(e) => {
+                                              setupdatecomment(e.target.value);
+                                            }}
+                                          />
+                                          <button>Update</button>
+                                        </form>
+                                      ) : (
+                                        ""
+                                      )}
+                                    </div>
+                                  );
+                                })}
+                              {!comments.length ? <h1>No comments</h1> : ""}
+                            </div>
+                            <div className="comment-container">
+                              {users.map((user, i) => {
+                                return (
+                                  <div
+                                    className="profileName"
+                                    key={i}
+                                    onClick={() => {
+                                      navigate("/profile");
+                                    }}
+                                  >
+                                    <img className="Icon" src={user.image} />
+                                  </div>
+                                );
+                              })}
+                              <form
+                                id={`commentform${post.id}`}
+                                className="addComment"
+                              >
+                                <textarea
+                                  id={`comment-${post.id}`}
+                                  placeholder="Write a comment…"
+                                  onChange={(e) => {
+                                    setComment(e.target.value);
+                                  }}
+                                  onKeyUp={(e) => {
+                                    resize(e);
+                                  }}
+                                  onKeyDown={(e) => {
+                                    if (e.key === "Enter") {
+                                      const commentSection =
+                                        document.getElementById(
+                                          `comment-${e.target.id.split("-")[1]}`
+                                        );
+                                      const commentDiv =
+                                        document.getElementById(
+                                          `commentDiv${
+                                            e.target.id.split("-")[1]
+                                          }`
+                                        );
+                                      const commentForm =
+                                        document.getElementById(
+                                          `commentform${
+                                            e.target.id.split("-")[1]
+                                          }`
+                                        );
+                                      commentDiv.style.display = "block";
+                                      commentSection.focus();
+                                      commentForm.reset();
+                                      newComment(e, post.id);
+                                    }
+                                  }}
+                                ></textarea>
+                              </form>
+                            </div>
+                            {/* <button
+                              id={post.id}
+                              className="like"
+                              onClick={(e) => {
+                                const commentSection = document.getElementById(
+                                  `comment${e.target.id}`
+                                );
+                                const commentDiv = document.getElementById(
+                                  `commentDiv${e.target.id}`
+                                );
+                                commentDiv.style.display = "block";
+                                commentSection.focus();
+                                newComment(e, post.id);
+                              }}
+                            >
+                              Add
+                            </button> */}
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+          </div>
         </div>
       </div>
       <div className="rightbar">

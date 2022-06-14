@@ -4,6 +4,7 @@
   width: 100%;
   min-height: 100vh;
 }
+
 .post-container {
   display: flex;
   flex-direction: column;
@@ -31,7 +32,6 @@
 .feed {
   flex: 5.5;
 }
-
 
 .rightbar {
   flex: 2;
@@ -107,14 +107,21 @@
 }
 .post {
   box-shadow: 0 1px 5px;
-  width: 400px;
-  height: 200px;
+  width: 680px;
+  /* height: 200px; */
   margin: 20px;
+  background-color: white;
   border-radius: 5px;
-  text-align: center;
+  /* text-align: center; */
   position: relative;
 }
+.postTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 
+  height: 40px;
+}
 .dd-container {
   display: flex;
   position: absolute;
@@ -122,7 +129,23 @@
   top: 0;
   flex-direction: row-reverse;
 }
+.iconUnlike {
+  display: flex;
+}
+.like :hover {
+  background-color: rgba(215, 188, 188, 0.271);
+}
+.comment {
+  display: flex;
+  border-radius: 8px;
+  background-color: rgba(178, 178, 178, 0.271);
 
+  width: 100%;
+  word-wrap: break-word;
+}
+.comment-container {
+  display: flex;
+}
 .sidebarListItemText {
   display: flex;
   font-size: medium;
@@ -140,7 +163,25 @@
   color: blueviolet;
   margin: 2% 0;
 }
-
+.link {
+  text-align: left;
+}
+.addComment {
+  width: 100%;
+}
+.addComment textarea {
+  background-color: rgba(178, 178, 178, 0.271);
+  border-radius: 8px;
+  font-size: medium;
+}
+.postLike-header {
+  display: flex;
+  flex-direction: column;
+}
+.postLike-header p {
+  align-self: flex-start;
+  padding: 5px 20px;
+}
 .options-div {
   width: 100%;
   cursor: pointer;
@@ -163,18 +204,20 @@
 }
 
 .dropdown div:hover {
-  background-color: blueviolet;
-  color: white;
+  background-color: white;
+  color: black;
 }
 
 .dd-button {
   width: 2em;
-  display: flex;
+  /* display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: center; */
   border-style: none;
   border-radius: 5px;
-  height: 5vh;
+  /* height: 20px; */
+  margin: 0;
+  /* height: 5vh; */
   background-color: transparent;
   color: rgb(12, 13, 17);
   cursor: pointer;
@@ -258,18 +301,53 @@
 }
 
 .like {
-  width: 60px;
-  font-size: 1em;
-  height: 30px;
-  margin: 20px;
-  text-align: center;
+  /* width: 100px; */
+  font-size: 1.1rem;
+  /* height: 30px; */
+  /* margin: 20px; */
+  background-color: transparent;
+  margin: 0;
+  padding: 0;
+  height: 80%;
+  /* background-color: rgba(178, 178, 178, 0.271); */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgb(137, 137, 137);
+  cursor: pointer;
+}
+
+.like-btn:hover {
+  background-color: rgba(225, 225, 225);
+}
+
+.comment-btn:hover {
+  background-color: rgba(225, 225, 225);
+}
+
+.allComments-btn {
+  background-color: transparent;
+  color: rgb(137, 137, 137);
+  font-weight: normal;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  text-align: left;
+}
+
+.allComments-btn:hover {
+  text-decoration-line: underline;
 }
 
 .like-div {
   display: flex;
   align-items: center;
+  font-size: medium;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(178, 178, 178, 0.679);
+  border-top: 1px solid rgba(178, 178, 178, 0.679);
+  /* padding: 10px 0; */
+  height: 60px;
 }
-
 .post-action {
   display: flex;
 }
@@ -305,9 +383,6 @@
   color: blueviolet;
   margin: 2% 0;
 }
-
-
-
 
 .share {
   width: 500px;
@@ -346,6 +421,12 @@
 .shareHr {
   margin: 20px;
 }
+.likediv {
+  background-color: aqua;
+}
+.Unlike {
+  color: rgb(45, 123, 239);
+}
 
 .shareBottom {
   display: flex;
@@ -353,43 +434,41 @@
   justify-content: space-between;
 }
 
-.shareOptions{
-    display: flex;
-    margin-left: 20px;
+.shareOptions {
+  display: flex;
+  margin-left: 20px;
 }
 
-.shareOption{
-    display: flex;
-    align-items: center;
-    margin-right: 15px;
-    cursor: pointer;
+.shareOption {
+  display: flex;
+  align-items: center;
+  margin-right: 15px;
+  cursor: pointer;
 }
 
-.shareIcon{
-    font-size: 18px;
-    margin-right: 3px;
+.shareIcon {
+  font-size: 18px;
+  margin-right: 3px;
 }
 
-.shareOptionText{
-    font-size: 14px;
-    font-weight: 500;
-    display: block;
-    color: black;
+.shareOptionText {
+  font-size: 14px;
+  font-weight: 500;
+  display: block;
+  color: black;
 }
 
-.shareButton{
-    border: none;
-    padding: 15px;
-    border-radius: 5px;
-    background-color: green;
-    width: 105px;
-    font-weight: 500;
-    margin: 0px 0px 0px 300px;
-    
-   
-    cursor: pointer;
-    color: white;
-    
+.shareButton {
+  border: none;
+  padding: 15px;
+  border-radius: 5px;
+  background-color: green;
+  width: 105px;
+  font-weight: 500;
+  margin: 0px 0px 0px 300px;
+
+  cursor: pointer;
+  color: white;
 }
 
 /* .label-post-img{
@@ -398,13 +477,20 @@
 
 } */
 
-.label-post-img:hover{
-
+.label-post-img:hover {
   cursor: pointer;
 }
 
+.container-post {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  /* min-height: 100vh; */
+}
+
 .post {
-  width: 100%;
+  /* width: 100%; */
+
   border-radius: 10px;
   -webkit-box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
   box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
@@ -413,17 +499,13 @@
 
 .postWrapper {
   padding: 10px;
+  word-wrap: break-word;
 }
 
 .postTop {
   display: flex;
   align-items: center;
   justify-content: space-between;
-}
-
-.postTopLeft {
-  display: flex;
-  align-items: center;
 }
 
 .postProfileImg {
@@ -433,52 +515,54 @@
   object-fit: cover;
 }
 
-.postUsername {
-  font-size: 15px;
-  font-weight: 500;
-  margin: 0 10px;
+.iamge-post {
+  object-fit: contain;
+  width: 100%;
+  height: 500px;
 }
 
-.postDate{
-    font-size: 12px;
+.postCenter {
+  margin: 20px 0;
+}
+.postCenter img {
+  margin-top: 10px;
+  width: 100%;
+  height: 500px;
+  object-fit: fill;
 }
 
-.postCenter{
-    margin: 20px 0;
+.update-post-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  height: 600px;
+  box-shadow: 0 1px 9px rgba(131, 131, 131, 0.626);
+  background-color: white;
+  border-radius: 8px;
+  z-index: 2;
+}
+.update-post-header {
+  display: flex;
+  align-content: center;
+  justify-content: space-between;
+  padding: 20px;
+}
+textarea::-webkit-scrollbar {
+  width: 0px;
 }
 
-.postImg{
-    margin-top: 20px;
-    width: 100%;
-    max-height: 500px;
-    object-fit: contain;
-}
-
-.postBottom{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.postBottomLeft{
-    display: flex;
-    align-items: center;   
-}
-
-.likeIcon{
-    width: 24px;
-    height: 24px;
-    margin-right: 5px;
-    cursor: pointer;
-}
-
-.postLikeCounter{
-    font-size: 15px;
-}
-
-.postCommentText{
-    cursor: pointer;
-    border-bottom: 1px dashed gray;
-    font-size: 15px;
+.addComment textarea {
+  /* width: 20vw; */
+  resize: none;
+  height: 40px;
+  border-radius: 50px;
+  outline: none;
+  padding: 15px;
+  font-size: 16px;
+  margin-top: 20px;
+  max-height: 200px;
+  border: 1px solid #bfbfbf;
 }
 
