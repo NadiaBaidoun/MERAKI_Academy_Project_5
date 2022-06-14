@@ -15,7 +15,12 @@ import { addLike, removeLike, setLikes } from "../Redux/reducers/like";
 import jwt_decode from "jwt-decode";
 import { setUsers, updateUserById } from "../Redux/reducers/users";
 import { deleteFriendById, setFriends } from "../Redux/reducers/friends";
-import { IoMdCloseCircle } from "react-icons/io";
+import { ImCamera } from "react-icons/im";
+
+import { IoHomeSharp } from "react-icons/io5";
+import { FaBirthdayCake } from "react-icons/fa";
+import { IoCloseSharp } from "react-icons/io5";
+
 import { Link, useNavigate } from "react-router-dom";
 import {
   addComment,
@@ -47,7 +52,10 @@ const Profile = () => {
   const coverRef = useRef("");
   const profileRef = useRef("");
 
-  const [url, setUrl] = useState("");
+  const imageEditRef = useRef("");
+  const [postEditUrl, setPostEditUrl] = useState("");
+
+  const [postUrl, setPostUrl] = useState("");
 
   const [urlCover, seturlCover] = useState("");
   const [urlImage, seturlImage] = useState("");
@@ -98,26 +106,30 @@ const Profile = () => {
   const newPost = (e) => {
     e.preventDefault();
 
-    axios
-      .post(
-        "http://localhost:5000/posts/",
-        { content, image: url },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-      .then((res) => {
-        if (res.data.success) {
-          dispatch(addPost({ content, image: url }));
-          getPostByUserId(userId);
-          formRef.current.reset();
-        }
-      })
-      .catch((error) => {
-        console.log(error.response.data.message);
-      });
+    if (content || postUrl) {
+      axios
+        .post(
+          "http://localhost:5000/posts/",
+          { content, image: postUrl },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+        .then((res) => {
+          if (res.data.success) {
+            dispatch(addPost({ content, image: postUrl }));
+            setContent("");
+            setPostUrl("");
+            getPostByUserId(userId);
+            formRef.current.reset();
+          }
+        })
+        .catch((error) => {
+          console.log(error.response.data.message);
+        });
+    }
   };
   //=================================
 
@@ -144,9 +156,8 @@ const Profile = () => {
   };
 
   //=================================
-  //=================================
 
-  const getAllComments = async () => {
+  const getAllComments = () => {
     axios
       .get(`http://localhost:5000/comments`)
       .then((result) => {
@@ -224,6 +235,8 @@ const Profile = () => {
       });
   };
 
+  //=================================
+
   const getAllFriends = () => {
     axios
       .get(`http://localhost:5000/user/list/friends/${userId}`, {
@@ -246,7 +259,7 @@ const Profile = () => {
           } else if (friendsRes.length <= 6) {
             arrayofFriends = [...friendsRes];
           }
-
+          setUserFriends(friendsRes);
           dispatch(setFriends(arrayofFriends));
           setShow(true);
         }
@@ -257,6 +270,7 @@ const Profile = () => {
       });
   };
   //=================================
+
   const getPostByUserId = (id) => {
     axios
       .get(`http://localhost:5000/posts/user/${id}`)
@@ -336,6 +350,8 @@ const Profile = () => {
         if (result.data.success) {
           getUserById(userId);
         }
+        seturlCover("");
+        seturlImage("");
       })
       .catch((error) => {
         {
@@ -345,14 +361,23 @@ const Profile = () => {
   };
   //=================================
 
-  const editpost = (id) => {
+  const editpost = (id, image) => {
     axios
       .put(`http://localhost:5000/posts/${id}`, {
         content: updatecontent,
+        image: postEditUrl || image,
       })
       .then((result) => {
         if (result.data.success) {
-          dispatch(updatePostById({ content: updatecontent, id }));
+          dispatch(
+            updatePostById({
+              content: updatecontent,
+              image: postEditUrl || image,
+              id,
+            })
+          );
+          setPostEditUrl("");
+          setContent("");
         }
       })
       .catch((error) => {
@@ -362,6 +387,25 @@ const Profile = () => {
       });
   };
   //=================================
+
+  const editPostImage = () => {
+    const data = new FormData();
+
+    data.append("file", imageEditRef.current);
+    data.append("upload_preset", "olfkj7in");
+    data.append("cloud_name", "aa");
+    fetch("https://api.cloudinary.com/v1_1/dviqtfdwx/image/upload", {
+      method: "post",
+      body: data,
+    })
+      .then((resp) => resp.json())
+      .then((data) => {
+        setPostEditUrl(data.url);
+      })
+      .catch((err) => console.log(err));
+  };
+  //=================================
+
   const deletepost = (id) => {
     axios
       .delete(`http://localhost:5000/posts/${id}`, {
@@ -456,7 +500,7 @@ const Profile = () => {
     })
       .then((resp) => resp.json())
       .then((data) => {
-        setUrl(data.url);
+        setPostUrl(data.url);
       })
       .catch((err) => console.log(err));
   };
@@ -479,6 +523,9 @@ const Profile = () => {
       })
       .catch((err) => console.log(err));
   };
+
+  // ==================================
+
   const uploadUserImage = () => {
     const data = new FormData();
 
@@ -496,6 +543,13 @@ const Profile = () => {
       .catch((err) => console.log(err));
   };
 
+  const resize = (e) => {
+    const textarea = document.getElementById(e.target.id);
+    textarea.style.height = "8vh";
+    let scHeight = e.target.scrollHeight;
+    textarea.style.height = `${scHeight - 0}px`;
+  };
+
   useEffect(() => {
     getUserById(userId);
     getPostByUserId(userId);
@@ -505,80 +559,342 @@ const Profile = () => {
 
   return (
     <div className="post-container">
-      {PopupFriend ? (
-        <div className="popup">
-          <button
-            className="close"
-            onClick={() => {
-              setPopupFriend(false);
-            }}
-          >
-            <IoMdCloseCircle
-              onClick={() => {
-                setPopupFriend(false);
-              }}
-            />
-          </button>
-          )
-          {friends.length ? (
-            friends.map((friend, i) => {
+      {/* ====================== */}
+
+      <div className="profile-header">
+        {urlCover ? (
+          <div className="cover-choice">
+            <p>Change Cover?</p>
+            <div className="choices">
+              <button
+                className="cancel-cover"
+                onClick={() => {
+                  seturlCover("");
+                }}
+              >
+                Cancel
+              </button>
+              <button className="cover-save" onClick={editProfile}>
+                Save changes
+              </button>
+            </div>
+          </div>
+        ) : (
+          <></>
+        )}
+        <div className="header-container">
+          <div className="cover">
+            {users.map((el) => {
               return (
-                <div className="firend" key={i}>
-                  <p>{friend.userName} </p>
-                  <img className="friendimg" src={friend.image} />
-                  <button
-                    className="like"
-                    onClick={() => {
-                      unFollowFriend(friend.target_id);
-                    }}
-                  >
-                    Unfollow
-                  </button>
+                <div key={el.id}>
+                  {urlCover ? (
+                    <img className="cover-img" src={urlCover} />
+                  ) : (
+                    <img className="cover-img" src={el.cover} />
+                  )}
                 </div>
               );
-            })
+            })}
+
+            <label htmlFor="cover-input" className="cover-input-label">
+              <input
+                id="cover-input"
+                hidden
+                type="file"
+                onChange={(e) => {
+                  coverRef.current = e.target.files[0];
+                  uploadCover();
+                }}
+              />
+              <ImCamera className="camera" /> Edit cover photo
+            </label>
+          </div>
+          {/* ================================= */}
+          <div className="profile-container">
+            <div className="profile">
+              {users.map((el) => {
+                return (
+                  <div className="img-container" key={el.id}>
+                    <img className="image-photo" src={el.image} />
+                  </div>
+                );
+              })}
+
+              <label htmlFor="profile-input" className="profile-input-label">
+                <input
+                  id="profile-input"
+                  type="file"
+                  hidden
+                  onChange={(e) => {
+                    profileRef.current = e.target.files[0];
+                    uploadUserImage();
+                  }}
+                />
+                <ImCamera className="camera-profile" />
+              </label>
+              {/* <button onClick={editProfile}>UpdatePhoto</button> */}
+            </div>
+
+            <h1>
+              {jwt_decode(token).firstName} {jwt_decode(token).lastName}
+            </h1>
+          </div>
+          {urlImage ? (
+            <div className="profile-change">
+              <img className="profile-new" src={urlImage} />
+              <div className="cover-choice">
+                <p>Change profile picture?</p>
+                <div className="choices-profile choices">
+                  <button
+                    className="cancel-cover cancel-profile"
+                    onClick={() => {
+                      seturlImage("");
+                    }}
+                  >
+                    Cancel
+                  </button>
+                  <button className="cover-save" onClick={editProfile}>
+                    Save changes
+                  </button>
+                </div>
+              </div>
+            </div>
           ) : (
-            <p>You have no friends</p>
+            <></>
           )}
         </div>
-      ) : (
-        ""
-      )}
+      </div>
 
-      <div className="cover">
-        {users.map((el) => {
-          return <img key={el.id} src={el.cover} />;
-        })}
-        <div>
-          <input
-            type="file"
-            onChange={(e) => {
-              coverRef.current = e.target.files[0];
-              uploadCover();
-            }}
-          />
+      {/* ================================= */}
 
-          <button onClick={editProfile}>UPDATE COVER</button>
+      <div className="main-container">
+        <div className="left-container"></div>
+        <div className="mid-container">
+          {PopupIntro ? (
+            <div className="info-popup">
+              <div className="popup-header">
+                <h1>Edit details </h1>
+                <IoCloseSharp
+                  className="close-btn close-info"
+                  onClick={() => {
+                    setPopupIntro(false);
+                  }}
+                />
+              </div>
+              <hr />
+              {users.map((user, i) => {
+                return (
+                  <div className="info-div" key={i}>
+                    <div className="detalis-conatiner">
+                      <label className="info-label">Bio :</label>
+                      <textarea
+                        defaultValue={user.bio}
+                        id={`textareabio`}
+                        placeholder="Describe who you are"
+                        onChange={(e) => setUpdateBio(e.target.value)}
+                        onKeyUp={(e) => {
+                          resize(e);
+                        }}
+                      ></textarea>
+                    </div>
+                    <div className="detalis-conatiner">
+                      <label className="info-label">Country :</label>
+                      <textarea
+                        defaultValue={user.country}
+                        placeholder="Where you from?"
+                        id={`textareacountry`}
+                        onChange={(e) => setUpdatecountry(e.target.value)}
+                        onKeyUp={(e) => {
+                          resize(e);
+                        }}
+                      ></textarea>
+                    </div>
+                    <div className="detalis-conatiner">
+                      <label>Birthday :</label>
+                      <input
+                        className="birthdate"
+                        type={"date"}
+                        onChange={(e) => {
+                          setUpdatebirthdate(e.target.value);
+                        }}
+                      />
+                    </div>
+                    <button
+                      className="updateInfo"
+                      onClick={() => {
+                        setPopupIntro(false);
+                        editProfile();
+                      }}
+                    >
+                      Save changes
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            ""
+          )}
+          {PopupFriend ? (
+            <div className="friends-popup">
+              <div className="popup-header">
+                <h1>Friends </h1>
+                <IoCloseSharp
+                  className="close-btn close-info"
+                  onClick={() => {
+                    setPopupFriend(false);
+                  }}
+                />
+              </div>
+              <hr />
+              <div className="friendlist-scroll">
+                {userFriends.length ? (
+                  userFriends.map((friend, i) => {
+                    return (
+                      <div className="friend-div" key={i}>
+                        <Link
+                          className="friend-link link"
+                          to={`/users/${friend.target_id}`}
+                        >
+                          <img className="friendimg" src={friend.image} />
+                          <p>{friend.userName}</p>
+                        </Link>
+                        <button
+                          onClick={() => {
+                            unFollowFriend(friend.target_id);
+                          }}
+                        >
+                          Unfollow
+                        </button>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <p>You have no friends</p>
+                )}
+              </div>
+            </div>
+          ) : (
+            ""
+          )}
+          {/* INFO */}
+
+          <div className="mid-left">
+            <div className="info-left left">
+              <h1>Intro</h1>
+              {users.map((user, i) => {
+                return (
+                  <div className="details" key={i}>
+                    {user.bio ? (
+                      <>
+                        <p className="bio-left">{user.bio}</p>
+                        <div className="border"></div>
+                      </>
+                    ) : (
+                      <button
+                        className="edit-info with-icon"
+                        onClick={() => {
+                          setPopupIntro(true);
+                        }}
+                      >
+                        Add Bio
+                      </button>
+                    )}
+
+                    {user.country ? (
+                      <div className="left-details">
+                        <IoHomeSharp className="info-icon" />
+                        <p>
+                          Lives in <strong>{user.country}</strong>
+                        </p>
+                      </div>
+                    ) : (
+                      <button
+                        className="edit-info with-icon"
+                        onClick={() => {
+                          setPopupIntro(true);
+                        }}
+                      >
+                        Add country
+                      </button>
+                    )}
+
+                    <div className="left-details">
+                      <FaBirthdayCake className="info-icon" />
+                      <p>
+                        Born at{" "}
+                        <strong>{user.birthdate.replaceAll("-", " / ")}</strong>
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+              <button
+                className="edit-info"
+                onClick={() => {
+                  setPopupIntro(true);
+                  setPopupFriend(false);
+                }}
+              >
+                Edit details
+              </button>
+              {/* INFO */}
+
+              {/* FRIENDS */}
+            </div>
+            <div className="friend-left left">
+              <div className="friend-left-header">
+                <div>
+                  <h1>Friends</h1>
+                  <p>{userFriends.length} friends</p>
+                </div>
+
+                <button
+                  onClick={(e) => {
+                    setPopupFriend(true);
+                    setPopupIntro(false);
+                  }}
+                >
+                  See all friends
+                </button>
+              </div>
+
+              <div className="friendlist">
+                {friends.length ? (
+                  friends.map((friend, i) => {
+                    return (
+                      <div key={i}>
+                        <Link
+                          className="friend-link link"
+                          to={`/users/${friend.target_id}`}
+                        >
+                          <img className="friendimg" src={friend.image} />
+                          <p>{friend.userName}</p>
+                        </Link>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <p>You have no friends</p>
+                )}
+              </div>
+            </div>
+            {/* FRIENDS */}
+          </div>
+
+          {/* Posts */}
+          <div className="mid-right">MIDDLE-RIGHT</div>
+          {/* Posts */}
+          {/* About */}
+          <div className="about"></div>
+
+          {/* Friends */}
+          <div className="friends"></div>
         </div>
+        <div className="right-container"></div>
       </div>
-      <div className="profilePic">
-        {users.map((el) => {
-          return <img key={el.id} src={el.image} />;
-        })}
-        <input
-          type="file"
-          onChange={(e) => {
-            profileRef.current = e.target.files[0];
-            uploadUserImage();
-          }}
-        />
 
-        <button onClick={editProfile}>UpdatePhoto</button>
-      </div>
-      <h1>
-        {jwt_decode(token).firstName} {jwt_decode(token).lastName}
-      </h1>
-      <div className="post-container">
+      {/* <div className="post-container">
         <form ref={formRef} onSubmit={newPost} className="addPost">
           <h1>
             {jwt_decode(token).firstName} {jwt_decode(token).lastName}
@@ -673,7 +989,7 @@ const Profile = () => {
               ""
             )}
           </div>
-          <br />
+
           <div>
             <h1> Friend List</h1>
           </div>
@@ -775,10 +1091,17 @@ const Profile = () => {
                     onSubmit={(e) => {
                       e.preventDefault();
                       setShowUpdate(false);
-                      editpost(post.id);
+                      editpost(post.id, post.image);
                     }}
                     ref={formRef}
                   >
+                    <input
+                      type="file"
+                      onChange={(e) => {
+                        imageEditRef.current = e.target.files[0];
+                        editPostImage();
+                      }}
+                    />
                     <input
                       defaultValue={post.content}
                       onChange={(e) => {
@@ -791,6 +1114,7 @@ const Profile = () => {
                   ""
                 )}
               </div>
+
               <div className="like-div">
                 {post.like ? (
                   <>
@@ -988,7 +1312,7 @@ const Profile = () => {
             </div>
           );
         })}
-      {!posts.length ? <h1>No posts</h1> : ""}
+      {!posts.length ? <h1>No posts</h1> : ""} */}
     </div>
   );
 };
