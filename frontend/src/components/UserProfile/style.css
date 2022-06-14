@@ -195,3 +195,17 @@
     margin-bottom: 10px;
     padding: 5px;
   }
+
+  .detalis-conatiner label {
+    font-size: 1.2rem;
+    color: black;
+    font-weight: bold;
+  }
+  
+  .detalis-conatiner input {
+    height: 8vh;
+    padding: 15px;
+    font-size: 1rem;
+    margin-top: 10px;
+    border: 1px solid #bfbfbf;
+  }
