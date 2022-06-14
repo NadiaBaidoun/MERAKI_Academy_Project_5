@@ -88,3 +88,32 @@
     border: 8px solid white;
     border-radius: 50%;
   }
+
+    .main-container {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+    background-color: rgb(225, 225, 225);
+    padding-bottom: 20vh;
+  }
+  
+  .left-container {
+    flex: 0.8;
+  }
+  .mid-container {
+    margin-top: 1rem;
+    flex: 5;
+    display: flex;
+    position: relative;
+  }
+  .right-container {
+    flex: 0.8;
+  }
+  
+  .mid-left {
+    flex: 1.5;
+  }
+  
+  .mid-right {
+    flex: 2.5;
+  }
