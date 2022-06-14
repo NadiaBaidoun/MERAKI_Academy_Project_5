@@ -295,3 +295,43 @@
     border-radius: 8px;
     box-shadow: 0 1px 3px rgba(168, 168, 168, 0.22);
   }
+
+  
+  .friendlist-scroll {
+    overflow-y: scroll;
+  }
+  
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: #888;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+  
+  .friend-div button {
+    background-color: transparent;
+    width: 8rem;
+    color: black;
+    margin: 0 10px;
+    background-color: rgba(63, 63, 63, 0.204);
+  }
+  
+  .friend-div button:hover {
+    /* background-color: rgb(195, 195, 195); */
+    background-color: rgb(253, 54, 54);
+  }
+  
+  .close-btn:hover {
+    background-color: rgb(212, 212, 212);
+    border-radius: 50%;
+  }
+  
