@@ -101,19 +101,23 @@ const SearchResult = () => {
               {userId === user.id ? (
                 <Link
                   style={{ color: "black" }}
-                  className="link"
+                  className="link info"
                   to={`/profile`}
                 >
-                  {user.userName}
+                  <img className="search-photo" src={user.image} />
+                  <div className="userInfo">
+                    <span>{user.userName}</span>
+                    <span>{user.country}</span>
+                  </div>
                 </Link>
               ) : (
                 <Link
-                  style={{ color: "black" }}
-                  className="link"
-                  to={`/users/${user.id}`}
-                >
-                  {user.userName}
-                </Link>
+                style={{ color: "black" }}
+                className="link"
+                to={`/users/${user.id}`}
+              >
+                {user.userName}
+              </Link>
               )}
 
               {user.id === userId ? (
