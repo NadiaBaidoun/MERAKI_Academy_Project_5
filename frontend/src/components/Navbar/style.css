@@ -99,7 +99,6 @@
 .notification-number {
   background-color: red;
   border: 2px solid white;
-  text-align: center;
   height: 25px;
   width: 25px;
   display: flex;

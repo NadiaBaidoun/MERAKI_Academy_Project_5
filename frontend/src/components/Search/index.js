@@ -132,7 +132,9 @@ const Search = () => {
             <div className="search-result">
               {allUser
                 .filter((el) => {
-                  return el.userName.includes(searchName.current.value);
+                  return el.userName
+                    .toLowerCase()
+                    .includes(searchName.current.value.toLowerCase());
                 })
                 .map((user, i) => {
                   if (i < 5) {

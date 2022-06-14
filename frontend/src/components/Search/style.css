@@ -16,6 +16,7 @@
 
 .search-container input {
   border-radius: 50px;
+  font-size: 1rem;
   width: 18.5rem;
   background-color: rgb(238, 238, 238);
   height: 3.2rem;
@@ -59,7 +60,7 @@
 
 .user-search {
   height: 4em;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -125,7 +126,7 @@
 }
 
 .bottom-icon {
-  background-color: blue;
+  background-color: #1877f2;
   color: white;
   width: 40px;
   height: 40px;
