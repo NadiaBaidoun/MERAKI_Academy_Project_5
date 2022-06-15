@@ -43,12 +43,12 @@ const io = socket(server, {
 });
 
 let onlineUsers = [];
-let user = null;
+let users = [];
 io.on("connection", (socket) => {
   console.log("user connected", socket.id);
   socket.on("userIn", (data) => {
-    console.log(data);
     onlineUsers = [...onlineUsers, data.userId];
+    users = [...users, data];
     io.emit("online", onlineUsers);
   });
 
