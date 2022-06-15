@@ -39,7 +39,7 @@ import { MdOutlinePermMedia } from "react-icons/md";
 
 import { IoCloseSharp } from "react-icons/io5";
 import { IoMdSend } from "react-icons/io";
-import { setMessage } from "../Redux/reducers/chat";
+import { setMessage, setMessages } from "../Redux/reducers/chat";
 
 const Dashboard = () => {
   const [content, setContent] = useState("");
@@ -65,6 +65,8 @@ const Dashboard = () => {
 
   const [chatMessage, setChatMessage] = useState("");
 
+  const chatAreaRef = useRef("");
+
   const imageRef = useRef("");
   const [postUrl, setPostUrl] = useState("");
   const imageEditRef = useRef("");
@@ -74,9 +76,10 @@ const Dashboard = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { posts } = useSelector((state) => {
+  const { posts, messages } = useSelector((state) => {
     return {
       posts: state.posts.posts,
+      messages: state.chat.messages,
     };
   });
   const { allUser } = useSelector((state) => {
@@ -554,8 +557,13 @@ const Dashboard = () => {
 
   const sendMessage = () => {
     if (chatMessage) {
-      const messageInfo = { message: chatMessage, user_id: chatHeadId };
+      const messageInfo = {
+        message: chatMessage,
+        receiver_id: chatHeadId,
+        sender_id: userId,
+      };
       dispatch(setMessage(messageInfo));
+      dispatch(setMessages());
       setChatMessage("");
     }
   };
@@ -1139,24 +1147,35 @@ const Dashboard = () => {
           </div>
 
           <div className="chat-body">
-            <div className="chat-another">
-              <img className="Icon" src={chatHeadImage} />
-              <div className="chat-message">
-                HI FROM ANOTHER USERHI FROM ANOTHER USERHI FROM ANOTHER USERHI
-                FROM ANOTHER USERHI FROM ANOTHER USERHI FROM ANOTHER USERHI FROM
-                ANOTHER USERHI FROM ANOTHER USERHI FROM ANOTHER USERHI FROM
-                ANOTHER USERHI FROM ANOTHER USERHI FROM ANOTHER USERHI FROM
-                ANOTHER USER
-              </div>
-            </div>
-
-            <div className="chat-message own">HI FROM ME</div>
-            <div className="chat-another">
-              <img className="Icon" src={chatHeadImage} />
-              <div className="chat-message">HI FROM ANOTHER USER</div>
-            </div>
+            {messages.map((message, i) => {
+              return (
+                <div
+                  key={i}
+                  className={
+                    message.sender_id == userId
+                      ? "chat-another own-div"
+                      : "chat-another"
+                  }
+                >
+                  <img
+                    className={message.sender_id === userId ? "hide" : "Icon"}
+                    src={chatHeadImage}
+                  />
+                  <div
+                    className={
+                      message.sender_id == userId
+                        ? "chat-message own"
+                        : "chat-message"
+                    }
+                  >
+                    {message.message}
+                  </div>
+                </div>
+              );
+            })}
           </div>
-          <div className="chat-footer">
+
+          <form ref={chatAreaRef} className="chat-footer">
             <input
               className="chat-area"
               placeholder="Aa"
@@ -1166,11 +1185,13 @@ const Dashboard = () => {
             />
             <IoMdSend
               className="chat-send"
-              onClick={() => {
+              onClick={(e) => {
+                e.preventDefault();
                 sendMessage();
+                chatAreaRef.current.reset();
               }}
             />
-          </div>
+          </form>
         </div>
       </div>
     </div>

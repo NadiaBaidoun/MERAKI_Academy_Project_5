@@ -5,6 +5,7 @@ import jwt_decode from "jwt-decode";
 import { useDispatch, useSelector } from "react-redux";
 import Dashboard from "../Dashboard";
 import { setOnlineFriends } from "../Redux/reducers/friends";
+import { setMessage, setMessages } from "../Redux/reducers/chat";
 
 const ENDPOINT = "http://localhost:5000";
 const socket = io.connect(ENDPOINT);
@@ -27,10 +28,19 @@ const SocketIo = () => {
     socket.on("online", (data) => {
       dispatch(setOnlineFriends(data));
     });
+    socket.on("receive-message", (data) => {
+      console.log(data);
+      dispatch(setMessage(data));
+      dispatch(setMessages());
+      dispatch(setMessage(""));
+    });
   }, [socket]);
 
   useEffect(() => {
-    socket.emit("send-message", message);
+    if (message.message) {
+      socket.emit("send-message", message);
+      dispatch(setMessage(""));
+    }
   }, [message]);
 
   return <div></div>;
