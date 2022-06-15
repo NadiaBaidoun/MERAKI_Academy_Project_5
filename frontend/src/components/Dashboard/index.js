@@ -36,7 +36,7 @@ import { setAllUsers, setUsers } from "../Redux/reducers/users";
 import { setFriends } from "../Redux/reducers/friends";
 
 import { MdOutlinePermMedia } from "react-icons/md";
-// import { setUsers } from "../Redux/reducers/users";
+
 import { IoCloseSharp } from "react-icons/io5";
 
 const Dashboard = () => {
@@ -77,10 +77,11 @@ const Dashboard = () => {
     };
   });
 
-  const { users, friends } = useSelector((state) => {
+  const { users, friends, onlineFriends } = useSelector((state) => {
     return {
       users: state.users.users,
       friends: state.friends.friends,
+      onlineFriends: state.friends.onlineFriends,
     };
   });
   const { likes } = useSelector((state) => {
@@ -616,7 +617,6 @@ const Dashboard = () => {
                 <div className="shareTop">
                   {show &&
                     users.map((user, index) => {
-                      console.log("User", user);
                       return (
                         <img
                           key={index}
@@ -928,19 +928,21 @@ const Dashboard = () => {
                                                 className="Icon"
                                                 src={comment.image}
                                               />
-                                             
-                                             <div> <p
-                                                onClick={() =>
-                                                  handelCheckUser(
-                                                    comment.commenter_id
-                                                  )
-                                                }
-                                              >
-                                                {comment.userName}
-                                              </p>
-                                              <p>{comment.comment}</p></div>
+
+                                              <div>
+                                                {" "}
+                                                <p
+                                                  onClick={() =>
+                                                    handelCheckUser(
+                                                      comment.commenter_id
+                                                    )
+                                                  }
+                                                >
+                                                  {comment.userName}
+                                                </p>
+                                                <p>{comment.comment}</p>
+                                              </div>
                                             </div>
-                                        
                                           </div>
                                         ) : (
                                           ""
@@ -1053,6 +1055,18 @@ const Dashboard = () => {
               })}
           </div>
         </div>
+        <div className="chat-container">
+          {friends.map((el) => {
+            console.log(el);
+            if (onlineFriends.includes(el.target_id)) {
+              return (
+                <div key={el.id}>
+                  <h1>{el.userName}</h1>
+                </div>
+              );
+            }
+          })}
+        </div>
       </div>
       <div className="rightbar">
         <p>Sponsored</p>
@@ -1077,7 +1091,7 @@ const Dashboard = () => {
         <h4 className="rightbarTitle">Online Friends</h4>
         <ul className="rightbarFriendList">
           {friends.map((friend, i) => (
-            <div key={i.id} className="profileName">
+            <div key={i} className="profileName">
               <div className="online-friend"></div>
               <img className="Icon" src={friend.image} />
               <p>{friend.userName}</p>
