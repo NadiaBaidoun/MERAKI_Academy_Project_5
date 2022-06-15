@@ -47,11 +47,22 @@ let users = [];
 io.on("connection", (socket) => {
   console.log("user connected", socket.id);
   socket.on("userIn", (data) => {
+    console.log(data);
     onlineUsers = [...onlineUsers, data.userId];
     users = [...users, data];
     io.emit("online", onlineUsers);
   });
 
+  socket.on("send-message", (data) => {
+    const message = users.filter((user) => {
+      console.log(users);
+      return user.userId == data.receiver_id;
+    });
+    console.log("MESSAGE", message);
+    if (message.length) {
+      io.to(message[0].socketId).emit("receive-message", data);
+    }
+  });
   // socket.on("SEND_MESSAGE", (data) => {
   //   console.log("MESSAGE", data);
   //   socket.to(data.room).emit("RECEIVE_MESSAGE", data.content);
@@ -60,5 +71,6 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log("user disconnected");
     onlineUsers = [];
+    users = [];
   });
 });
