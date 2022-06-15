@@ -93,6 +93,15 @@
   border-radius: 50%;
   margin: 0 5px;
 }
+
+.offline-friend {
+  background-color: rgb(137, 137, 137);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin: 0 5px;
+}
+
 .sponsored {
   display: flex;
 }

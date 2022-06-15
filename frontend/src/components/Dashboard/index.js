@@ -38,6 +38,7 @@ import { setFriends } from "../Redux/reducers/friends";
 import { MdOutlinePermMedia } from "react-icons/md";
 
 import { IoCloseSharp } from "react-icons/io5";
+import { IoMdSend } from "react-icons/io";
 
 const Dashboard = () => {
   const [content, setContent] = useState("");
@@ -56,6 +57,10 @@ const Dashboard = () => {
   const addPostRef = useRef("");
   const addCommentRef = useRef("");
   const updatePostRef = useRef("");
+  const [chatHeader, setChatHeader] = useState("");
+  const [chatHeadImage, setChatHeadImage] = useState("");
+
+  const [chatHeadId, setChatHeadId] = useState("");
 
   const imageRef = useRef("");
   const [postUrl, setPostUrl] = useState("");
@@ -1055,18 +1060,6 @@ const Dashboard = () => {
               })}
           </div>
         </div>
-        <div className="chat-container">
-          {friends.map((el) => {
-            console.log(el);
-            if (onlineFriends.includes(el.target_id)) {
-              return (
-                <div key={el.id}>
-                  <h1>{el.userName}</h1>
-                </div>
-              );
-            }
-          })}
-        </div>
       </div>
       <div className="rightbar">
         <p>Sponsored</p>
@@ -1088,16 +1081,75 @@ const Dashboard = () => {
 
         <hr className="sidebarHr" />
 
-        <h4 className="rightbarTitle">Online Friends</h4>
-        <ul className="rightbarFriendList">
+        <h4 className="rightbarTitle">Contacts</h4>
+        <div className="rightbarFriendList">
           {friends.map((friend, i) => (
-            <div key={i} className="profileName">
-              <div className="online-friend"></div>
+            <div
+              id={friend.target_id}
+              key={i}
+              className="online-users"
+              onClick={(e) => {
+                setChatHeader(friend.userName);
+                setChatHeadImage(friend.image);
+                setChatHeadId(friend.target_id);
+              }}
+            >
+              <div
+                className={
+                  onlineFriends.includes(friend.target_id)
+                    ? "online-friend"
+                    : "offline-friend"
+                }
+              ></div>
               <img className="Icon" src={friend.image} />
               <p>{friend.userName}</p>
             </div>
           ))}
-        </ul>
+        </div>
+        <div className={chatHeader ? "chat-container" : "hide"}>
+          <div className="chat-header">
+            <div
+              className="online-users user-chat"
+              onClick={() => {
+                navigate(`/users/${chatHeadId}`);
+                setChatHeader("");
+              }}
+            >
+              <img className="Icon" src={chatHeadImage} />
+              <p>{chatHeader}</p>
+            </div>
+
+            <IoCloseSharp
+              className="close-btn"
+              onClick={() => {
+                setChatHeader("");
+              }}
+            />
+          </div>
+
+          <div className="chat-body">
+            <div className="chat-another">
+              <img className="Icon" src={chatHeadImage} />
+              <div className="chat-message">
+                HI FROM ANOTHER USERHI FROM ANOTHER USERHI FROM ANOTHER USERHI
+                FROM ANOTHER USERHI FROM ANOTHER USERHI FROM ANOTHER USERHI FROM
+                ANOTHER USERHI FROM ANOTHER USERHI FROM ANOTHER USERHI FROM
+                ANOTHER USERHI FROM ANOTHER USERHI FROM ANOTHER USERHI FROM
+                ANOTHER USER
+              </div>
+            </div>
+
+            <div className="chat-message own">HI FROM ME</div>
+            <div className="chat-another">
+              <img className="Icon" src={chatHeadImage} />
+              <div className="chat-message">HI FROM ANOTHER USER</div>
+            </div>
+          </div>
+          <div className="chat-footer">
+            <input className="chat-area" placeholder="Aa" />
+            <IoMdSend className="chat-send" />
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -24,14 +24,11 @@ const SocketIo = () => {
   useEffect(() => {
     socket.emit("userIn", { userId: userId, socketId: socket.id });
     socket.on("online", (data) => {
-      console.log(data);
-      // console.log(
-      //   `User with id ${data[0].userId} and socket id ${data[0].socketId} is online`
-      // );
       dispatch(setOnlineFriends(data));
     });
-  }, [socket]);
+  }, []);
 
+  
   return <div></div>;
 };
 
