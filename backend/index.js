@@ -42,18 +42,23 @@ const io = socket(server, {
   },
 });
 
+let onlineUsers = [];
+let user = null;
 io.on("connection", (socket) => {
-  console.log("user connected");
-  socket.on("JOIN_ROOM", (data) => {
-    console.log("ROOM", data);
-    socket.join(data);
+  console.log("user connected", socket.id);
+  socket.on("userIn", (data) => {
+    console.log(data);
+    onlineUsers = [...onlineUsers, data.userId];
+    io.emit("online", onlineUsers);
   });
-  socket.on("SEND_MESSAGE", (data) => {
-    console.log("MESSAGE", data);
-    socket.to(data.room).emit("RECEIVE_MESSAGE", data.content);
-  });
+
+  // socket.on("SEND_MESSAGE", (data) => {
+  //   console.log("MESSAGE", data);
+  //   socket.to(data.room).emit("RECEIVE_MESSAGE", data.content);
+  // });
 
   socket.on("disconnect", () => {
     console.log("user disconnected");
+    onlineUsers = [];
   });
 });
