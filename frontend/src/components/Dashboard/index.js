@@ -16,8 +16,8 @@ import {
   MdOutlineFindInPage,
   MdSchool,
 } from "react-icons/md";
+import { AiFillLike, AiOutlineLike, AiTwotoneLike } from "react-icons/ai";
 
-import { AiFillLike } from "react-icons/ai";
 import { FaRegCommentAlt } from "react-icons/fa";
 import { BsQuestionSquare } from "react-icons/bs";
 // import { HiOutlineStatusOnline } from "react-icons/hi";
@@ -794,11 +794,13 @@ const Dashboard = () => {
                         </div>
 
                         <div className="postLike">
-                          <div className="postLike-header">
-                            <p>{post.like.length} people like it</p>
-                            {/* <hr className="shareHr"></hr> */}
-                          </div>
+                          <div className="postLike_div">
+                            <div className="postLike-header_like">
+                              <AiTwotoneLike className="hand" />
+                            </div>
 
+                            <p>{post.like.length} people like it</p>
+                          </div>
                           <div className="like-div">
                             {post.like ? (
                               <>
@@ -928,19 +930,21 @@ const Dashboard = () => {
                                                 className="Icon"
                                                 src={comment.image}
                                               />
-                                             
-                                             <div> <p
-                                                onClick={() =>
-                                                  handelCheckUser(
-                                                    comment.commenter_id
-                                                  )
-                                                }
-                                              >
-                                                {comment.userName}
-                                              </p>
-                                              <p>{comment.comment}</p></div>
+
+                                              <div>
+                                                {" "}
+                                                <p
+                                                  onClick={() =>
+                                                    handelCheckUser(
+                                                      comment.commenter_id
+                                                    )
+                                                  }
+                                                >
+                                                  {comment.userName}
+                                                </p>
+                                                <p>{comment.comment}</p>
+                                              </div>
                                             </div>
-                                        
                                           </div>
                                         ) : (
                                           ""

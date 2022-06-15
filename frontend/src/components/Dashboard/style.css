@@ -182,12 +182,30 @@
   align-self: flex-start;
   padding: 5px 20px;
 }
+.postLike_div{
+  display: flex;
+gap: 5px;
+  
+padding: 5px;
+
+}
+.postLike-header_like{
+  background-color: rgb(40, 121, 213);
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  padding: 2.5px;
+
+}
+.hand{
+  color: white;
+}
 .options-div {
   width: 100%;
   cursor: pointer;
   display: flex;
   align-items: center;
-  font-size: small;
+  font-size: 16px;
   font-weight: bold;
   justify-content: start;
   height: 5vh;
