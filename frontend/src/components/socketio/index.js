@@ -12,10 +12,11 @@ const SocketIo = () => {
   const onlineFriendsRef = useRef();
 
   const dispatch = useDispatch();
-
-  const { token } = useSelector((state) => {
+  // ==========================
+  const { token, message } = useSelector((state) => {
     return {
       token: state.auth.token,
+      message: state.chat.message,
     };
   });
 
@@ -26,9 +27,12 @@ const SocketIo = () => {
     socket.on("online", (data) => {
       dispatch(setOnlineFriends(data));
     });
-  }, []);
+  }, [socket]);
 
-  
+  useEffect(() => {
+    socket.emit("send-message", message);
+  }, [message]);
+
   return <div></div>;
 };
 

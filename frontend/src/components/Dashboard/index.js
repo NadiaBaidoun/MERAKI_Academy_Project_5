@@ -39,6 +39,7 @@ import { MdOutlinePermMedia } from "react-icons/md";
 
 import { IoCloseSharp } from "react-icons/io5";
 import { IoMdSend } from "react-icons/io";
+import { setMessage } from "../Redux/reducers/chat";
 
 const Dashboard = () => {
   const [content, setContent] = useState("");
@@ -61,6 +62,8 @@ const Dashboard = () => {
   const [chatHeadImage, setChatHeadImage] = useState("");
 
   const [chatHeadId, setChatHeadId] = useState("");
+
+  const [chatMessage, setChatMessage] = useState("");
 
   const imageRef = useRef("");
   const [postUrl, setPostUrl] = useState("");
@@ -547,6 +550,14 @@ const Dashboard = () => {
     textarea.style.height = "40px";
     let scHeight = e.target.scrollHeight;
     textarea.style.height = `${scHeight - 0}px`;
+  };
+
+  const sendMessage = () => {
+    if (chatMessage) {
+      const messageInfo = { message: chatMessage, user_id: chatHeadId };
+      dispatch(setMessage(messageInfo));
+      setChatMessage("");
+    }
   };
 
   useEffect(() => {
@@ -1146,8 +1157,19 @@ const Dashboard = () => {
             </div>
           </div>
           <div className="chat-footer">
-            <input className="chat-area" placeholder="Aa" />
-            <IoMdSend className="chat-send" />
+            <input
+              className="chat-area"
+              placeholder="Aa"
+              onChange={(e) => {
+                setChatMessage(e.target.value);
+              }}
+            />
+            <IoMdSend
+              className="chat-send"
+              onClick={() => {
+                sendMessage();
+              }}
+            />
           </div>
         </div>
       </div>
