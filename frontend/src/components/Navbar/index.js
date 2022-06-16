@@ -133,9 +133,9 @@ const Navbar = () => {
               <h1>Notifications :</h1>
               {notifications.length ? (
                 <>
-                  {notifications.map((el) => {
+                  {notifications.map((el, i) => {
                     return (
-                      <div className="notification">
+                      <div key={i} className="notification">
                         <img className="Icon" src={el.image} />
                         <strong style={{ marginRight: "5px" }}>
                           {el.username}
@@ -163,9 +163,9 @@ const Navbar = () => {
               <h1>Messages :</h1>
               {senders.length ? (
                 <>
-                  {senders.map((el) => {
+                  {senders.map((el, i) => {
                     return (
-                      <div className="notification">
+                      <div key={i} className="notification">
                         <img className="Icon" src={el.image} />
                         <strong style={{ marginRight: "5px" }}>
                           {el.name}

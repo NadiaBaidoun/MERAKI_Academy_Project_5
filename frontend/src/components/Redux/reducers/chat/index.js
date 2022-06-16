@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const chatSlice = createSlice({
-  name: "comment",
+  name: "chat",
   initialState: {
     messages: [],
     senders: [],
@@ -15,7 +15,7 @@ const chatSlice = createSlice({
       state.message = action.payload;
     },
     setSenders: (state, action) => {
-      state.senders = [...state.senders, ...action.payload];
+      state.senders = [...state.senders, action.payload];
     },
     clearSenders: (state, action) => {
       state.senders = [];
