@@ -611,33 +611,32 @@ const Profile = () => {
           </div>
           {/* ================================= */}
           <div className="profile-container">
-            <div className="profile">
-              {users.map((el) => {
-                return (
-                  <div className="img-container" key={el.id}>
-                    <img className="image-photo" src={el.image} />
-                  </div>
-                );
-              })}
+            <div className="profile-left">
+              <div className="profile">
+                {users.map((el) => {
+                  return (
+                    <div className="img-container" key={el.id}>
+                      <img className="image-photo" src={el.image} />
+                    </div>
+                  );
+                })}
 
-              <label htmlFor="profile-input" className="profile-input-label">
-                <input
-                  id="profile-input"
-                  type="file"
-                  hidden
-                  onChange={(e) => {
-                    profileRef.current = e.target.files[0];
-                    uploadUserImage();
-                  }}
-                />
-                <ImCamera className="camera-profile" />
-              </label>
-              {/* <button onClick={editProfile}>UpdatePhoto</button> */}
+                <label htmlFor="profile-input" className="profile-input-label">
+                  <input
+                    id="profile-input"
+                    type="file"
+                    hidden
+                    onChange={(e) => {
+                      profileRef.current = e.target.files[0];
+                      uploadUserImage();
+                    }}
+                  />
+                  <ImCamera className="camera-profile" />
+                </label>
+                {/* <button onClick={editProfile}>UpdatePhoto</button> */}
+              </div>
+              <h1>{jwt_decode(token).userName}</h1>
             </div>
-
-            <h1>
-              {jwt_decode(token).firstName} {jwt_decode(token).lastName}
-            </h1>
           </div>
           {urlImage ? (
             <div className="profile-change">
@@ -760,6 +759,7 @@ const Profile = () => {
                           <p>{friend.userName}</p>
                         </Link>
                         <button
+                          className="follow-profile"
                           onClick={() => {
                             unFollowFriend(friend.target_id);
                           }}

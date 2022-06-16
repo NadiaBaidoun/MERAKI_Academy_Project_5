@@ -571,9 +571,11 @@ const Dashboard = () => {
     textarea.style.height = `${scHeight - 0}px`;
   };
 
+  const sendMessage = (e) => {
+    e.preventDefault();
 
-  const sendMessage = () => {
     if (chatMessage) {
+      chatAreaRef.current.reset();
       const messageInfo = {
         message: chatMessage,
         receiver_id: chatHeadId,
@@ -1044,8 +1046,10 @@ const Dashboard = () => {
                                                 {" "}
 
 
+
                                                 <p 
                                                 className="commentName"
+
                                                   onClick={() =>
                                                     handelCheckUser(
                                                       comment.commenter_id
@@ -1221,7 +1225,11 @@ const Dashboard = () => {
             })}
           </div>
 
-          <form ref={chatAreaRef} className="chat-footer">
+          <form
+            ref={chatAreaRef}
+            onSubmit={sendMessage}
+            className="chat-footer"
+          >
             <input
               className="chat-area"
               placeholder="Aa"
@@ -1229,14 +1237,7 @@ const Dashboard = () => {
                 setChatMessage(e.target.value);
               }}
             />
-            <IoMdSend
-              className="chat-send"
-              onClick={(e) => {
-                e.preventDefault();
-                sendMessage();
-                chatAreaRef.current.reset();
-              }}
-            />
+            <IoMdSend className="chat-send" />
           </form>
         </div>
       </div>
