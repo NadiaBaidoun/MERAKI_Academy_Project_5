@@ -14,6 +14,7 @@ import { ImExit } from "react-icons/im";
 import axios from "axios";
 
 import jwt_decode from "jwt-decode";
+import { clearNotification } from "../Redux/reducers/like";
 
 const Navbar = () => {
   const [showMessages, setShowMessages] = useState(false);
@@ -23,10 +24,11 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { isLoggedIn, token } = useSelector((state) => {
+  const { isLoggedIn, token, notifications } = useSelector((state) => {
     return {
       isLoggedIn: state.auth.isLoggedIn,
       token: state.auth.token,
+      notifications: state.like.notification,
     };
   });
 
@@ -103,6 +105,7 @@ const Navbar = () => {
 
             <div
               className="nav-mid-div"
+              id="Link"
               onClick={() => {
                 setShowNotification(!showNotification);
                 setShowMessages(false);
@@ -112,10 +115,44 @@ const Navbar = () => {
                 style={showNotification ? { color: "#2374e1" } : ""}
                 className="nav-mid-icon notification-icon"
               />
-              <div className="notification-number">2</div>
+
+              <div
+                className={
+                  notifications.length ? "notification-number" : "hide"
+                }
+              >
+                {notifications.length}
+              </div>
             </div>
             <div className={showNotification ? "popup-navbar" : "hide"}>
-              No notification
+              <h1>Notifications :</h1>
+              {notifications.length ? (
+                <>
+                  {notifications.map((el) => {
+                    return (
+                      <div className="notification">
+                        <img className="Icon" src={el.image} />
+                        <strong style={{ marginRight: "5px" }}>
+                          {el.username}
+                        </strong>
+                        liked your post
+                      </div>
+                    );
+                  })}
+                  <button
+                    className="read"
+                    id="Link"
+                    onClick={() => {
+                      dispatch(clearNotification());
+                      setShowNotification(false);
+                    }}
+                  >
+                    Mark as read
+                  </button>
+                </>
+              ) : (
+                <h1 className="empty">You have no notifications</h1>
+              )}
             </div>
             <div className={showMessages ? "popup-navbar" : "hide"}>
               No messages

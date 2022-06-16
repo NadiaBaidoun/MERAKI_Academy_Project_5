@@ -4,6 +4,8 @@ const likeSlice = createSlice({
   name: "like",
   initialState: {
     likes: [],
+    like: "",
+    notification: [],
   },
   reducers: {
     setLikes: (state, action) => {
@@ -17,9 +19,25 @@ const likeSlice = createSlice({
         return like.id != action.payload;
       });
     },
+    setLike: (state, action) => {
+      state.like = action.payload;
+    },
+    setNotification: (state, action) => {
+      state.notification = [...state.notification, action.payload];
+    },
+    clearNotification: (state, action) => {
+      state.notification = [];
+    },
   },
 });
 
-export const { setLikes, addLike, removeLike } = likeSlice.actions;
+export const {
+  setLikes,
+  addLike,
+  removeLike,
+  setLike,
+  setNotification,
+  clearNotification,
+} = likeSlice.actions;
 
 export default likeSlice.reducer;

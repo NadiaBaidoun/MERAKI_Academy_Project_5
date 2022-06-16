@@ -23,7 +23,7 @@ import { BsQuestionSquare } from "react-icons/bs";
 // import { HiOutlineStatusOnline } from "react-icons/hi";
 import "./style.css";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { addLike, removeLike, setLikes } from "../Redux/reducers/like";
+import { addLike, removeLike, setLike, setLikes } from "../Redux/reducers/like";
 import {
   addComment,
   setComments,
@@ -371,7 +371,7 @@ const Dashboard = () => {
 
   //=================================
 
-  const likePost = (id) => {
+  const likePost = (id, user) => {
     axios
       .post(
         `http://localhost:5000/likes/${id}`,
@@ -384,6 +384,7 @@ const Dashboard = () => {
       )
       .then((result) => {
         dispatch(addLike({ post_id: id }));
+        dispatch(setLike(user));
         getAllPosts();
       })
       .catch((error) => {
@@ -820,7 +821,6 @@ const Dashboard = () => {
                         <div className="postLike">
                           <div className="postLike-header">
                             <p>{post.like.length} people like it</p>
-                            {/* <hr className="shareHr"></hr> */}
                           </div>
 
                           <div className="like-div">
@@ -831,7 +831,7 @@ const Dashboard = () => {
                                   onClick={(e) => {
                                     post.like.includes(userId)
                                       ? unLikePost(post.id)
-                                      : likePost(post.id);
+                                      : likePost(post.id, post.user_id);
                                   }}
                                 >
                                   {post.like.includes(userId) ? (

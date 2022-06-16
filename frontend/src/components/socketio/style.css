@@ -67,10 +67,8 @@
 .chat-message {
   background-color: #1877f2;
   max-width: 300px;
-  min-height: 100px;
   border-radius: 25px;
   display: flex;
-
   font-size: medium;
   align-items: center;
   justify-content: center;
