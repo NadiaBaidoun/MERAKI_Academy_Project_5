@@ -37,13 +37,11 @@ const SocketIo = () => {
     socket.on("receive-message", (data) => {
       dispatch(setMessage(data.data));
       dispatch(setMessages());
-      // console.log(data.messageUsers);
 
       const filtered = userSender.filter((el) => {
         return el.user_id == data.data.sender_id;
       });
-      console.log("FILTERED", filtered);
-      console.log("USERS", userSender);
+
       if (!filtered.length) {
         userSender = [...userSender, data.messageUsers[0]];
         dispatch(setSenders(...userSender));
@@ -53,9 +51,7 @@ const SocketIo = () => {
     });
 
     socket.on("send-notification", (data) => {
-      if (data.user_id != userId) {
-        dispatch(setNotification(data));
-      }
+      dispatch(setNotification(data));
     });
   }, [socket]);
 

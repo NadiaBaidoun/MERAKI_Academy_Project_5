@@ -386,7 +386,9 @@ const Dashboard = () => {
       )
       .then((result) => {
         dispatch(addLike({ post_id: id }));
-        dispatch(setLike(user));
+        if (user != userId) {
+          dispatch(setLike(user));
+        }
         getAllPosts();
       })
       .catch((error) => {
