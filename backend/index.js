@@ -1,6 +1,7 @@
 const express = require("express");
 require("dotenv").config();
 const cors = require("cors");
+const socket = require("socket.io");
 
 //routers
 const postsRouter = require("./routes/posts");
@@ -30,6 +31,62 @@ app.use("/user", userRouter);
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`server run on PORT ${PORT}`);
+});
+
+const io = socket(server, {
+  cors: {
+    origin: "http://localhost:3000",
+    method: ["GET", "POST"],
+  },
+});
+
+let onlineUsers = [];
+let users = [];
+let likes = [];
+let messageUsers = [];
+io.on("connection", (socket) => {
+  console.log("user connected", socket.id);
+  socket.on("userIn", (data) => {
+    console.log(data);
+    onlineUsers = [...onlineUsers, data.userId];
+    users = [...users, data];
+    io.emit("online", onlineUsers);
+  });
+
+  socket.on("send-message", (data) => {
+    const message = users.filter((user) => {
+      return user.userId == data.receiver_id;
+    });
+
+    if (!messageUsers.includes(data.sender_id)) {
+      messageUsers = [
+        ...messageUsers,
+        { user_id: data.sender_id, image: data.image, name: data.name },
+      ];
+    }
+
+    if (message.length) {
+      io.to(message[0].socketId).emit("receive-message", {
+        data,
+        messageUsers,
+      });
+      messageUsers = [];
+    }
+  });
+  socket.on("like-post", (data) => {
+    const like = users.filter((user) => {
+      return user.userId == data.user_id;
+    });
+    if (like.length) {
+      io.to(like[0].socketId).emit("send-notification", data);
+    }
+  });
+
+  socket.on("disconnect", () => {
+    console.log("user disconnected");
+    onlineUsers = [];
+    users = [];
+  });
 });

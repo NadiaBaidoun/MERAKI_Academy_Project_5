@@ -9,8 +9,15 @@ import Profile from "./components/Profile";
 import Search from "./components/Search";
 import SearchResult from "./components/SearchResult";
 import UserProfile from "./components/UserProfile/index.js";
+import { useDispatch, useSelector } from "react-redux";
+import SocketIo from "./components/socketio";
 
 function App() {
+  const { token } = useSelector((state) => {
+    return {
+      token: state.auth.token,
+    };
+  });
   return (
     <div className="App">
       <Navbar />
@@ -23,6 +30,7 @@ function App() {
         <Route path="/home" element={<Dashboard />} />
         <Route path="/profile" element={<Profile />} />
       </Routes>
+      {token ? <SocketIo /> : <></>}
     </div>
   );
 }

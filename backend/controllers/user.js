@@ -195,7 +195,6 @@ const getUserByName = (req, res) => {
   const query = `SELECT * FROM users WHERE is_deleted=0 AND userName LIKE ? ;`;
   const data = [`%${userName}%`];
   connection.query(query, data, (err, result) => {
-    console.log(result);
     if (err) {
       return res.status(500).json({
         success: false,
@@ -258,7 +257,6 @@ const updateUserById = (req, res) => {
             err,
           });
         }
-        console.log(result);
         res.status(201).json({
           success: true,
           massage: `user updated`,
@@ -306,5 +304,4 @@ module.exports = {
   updateUserById,
   getUserFriends,
   getAllUsers,
-
 };

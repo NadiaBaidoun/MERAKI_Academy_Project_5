@@ -23,7 +23,7 @@ import { BsQuestionSquare } from "react-icons/bs";
 // import { HiOutlineStatusOnline } from "react-icons/hi";
 import "./style.css";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { addLike, removeLike, setLikes } from "../Redux/reducers/like";
+import { addLike, removeLike, setLike, setLikes } from "../Redux/reducers/like";
 import {
   addComment,
   setComments,
@@ -36,8 +36,10 @@ import { setAllUsers, setUsers } from "../Redux/reducers/users";
 import { setFriends } from "../Redux/reducers/friends";
 
 import { MdOutlinePermMedia } from "react-icons/md";
-// import { setUsers } from "../Redux/reducers/users";
+
 import { IoCloseSharp } from "react-icons/io5";
+import { IoMdSend } from "react-icons/io";
+import { setMessage, setMessages } from "../Redux/reducers/chat";
 
 const Dashboard = () => {
   const [content, setContent] = useState("");
@@ -56,6 +58,14 @@ const Dashboard = () => {
   const addPostRef = useRef("");
   const addCommentRef = useRef("");
   const updatePostRef = useRef("");
+  const [chatHeader, setChatHeader] = useState("");
+  const [chatHeadImage, setChatHeadImage] = useState("");
+
+  const [chatHeadId, setChatHeadId] = useState("");
+
+  const [chatMessage, setChatMessage] = useState("");
+
+  const chatAreaRef = useRef("");
 
   const imageRef = useRef("");
   const [postUrl, setPostUrl] = useState("");
@@ -66,9 +76,10 @@ const Dashboard = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { posts } = useSelector((state) => {
+  const { posts, messages } = useSelector((state) => {
     return {
       posts: state.posts.posts,
+      messages: state.chat.messages,
     };
   });
   const { allUser } = useSelector((state) => {
@@ -77,10 +88,11 @@ const Dashboard = () => {
     };
   });
 
-  const { users, friends } = useSelector((state) => {
+  const { users, friends, onlineFriends } = useSelector((state) => {
     return {
       users: state.users.users,
       friends: state.friends.friends,
+      onlineFriends: state.friends.onlineFriends,
     };
   });
   const { likes } = useSelector((state) => {
@@ -102,6 +114,8 @@ const Dashboard = () => {
   });
 
   const userId = jwt_decode(token).userId;
+  const userImage = jwt_decode(token).image;
+  const userName = jwt_decode(token).userName;
   //=================================
 
   const newPost = (e) => {
@@ -359,7 +373,7 @@ const Dashboard = () => {
 
   //=================================
 
-  const likePost = (id) => {
+  const likePost = (id, user) => {
     axios
       .post(
         `http://localhost:5000/likes/${id}`,
@@ -372,6 +386,9 @@ const Dashboard = () => {
       )
       .then((result) => {
         dispatch(addLike({ post_id: id }));
+        if (user != userId) {
+          dispatch(setLike(user));
+        }
         getAllPosts();
       })
       .catch((error) => {
@@ -543,6 +560,21 @@ const Dashboard = () => {
     textarea.style.height = `${scHeight - 0}px`;
   };
 
+  const sendMessage = () => {
+    if (chatMessage) {
+      const messageInfo = {
+        message: chatMessage,
+        receiver_id: chatHeadId,
+        sender_id: userId,
+        image: userImage,
+        name: userName,
+      };
+      dispatch(setMessage(messageInfo));
+      dispatch(setMessages());
+      setChatMessage("");
+    }
+  };
+
   useEffect(() => {
     getAllPosts();
     getAllComments();
@@ -616,7 +648,6 @@ const Dashboard = () => {
                 <div className="shareTop">
                   {show &&
                     users.map((user, index) => {
-                      console.log("User", user);
                       return (
                         <img
                           key={index}
@@ -819,7 +850,7 @@ const Dashboard = () => {
                                   onClick={(e) => {
                                     post.like.includes(userId)
                                       ? unLikePost(post.id)
-                                      : likePost(post.id);
+                                      : likePost(post.id, post.user_id);
                                   }}
                                 >
                                   {post.like.includes(userId) ? (
@@ -997,6 +1028,7 @@ const Dashboard = () => {
 
                                               <div>
                                                 {" "}
+
                                                 <p 
                                                 className="commentName"
                                                   onClick={() =>
@@ -1090,16 +1122,99 @@ const Dashboard = () => {
 
         <hr className="sidebarHr" />
 
-        <h4 className="rightbarTitle">Online Friends</h4>
-        <ul className="rightbarFriendList">
+        <h4 className="rightbarTitle">Contacts</h4>
+        <div className="rightbarFriendList">
           {friends.map((friend, i) => (
-            <div key={i.id} className="profileName">
-              <div className="online-friend"></div>
+            <div
+              id={friend.target_id}
+              key={i}
+              className="online-users"
+              onClick={(e) => {
+                setChatHeader(friend.userName);
+                setChatHeadImage(friend.image);
+                setChatHeadId(friend.target_id);
+              }}
+            >
+              <div
+                className={
+                  onlineFriends.includes(friend.target_id)
+                    ? "online-friend"
+                    : "offline-friend"
+                }
+              ></div>
               <img className="Icon" src={friend.image} />
               <p>{friend.userName}</p>
             </div>
           ))}
-        </ul>
+        </div>
+        <div className={chatHeader ? "chat-container" : "hide"}>
+          <div className="chat-header">
+            <div
+              className="online-users user-chat"
+              onClick={() => {
+                navigate(`/users/${chatHeadId}`);
+                setChatHeader("");
+              }}
+            >
+              <img className="Icon" src={chatHeadImage} />
+              <p>{chatHeader}</p>
+            </div>
+
+            <IoCloseSharp
+              className="close-btn"
+              onClick={() => {
+                setChatHeader("");
+              }}
+            />
+          </div>
+
+          <div className="chat-body">
+            {messages.map((message, i) => {
+              return (
+                <div
+                  key={i}
+                  className={
+                    message.sender_id == userId
+                      ? "chat-another own-div"
+                      : "chat-another"
+                  }
+                >
+                  <img
+                    className={message.sender_id === userId ? "hide" : "Icon"}
+                    src={chatHeadImage}
+                  />
+                  <div
+                    className={
+                      message.sender_id == userId
+                        ? "chat-message own"
+                        : "chat-message"
+                    }
+                  >
+                    {message.message}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <form ref={chatAreaRef} className="chat-footer">
+            <input
+              className="chat-area"
+              placeholder="Aa"
+              onChange={(e) => {
+                setChatMessage(e.target.value);
+              }}
+            />
+            <IoMdSend
+              className="chat-send"
+              onClick={(e) => {
+                e.preventDefault();
+                sendMessage();
+                chatAreaRef.current.reset();
+              }}
+            />
+          </form>
+        </div>
       </div>
     </div>
   );
