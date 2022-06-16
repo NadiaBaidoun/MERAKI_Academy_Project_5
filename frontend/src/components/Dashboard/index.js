@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef } from "react";
-
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -49,6 +48,8 @@ import { IoMdSend } from "react-icons/io";
 import { setMessage, setMessages } from "../Redux/reducers/chat";
 
 const Dashboard = () => {
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(true);
   const [content, setContent] = useState("");
   const [show, setShow] = useState(false);
   const [showUpdate, setShowUpdate] = useState(false);
@@ -65,6 +66,7 @@ const Dashboard = () => {
   const addPostRef = useRef("");
   const addCommentRef = useRef("");
   const updatePostRef = useRef("");
+
   const [chatHeader, setChatHeader] = useState("");
   const [chatHeadImage, setChatHeadImage] = useState("");
 
@@ -205,10 +207,12 @@ const Dashboard = () => {
   };
 
   //=================================
-  const getAllPosts = () => {
+  const getAllPosts = (page) => {
+    console.log(page);
     axios
-      .get("http://localhost:5000/posts")
+      .get(`http://localhost:5000/posts/${page}`)
       .then((res) => {
+        console.log("hello", res);
         axios
           .get(`http://localhost:5000/user/list/friends/${userId}`, {
             headers: {
@@ -569,6 +573,7 @@ const Dashboard = () => {
 
   const sendMessage = (e) => {
     e.preventDefault();
+
     if (chatMessage) {
       chatAreaRef.current.reset();
       const messageInfo = {
@@ -584,8 +589,9 @@ const Dashboard = () => {
     }
   };
 
+
   useEffect(() => {
-    getAllPosts();
+    getAllPosts()
     getAllComments();
     getUserById();
     getAllUsers();
@@ -593,7 +599,12 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <div className="container">
+    
+    <div
+      className="container"
+     
+    >
+
       <div className="sidebar">
         <ul className="sidebarList">
           <li className="sidebarListItem">
@@ -698,8 +709,8 @@ const Dashboard = () => {
               </form>
             </div>
           </div>
-
           <div className="container-post">
+   
             {" "}
             {show &&
               posts.map((post, index) => {
@@ -1033,8 +1044,12 @@ const Dashboard = () => {
 
                                               <div>
                                                 {" "}
-                                                <p
-                                                  className="commentName"
+
+
+
+                                                <p 
+                                                className="commentName"
+
                                                   onClick={() =>
                                                     handelCheckUser(
                                                       comment.commenter_id
@@ -1103,7 +1118,16 @@ const Dashboard = () => {
                   </div>
                 );
               })}
+            {/* <button onClick={()=>{
+          //  console.log("number1",  numberRef.current);
+           numberRef.current = numberRef.current + 1
+          // console.log("number2",  numberRef.current);
+          getAllPosts(numberRef.current)
+        }}>Click</button> */}
+      
           </div>
+        
+          
         </div>
       </div>
       <div className="rightbar">
