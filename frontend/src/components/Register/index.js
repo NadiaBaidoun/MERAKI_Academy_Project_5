@@ -5,7 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { IoCloseSharp } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { showForm } from "../Redux/reducers/auth";
-
+import React, { useRef } from "react";
+import emailjs from "@emailjs/browser";
 const Register = () => {
   const [firstName, setFirstName] = useState("null");
   const [lastName, setLastName] = useState("null");
@@ -20,6 +21,8 @@ const Register = () => {
 
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+
+  const form = useRef();
 
   // ==============================
 
@@ -57,6 +60,22 @@ const Register = () => {
         setMessage(result.data.massage);
 
         dispatch(showForm(false));
+
+        emailjs
+          .sendForm(
+            "service_exbz4ua",
+            "template_tarfjc5",
+            form.current,
+            "NImaBN2YW2KvrMhC-"
+          )
+          .then(
+            (result) => {
+              console.log(result.text);
+            },
+            (error) => {
+              console.log(error.text);
+            }
+          );
       })
       .catch((error) => {
         setError(error.response.data.massage);
@@ -65,7 +84,7 @@ const Register = () => {
 
   return (
     <div className={regForm ? "form-container" : "hide"}>
-      <form className="formInput" onSubmit={createUser}>
+      <form ref={form} className="formInput" onSubmit={createUser}>
         <div className="signup-header">
           <div>
             <h2>Sign Up</h2>
@@ -84,6 +103,7 @@ const Register = () => {
             <div className="reg-names">
               <input
                 placeholder="First name"
+                name="user_name"
                 required
                 className="firstName regInput"
                 onChange={(e) => {
@@ -148,6 +168,7 @@ const Register = () => {
               type={"email"}
               placeholder="Email"
               required
+              name="user_email"
               className="email regInput"
               onChange={(e) => {
                 setEmail(e.target.value);
