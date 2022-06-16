@@ -10,14 +10,12 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  
 }
 .profileName {
   display: flex;
   font-size: 1.3rem;
   align-items: center;
   font-weight: bold;
-  
 }
 .Icon {
   width: 30px;
@@ -97,7 +95,6 @@
   height: 10px;
   border-radius: 50%;
   margin: 0 5px;
- 
 }
 
 .offline-friend {
@@ -125,7 +122,7 @@
   width: 680px;
   /* height: 200px; */
   margin: 20px;
-  
+
   background-color: white;
   border-radius: 5px;
   /* text-align: center; */
@@ -155,11 +152,10 @@
   display: flex;
   border-radius: 8px;
   background-color: rgba(178, 178, 178, 0.271);
- font-size: 1rem;
+  font-size: 1rem;
   width: 100%;
- 
 }
-.comment  p{
+.comment p {
   word-wrap: break-word;
 }
 .comment-container {
@@ -188,34 +184,27 @@
 .addComment {
   width: 100%;
 }
-.updateheader{
-
-display: flex;
-flex-direction: column;
-align-content: center;
-color: rgba(0, 0, 0, 0.841);
-border-bottom: 1px solid rgb(0, 0, 0);
-
-
+.updateheader {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  color: rgba(0, 0, 0, 0.841);
+  border-bottom: 1px solid rgb(0, 0, 0);
 }
-.update--Post{
-width: 100%;
-height: 10px;
+.update--Post {
+  width: 100%;
+  height: 10px;
 
+  color: rgba(0, 0, 0, 0.841);
+  background-color: rgb(225, 219, 219);
+  border-radius: 5px;
+  font-weight: bold;
+  font-size: 25px;
 
-color: rgba(0, 0, 0, 0.841);
-background-color: rgb(225, 219, 219);
-border-radius: 5px;
-font-weight: bold;
-font-size: 25px;
+  cursor: pointer;
 
-cursor: pointer;
-
-align-items: center;
-text-align: center;
-
-
-
+  align-items: center;
+  text-align: center;
 }
 .update--Post {
   width: 100% !important;
@@ -226,15 +215,12 @@ text-align: center;
   border-radius: 5px;
   font-weight: bold;
   font-size: 18px !important;
-  
+
   cursor: pointer;
-  
+
   align-items: center;
   text-align: center;
-  
-  
-  
-  }
+}
 .addComment textarea {
   background-color: rgba(178, 178, 178, 0.271);
   border-radius: 8px;
@@ -248,27 +234,24 @@ text-align: center;
   align-self: flex-start;
   padding: 5px 20px;
 }
-.postLike_div{
+.postLike_div {
   color: rgb(75, 73, 73);
 
-  font-weight:400;
+  font-weight: 400;
   display: flex;
-gap: 5px;
+  gap: 5px;
   font-size: 1rem;
-padding: 5px;
-
+  padding: 5px;
 }
-.postLike-header_like{
+.postLike-header_like {
   background-color: rgb(40, 121, 213);
   border-radius: 50%;
   width: 20px;
   height: 20px;
   padding: 2.5px;
-
-
 }
 
-.hand{
+.hand {
   color: white;
 }
 .options-div {
@@ -276,7 +259,7 @@ padding: 5px;
   cursor: pointer;
   display: flex;
   align-items: center;
-  font-size:0.8rem;
+  font-size: 0.8rem;
   font-weight: bold;
   justify-content: start;
   height: 5vh;
@@ -361,16 +344,16 @@ padding: 5px;
   /* margin: 10px;
   padding: 10px; */
 }
-.Fc{
+.Fc {
   min-height: 30px;
   min-width: 50px;
 }
-.update-form input{
-  height: 5em  !important;
+.update-form input {
+  height: 5em !important;
   width: 100% !important;
   font-size: 1em !important;
   border-radius: 8px;
- border: 0.5px #bfbfbf solid;
+  border: 0.5px #bfbfbf solid;
   padding: 5px;
   margin: 2px;
 }
@@ -392,19 +375,15 @@ padding: 5px;
   background-color: white;
 }
 
-
-
 .update-form input:focus {
   border: 2px solid rgba(0, 0, 0, 0.481);
   outline: none;
   box-shadow: 0 1px 5px rgb(32, 32, 32);
 }
-.comment-btn{
+.comment-btn {
   gap: 10px;
-  
-  
 }
-.color{
+.color {
   color: rgb(19, 19, 98);
 }
 .like {
@@ -436,8 +415,8 @@ padding: 5px;
   background-color: transparent;
   color: rgb(75, 73, 73);
 
-  font-weight:400;
- 
+  font-weight: 400;
+
   margin-top: 0px;
   margin-bottom: 0px;
   text-align: left;
@@ -472,7 +451,6 @@ padding: 5px;
   flex-direction: column;
   justify-content: center;
   position: relative;
-
 }
 
 .dd-button {
@@ -481,7 +459,7 @@ padding: 5px;
   top: 0;
   right: 0;
 }
-.commentName{
+.commentName {
   font-weight: bold;
 }
 .dropdown-comment {
@@ -497,8 +475,8 @@ padding: 5px;
 }
 
 .share {
- width: 680px;
-  height: 170px;
+  margin-top: 10px;
+  width: 680px;
   border-radius: 10px;
   background-color: white;
   -webkit-box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
@@ -535,22 +513,23 @@ padding: 5px;
   margin: 20px;
 }
 .likediv {
-  background-color: aqua;
+  /* background-color: aqua; */
 }
 .Unlike {
   color: rgb(45, 123, 239);
-
 }
 
 .shareBottom {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
 }
 
 .shareOptions {
   display: flex;
-  margin-left: 20px;
+  align-items: center;
+  justify-content: space-between;
+  width: 80%;
 }
 
 .shareOption {
@@ -561,8 +540,11 @@ padding: 5px;
 }
 
 .shareIcon {
+  height: 30px;
+  width: 30px;
   font-size: 18px;
   margin-right: 3px;
+  color: green;
 }
 
 .shareOptionText {
@@ -585,14 +567,20 @@ padding: 5px;
   color: white;
 }
 
-/* .label-post-img{
+.label-post-img {
   display: flex;
-  flex-direction: ;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  height: 50px;
 
-} */
+  /* flex-direction: ; */
+}
 
 .label-post-img:hover {
   cursor: pointer;
+  border-radius: 8px;
+  background-color: rgb(225, 219, 219);
 }
 
 .container-post {
@@ -621,16 +609,16 @@ padding: 5px;
   align-items: center;
   justify-content: space-between;
 }
-.update-post-image-label{
+.update-post-image-label {
   font-size: 1rem;
   display: flex;
-justify-content: center;
-align-items: center;
+  justify-content: center;
+  align-items: center;
 
-  border:0.5px #bfbfbf solid;
+  border: 0.5px #bfbfbf solid;
   border-radius: 5px;
   color: black;
-  
+
   height: 50px;
 }
 .postProfileImg {
@@ -642,18 +630,16 @@ align-items: center;
 
 .iamge-post {
   object-fit: fill;
-  width:450px;
- 
+  width: 450px;
+
   align-items: center;
-height: 300px;
+  height: 300px;
   border: 0.1em solid rgba(128, 128, 128, 0.196);
   border-radius: 8px;
 }
-.dis-Flex{
+.dis-Flex {
   display: flex;
   flex-direction: column;
-
-  
 }
 .postCenter {
   margin: 20px 0;
@@ -686,12 +672,10 @@ height: 300px;
   align-content: center;
   justify-content: space-between;
   padding: 20px;
- 
 }
 textarea::-webkit-scrollbar {
   width: 0px;
 }
-
 
 .addComment textarea {
   /* width: 20vw; */
@@ -700,7 +684,7 @@ textarea::-webkit-scrollbar {
   border-radius: 50px;
   outline: none;
   padding: 0 15px;
-  font-size:1rem;
+  font-size: 1rem;
   margin-top: 20px;
   max-height: 200px;
   border: 1px solid #bfbfbf;

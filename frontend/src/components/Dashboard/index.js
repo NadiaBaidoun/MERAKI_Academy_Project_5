@@ -17,7 +17,14 @@ import {
   MdSchool,
 } from "react-icons/md";
 import { AiFillLike, AiOutlineLike, AiTwotoneLike } from "react-icons/ai";
-import {FcBookmark, FcCalendar, FcGraduationCap, FcQuestions, FcUpload, FcVideoFile} from 'react-icons/fc'
+import {
+  FcBookmark,
+  FcCalendar,
+  FcGraduationCap,
+  FcQuestions,
+  FcUpload,
+  FcVideoFile,
+} from "react-icons/fc";
 import { FaRegCommentAlt } from "react-icons/fa";
 import { BsQuestionSquare } from "react-icons/bs";
 // import { HiOutlineStatusOnline } from "react-icons/hi";
@@ -560,8 +567,10 @@ const Dashboard = () => {
     textarea.style.height = `${scHeight - 0}px`;
   };
 
-  const sendMessage = () => {
+  const sendMessage = (e) => {
+    e.preventDefault();
     if (chatMessage) {
+      chatAreaRef.current.reset();
       const messageInfo = {
         message: chatMessage,
         receiver_id: chatHeadId,
@@ -770,14 +779,15 @@ const Dashboard = () => {
                         <div>
                           {post.id == dropdownId && showUpdate ? (
                             <div className={"update-post-popup"}>
-                           <div className="updateheader">  
-                            <div className="update-post-header">
-                              <h2  >Update post</h2> 
-                                <IoCloseSharp
-                                  className="close-btn"
-                                  onClick={() => setShowUpdate(false)}
-                                />
-                              </div> </div>
+                              <div className="updateheader">
+                                <div className="update-post-header">
+                                  <h2>Update post</h2>
+                                  <IoCloseSharp
+                                    className="close-btn"
+                                    onClick={() => setShowUpdate(false)}
+                                  />
+                                </div>{" "}
+                              </div>
                               <form
                                 className="update-form"
                                 onSubmit={(e) => {
@@ -788,23 +798,21 @@ const Dashboard = () => {
                                 }}
                                 ref={formRef}
                               >
-                              
-
                                 <input
-                                className="textUpdate"
+                                  className="textUpdate"
                                   defaultValue={post.content}
                                   onChange={(e) => {
                                     setUpdatecontent(e.target.value);
                                   }}
-                                /> 
-                            
-                               <img
-                                className="iamge-post"
-                                src={
-                                  postEditUrl ||
-                                  "https://cdn.pixabay.com/photo/2017/11/10/05/24/add-2935429_960_720.png"
-                                }
-                              />
+                                />
+
+                                <img
+                                  className="iamge-post"
+                                  src={
+                                    postEditUrl ||
+                                    "https://cdn.pixabay.com/photo/2017/11/10/05/24/add-2935429_960_720.png"
+                                  }
+                                />
                                 <label
                                   htmlFor="update-post-image"
                                   className="update-post-image-label"
@@ -818,16 +826,11 @@ const Dashboard = () => {
                                       editPostImage();
                                     }}
                                   />
-                           
-                                  <FcUpload className="Fc"/>
+                                  <FcUpload className="Fc" />
                                   Upload Image
                                 </label>
-                           <button className="update--Post" >Update</button>
-                               
-                           
-                        
+                                <button className="update--Post">Update</button>
                               </form>
-                             
                             </div>
                           ) : (
                             ""
@@ -907,59 +910,61 @@ const Dashboard = () => {
                               style={{ display: "none" }}
                             >
                               <div className="comment-container">
-                              {users.map((user, i) => {
-                                return (
-                                  <div
-                                    className="profileName"
-                                    key={i}
-                                    onClick={() => {
-                                      navigate("/profile");
+                                {users.map((user, i) => {
+                                  return (
+                                    <div
+                                      className="profileName"
+                                      key={i}
+                                      onClick={() => {
+                                        navigate("/profile");
+                                      }}
+                                    >
+                                      <img className="Icon" src={user.image} />
+                                    </div>
+                                  );
+                                })}
+                                <form
+                                  id={`commentform${post.id}`}
+                                  className="addComment"
+                                >
+                                  <textarea
+                                    id={`comment-${post.id}`}
+                                    placeholder="Write a comment…"
+                                    onChange={(e) => {
+                                      setComment(e.target.value);
                                     }}
-                                  >
-                                    <img className="Icon" src={user.image} />
-                                  </div>
-                                );
-                              })}
-                              <form
-                                id={`commentform${post.id}`}
-                                className="addComment"
-                              >
-                                <textarea
-                                  id={`comment-${post.id}`}
-                                  placeholder="Write a comment…"
-                                  onChange={(e) => {
-                                    setComment(e.target.value);
-                                  }}
-                                  onKeyUp={(e) => {
-                                    resize(e);
-                                  }}
-                                  onKeyDown={(e) => {
-                                    if (e.key === "Enter") {
-                                      const commentSection =
-                                        document.getElementById(
-                                          `comment-${e.target.id.split("-")[1]}`
-                                        );
-                                      const commentDiv =
-                                        document.getElementById(
-                                          `commentDiv${
-                                            e.target.id.split("-")[1]
-                                          }`
-                                        );
-                                      const commentForm =
-                                        document.getElementById(
-                                          `commentform${
-                                            e.target.id.split("-")[1]
-                                          }`
-                                        );
-                                      commentDiv.style.display = "block";
-                                      commentSection.focus();
-                                      commentForm.reset();
-                                      newComment(e, post.id);
-                                    }
-                                  }}
-                                ></textarea>
-                              </form>
-                            </div>
+                                    onKeyUp={(e) => {
+                                      resize(e);
+                                    }}
+                                    onKeyDown={(e) => {
+                                      if (e.key === "Enter") {
+                                        const commentSection =
+                                          document.getElementById(
+                                            `comment-${
+                                              e.target.id.split("-")[1]
+                                            }`
+                                          );
+                                        const commentDiv =
+                                          document.getElementById(
+                                            `commentDiv${
+                                              e.target.id.split("-")[1]
+                                            }`
+                                          );
+                                        const commentForm =
+                                          document.getElementById(
+                                            `commentform${
+                                              e.target.id.split("-")[1]
+                                            }`
+                                          );
+                                        commentDiv.style.display = "block";
+                                        commentSection.focus();
+                                        commentForm.reset();
+                                        newComment(e, post.id);
+                                      }
+                                    }}
+                                  ></textarea>
+                                </form>
+                              </div>
                               {show &&
                                 comments.map((comment, index) => {
                                   return (
@@ -1028,9 +1033,8 @@ const Dashboard = () => {
 
                                               <div>
                                                 {" "}
-
-                                                <p 
-                                                className="commentName"
+                                                <p
+                                                  className="commentName"
                                                   onClick={() =>
                                                     handelCheckUser(
                                                       comment.commenter_id
@@ -1074,7 +1078,7 @@ const Dashboard = () => {
                                 })}
                               {!comments.length ? <h1>No comments</h1> : ""}
                             </div>
-                            
+
                             {/* <button
                               id={post.id}
                               className="like"
@@ -1197,7 +1201,11 @@ const Dashboard = () => {
             })}
           </div>
 
-          <form ref={chatAreaRef} className="chat-footer">
+          <form
+            ref={chatAreaRef}
+            onSubmit={sendMessage}
+            className="chat-footer"
+          >
             <input
               className="chat-area"
               placeholder="Aa"
@@ -1205,14 +1213,7 @@ const Dashboard = () => {
                 setChatMessage(e.target.value);
               }}
             />
-            <IoMdSend
-              className="chat-send"
-              onClick={(e) => {
-                e.preventDefault();
-                sendMessage();
-                chatAreaRef.current.reset();
-              }}
-            />
+            <IoMdSend className="chat-send" />
           </form>
         </div>
       </div>
