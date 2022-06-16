@@ -27,13 +27,18 @@
 .userInfo{
 
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  justify-content: center;
+  margin-left: 30px;
+  justify-content: space-between;  
   color: rgb(118,151,184);
 }
 
 .info{
   display: flex;
   flex-direction: row;
+}
+
+.searchCountry{
+  margin-left: 60px;
 }
