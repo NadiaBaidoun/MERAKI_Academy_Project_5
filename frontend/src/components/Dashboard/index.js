@@ -16,8 +16,8 @@ import {
   MdOutlineFindInPage,
   MdSchool,
 } from "react-icons/md";
-
-import { AiFillLike } from "react-icons/ai";
+import { AiFillLike, AiOutlineLike, AiTwotoneLike } from "react-icons/ai";
+import {FcBookmark, FcCalendar, FcGraduationCap, FcQuestions, FcUpload, FcVideoFile} from 'react-icons/fc'
 import { FaRegCommentAlt } from "react-icons/fa";
 import { BsQuestionSquare } from "react-icons/bs";
 // import { HiOutlineStatusOnline } from "react-icons/hi";
@@ -605,7 +605,7 @@ const Dashboard = () => {
           </li>
 
           <li className="sidebarListItem">
-            <MdOutlineRssFeed className="sidebarIcon" />
+            <MdOutlineRssFeed className="sidebarIcon color" />
             <span className="sidebarListItemText">Feed</span>
           </li>
           <li className="sidebarListItem">
@@ -613,16 +613,16 @@ const Dashboard = () => {
             <span className="sidebarListItemText">Groups</span>
           </li>
           <li className="sidebarListItem">
-            <MdVideoSettings className="sidebarIcon" />
+            <FcVideoFile className="sidebarIcon" />
             <span className="sidebarListItemText">Videos</span>
           </li>
 
           <li className="sidebarListItem">
-            <MdBookmarks className="sidebarIcon" />
+            <FcBookmark className="sidebarIcon" />
             <span className="sidebarListItemText">Bookmarks</span>
           </li>
           <li className="sidebarListItem">
-            <BsQuestionSquare className="sidebarIcon" />
+            <FcQuestions className="sidebarIcon" />
             <span className="sidebarListItemText">Questions</span>
           </li>
           <li className="sidebarListItem">
@@ -630,11 +630,11 @@ const Dashboard = () => {
             <span className="sidebarListItemText">Pages</span>
           </li>
           <li className="sidebarListItem">
-            <MdOutlineEventAvailable className="sidebarIcon" />
+            <FcCalendar className="sidebarIcon" />
             <span className="sidebarListItemText">Events</span>
           </li>
           <li className="sidebarListItem">
-            <MdSchool className="sidebarIcon" />
+            <FcGraduationCap className="sidebarIcon" />
             <span className="sidebarListItemText">Courses</span>
           </li>
         </ul>
@@ -770,13 +770,14 @@ const Dashboard = () => {
                         <div>
                           {post.id == dropdownId && showUpdate ? (
                             <div className={"update-post-popup"}>
-                              <div className="update-post-header">
-                                <h1>Update post</h1>
+                           <div className="updateheader">  
+                            <div className="update-post-header">
+                              <h2  >Update post</h2> 
                                 <IoCloseSharp
                                   className="close-btn"
                                   onClick={() => setShowUpdate(false)}
                                 />
-                              </div>
+                              </div> </div>
                               <form
                                 className="update-form"
                                 onSubmit={(e) => {
@@ -787,6 +788,23 @@ const Dashboard = () => {
                                 }}
                                 ref={formRef}
                               >
+                              
+
+                                <input
+                                className="textUpdate"
+                                  defaultValue={post.content}
+                                  onChange={(e) => {
+                                    setUpdatecontent(e.target.value);
+                                  }}
+                                /> 
+                            
+                               <img
+                                className="iamge-post"
+                                src={
+                                  postEditUrl ||
+                                  "https://cdn.pixabay.com/photo/2017/11/10/05/24/add-2935429_960_720.png"
+                                }
+                              />
                                 <label
                                   htmlFor="update-post-image"
                                   className="update-post-image-label"
@@ -800,24 +818,16 @@ const Dashboard = () => {
                                       editPostImage();
                                     }}
                                   />
-                                  UPDATE IMAGE
+                           
+                                  <FcUpload className="Fc"/>
+                                  Upload Image
                                 </label>
-
-                                <input
-                                  defaultValue={post.content}
-                                  onChange={(e) => {
-                                    setUpdatecontent(e.target.value);
-                                  }}
-                                />
-                                <button>Update</button>
+                           <button className="update--Post" >Update</button>
+                               
+                           
+                        
                               </form>
-                              <img
-                                className="iamge-post"
-                                src={
-                                  postEditUrl ||
-                                  "https://image.shutterstock.com/image-vector/camera-add-icon-260nw-1054194038.jpg"
-                                }
-                              />
+                             
                             </div>
                           ) : (
                             ""
@@ -825,15 +835,18 @@ const Dashboard = () => {
                         </div>
 
                         <div className="postLike">
-                          <div className="postLike-header">
+                          <div className="postLike_div">
+                            <div className="postLike-header_like">
+                              <AiTwotoneLike className="hand" />
+                            </div>
+
                             <p>{post.like.length} people like it</p>
                           </div>
-
                           <div className="like-div">
                             {post.like ? (
                               <>
                                 <button
-                                  className="like like-btn"
+                                  className="like  comment-btn"
                                   onClick={(e) => {
                                     post.like.includes(userId)
                                       ? unLikePost(post.id)
@@ -893,6 +906,60 @@ const Dashboard = () => {
                               className="allComments"
                               style={{ display: "none" }}
                             >
+                              <div className="comment-container">
+                              {users.map((user, i) => {
+                                return (
+                                  <div
+                                    className="profileName"
+                                    key={i}
+                                    onClick={() => {
+                                      navigate("/profile");
+                                    }}
+                                  >
+                                    <img className="Icon" src={user.image} />
+                                  </div>
+                                );
+                              })}
+                              <form
+                                id={`commentform${post.id}`}
+                                className="addComment"
+                              >
+                                <textarea
+                                  id={`comment-${post.id}`}
+                                  placeholder="Write a comment…"
+                                  onChange={(e) => {
+                                    setComment(e.target.value);
+                                  }}
+                                  onKeyUp={(e) => {
+                                    resize(e);
+                                  }}
+                                  onKeyDown={(e) => {
+                                    if (e.key === "Enter") {
+                                      const commentSection =
+                                        document.getElementById(
+                                          `comment-${e.target.id.split("-")[1]}`
+                                        );
+                                      const commentDiv =
+                                        document.getElementById(
+                                          `commentDiv${
+                                            e.target.id.split("-")[1]
+                                          }`
+                                        );
+                                      const commentForm =
+                                        document.getElementById(
+                                          `commentform${
+                                            e.target.id.split("-")[1]
+                                          }`
+                                        );
+                                      commentDiv.style.display = "block";
+                                      commentSection.focus();
+                                      commentForm.reset();
+                                      newComment(e, post.id);
+                                    }
+                                  }}
+                                ></textarea>
+                              </form>
+                            </div>
                               {show &&
                                 comments.map((comment, index) => {
                                   return (
@@ -961,7 +1028,9 @@ const Dashboard = () => {
 
                                               <div>
                                                 {" "}
-                                                <p
+
+                                                <p 
+                                                className="commentName"
                                                   onClick={() =>
                                                     handelCheckUser(
                                                       comment.commenter_id
@@ -1005,60 +1074,7 @@ const Dashboard = () => {
                                 })}
                               {!comments.length ? <h1>No comments</h1> : ""}
                             </div>
-                            <div className="comment-container">
-                              {users.map((user, i) => {
-                                return (
-                                  <div
-                                    className="profileName"
-                                    key={i}
-                                    onClick={() => {
-                                      navigate("/profile");
-                                    }}
-                                  >
-                                    <img className="Icon" src={user.image} />
-                                  </div>
-                                );
-                              })}
-                              <form
-                                id={`commentform${post.id}`}
-                                className="addComment"
-                              >
-                                <textarea
-                                  id={`comment-${post.id}`}
-                                  placeholder="Write a comment…"
-                                  onChange={(e) => {
-                                    setComment(e.target.value);
-                                  }}
-                                  onKeyUp={(e) => {
-                                    resize(e);
-                                  }}
-                                  onKeyDown={(e) => {
-                                    if (e.key === "Enter") {
-                                      const commentSection =
-                                        document.getElementById(
-                                          `comment-${e.target.id.split("-")[1]}`
-                                        );
-                                      const commentDiv =
-                                        document.getElementById(
-                                          `commentDiv${
-                                            e.target.id.split("-")[1]
-                                          }`
-                                        );
-                                      const commentForm =
-                                        document.getElementById(
-                                          `commentform${
-                                            e.target.id.split("-")[1]
-                                          }`
-                                        );
-                                      commentDiv.style.display = "block";
-                                      commentSection.focus();
-                                      commentForm.reset();
-                                      newComment(e, post.id);
-                                    }
-                                  }}
-                                ></textarea>
-                              </form>
-                            </div>
+                            
                             {/* <button
                               id={post.id}
                               className="like"
@@ -1087,7 +1103,7 @@ const Dashboard = () => {
         </div>
       </div>
       <div className="rightbar">
-        <p>Sponsored</p>
+        <p className="rightbarTitle">Sponsored</p>
         <div>
           <ul className="sponsored">
             <li className="sponsoredListItem">
