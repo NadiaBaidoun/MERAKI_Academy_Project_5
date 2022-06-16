@@ -6,13 +6,13 @@ import jwt_decode from "jwt-decode";
 import { useDispatch, useSelector } from "react-redux";
 import Dashboard from "../Dashboard";
 import { setOnlineFriends } from "../Redux/reducers/friends";
-import { setMessage, setMessages } from "../Redux/reducers/chat";
+import { setMessage, setMessages, setSenders } from "../Redux/reducers/chat";
 import { setLike, setNotification } from "../Redux/reducers/like";
 
 const ENDPOINT = "http://localhost:5000";
 const socket = io.connect(ENDPOINT);
 const SocketIo = () => {
-  const [user, setUser] = useState([]);
+  // const [user, setUser] = useState([]);
 
   const dispatch = useDispatch();
   // ==========================
@@ -26,35 +26,38 @@ const SocketIo = () => {
 
   // ==========================
 
-  const getUserById = () => {
-    axios
-      .get(`http://localhost:5000/user/${userId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((result) => {
-        if (result.data.success) {
-          setUser(...result.data.result);
-        }
-      })
-      .catch((error) => {
-        console.log(error.response.data.message);
-      });
-  };
+  // const getUserById = () => {
+  //   axios
+  //     .get(`http://localhost:5000/user/${userId}`, {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     })
+  //     .then((result) => {
+  //       if (result.data.success) {
+  //         setUser(...result.data.result);
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.log(error.response.data.message);
+  //     });
+  // };
 
   const userId = jwt_decode(token).userId;
+  const userImage = jwt_decode(token).image;
+  const userName = jwt_decode(token).userName;
 
   useEffect(() => {
-    getUserById();
+  
 
     socket.emit("userIn", { userId: userId, socketId: socket.id });
     socket.on("online", (data) => {
       dispatch(setOnlineFriends(data));
     });
     socket.on("receive-message", (data) => {
-      dispatch(setMessage(data));
+      dispatch(setMessage(data.data));
       dispatch(setMessages());
+      dispatch(setSenders(data.messageUsers));
       dispatch(setMessage(""));
     });
 
@@ -74,8 +77,8 @@ const SocketIo = () => {
   useEffect(() => {
     if (like) {
       socket.emit("like-post", {
-        username: user.userName,
-        image: user.image,
+        username: userName,
+        image: userImage,
         user_id: like,
       });
       dispatch(setLike(""));

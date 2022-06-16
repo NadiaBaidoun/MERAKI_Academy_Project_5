@@ -15,6 +15,7 @@ import axios from "axios";
 
 import jwt_decode from "jwt-decode";
 import { clearNotification } from "../Redux/reducers/like";
+import { clearSenders } from "../Redux/reducers/chat";
 
 const Navbar = () => {
   const [showMessages, setShowMessages] = useState(false);
@@ -24,11 +25,12 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { isLoggedIn, token, notifications } = useSelector((state) => {
+  const { isLoggedIn, token, notifications, senders } = useSelector((state) => {
     return {
       isLoggedIn: state.auth.isLoggedIn,
       token: state.auth.token,
       notifications: state.like.notification,
+      senders: state.chat.senders,
     };
   });
 
@@ -91,6 +93,7 @@ const Navbar = () => {
 
             <div
               className="nav-mid-div"
+              id="Link"
               onClick={() => {
                 setShowMessages(!showMessages);
                 setShowNotification(false);
@@ -100,7 +103,9 @@ const Navbar = () => {
                 className="nav-mid-icon"
                 style={showMessages ? { color: "#2374e1" } : ""}
               />
-              <div className="notification-number">2</div>
+              <div className={senders.length ? "notification-number" : "hide"}>
+                {senders.length}
+              </div>
             </div>
 
             <div
@@ -155,7 +160,34 @@ const Navbar = () => {
               )}
             </div>
             <div className={showMessages ? "popup-navbar" : "hide"}>
-              No messages
+              <h1>Messages :</h1>
+              {senders.length ? (
+                <>
+                  {senders.map((el) => {
+                    return (
+                      <div className="notification">
+                        <img className="Icon" src={el.image} />
+                        <strong style={{ marginRight: "5px" }}>
+                          {el.name}
+                        </strong>
+                        messaged you
+                      </div>
+                    );
+                  })}
+                  <button
+                    className="read"
+                    id="Link"
+                    onClick={() => {
+                      dispatch(clearSenders());
+                      setShowMessages(false);
+                    }}
+                  >
+                    Mark as read
+                  </button>
+                </>
+              ) : (
+                <h1 className="empty">You have no messages</h1>
+              )}
             </div>
           </div>
 

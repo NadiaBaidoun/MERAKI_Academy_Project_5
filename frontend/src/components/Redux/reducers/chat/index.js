@@ -4,6 +4,7 @@ const chatSlice = createSlice({
   name: "comment",
   initialState: {
     messages: [],
+    senders: [],
     message: {},
   },
   reducers: {
@@ -13,9 +14,16 @@ const chatSlice = createSlice({
     setMessage: (state, action) => {
       state.message = action.payload;
     },
+    setSenders: (state, action) => {
+      state.senders = [...state.senders, ...action.payload];
+    },
+    clearSenders: (state, action) => {
+      state.senders = [];
+    },
   },
 });
 
-export const { setMessages, setMessage } = chatSlice.actions;
+export const { setMessages, setMessage, setSenders, clearSenders } =
+  chatSlice.actions;
 
 export default chatSlice.reducer;

@@ -114,6 +114,8 @@ const Dashboard = () => {
   });
 
   const userId = jwt_decode(token).userId;
+  const userImage = jwt_decode(token).image;
+  const userName = jwt_decode(token).userName;
   //=================================
 
   const newPost = (e) => {
@@ -562,6 +564,8 @@ const Dashboard = () => {
         message: chatMessage,
         receiver_id: chatHeadId,
         sender_id: userId,
+        image: userImage,
+        name: userName,
       };
       dispatch(setMessage(messageInfo));
       dispatch(setMessages());
