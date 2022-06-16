@@ -44,6 +44,7 @@ const io = socket(server, {
 
 let onlineUsers = [];
 let users = [];
+let likes = [];
 io.on("connection", (socket) => {
   console.log("user connected", socket.id);
   socket.on("userIn", (data) => {
@@ -55,18 +56,20 @@ io.on("connection", (socket) => {
 
   socket.on("send-message", (data) => {
     const message = users.filter((user) => {
-      console.log(users);
       return user.userId == data.receiver_id;
     });
-    console.log("MESSAGE", message);
     if (message.length) {
       io.to(message[0].socketId).emit("receive-message", data);
     }
   });
-  // socket.on("SEND_MESSAGE", (data) => {
-  //   console.log("MESSAGE", data);
-  //   socket.to(data.room).emit("RECEIVE_MESSAGE", data.content);
-  // });
+  socket.on("like-post", (data) => {
+    const like = users.filter((user) => {
+      return user.userId == data.user_id;
+    });
+    if (like.length) {
+      io.to(like[0].socketId).emit("send-notification", data);
+    }
+  });
 
   socket.on("disconnect", () => {
     console.log("user disconnected");
