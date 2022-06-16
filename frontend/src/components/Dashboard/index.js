@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef } from "react";
-
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -17,7 +16,14 @@ import {
   MdSchool,
 } from "react-icons/md";
 import { AiFillLike, AiOutlineLike, AiTwotoneLike } from "react-icons/ai";
-import {FcBookmark, FcCalendar, FcGraduationCap, FcQuestions, FcUpload, FcVideoFile} from 'react-icons/fc'
+import {
+  FcBookmark,
+  FcCalendar,
+  FcGraduationCap,
+  FcQuestions,
+  FcUpload,
+  FcVideoFile,
+} from "react-icons/fc";
 import { FaRegCommentAlt } from "react-icons/fa";
 import { BsQuestionSquare } from "react-icons/bs";
 // import { HiOutlineStatusOnline } from "react-icons/hi";
@@ -42,6 +48,8 @@ import { IoMdSend } from "react-icons/io";
 import { setMessage, setMessages } from "../Redux/reducers/chat";
 
 const Dashboard = () => {
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(true);
   const [content, setContent] = useState("");
   const [show, setShow] = useState(false);
   const [showUpdate, setShowUpdate] = useState(false);
@@ -58,6 +66,7 @@ const Dashboard = () => {
   const addPostRef = useRef("");
   const addCommentRef = useRef("");
   const updatePostRef = useRef("");
+
   const [chatHeader, setChatHeader] = useState("");
   const [chatHeadImage, setChatHeadImage] = useState("");
 
@@ -198,10 +207,12 @@ const Dashboard = () => {
   };
 
   //=================================
-  const getAllPosts = () => {
+  const getAllPosts = (page) => {
+    console.log(page);
     axios
-      .get("http://localhost:5000/posts")
+      .get(`http://localhost:5000/posts/${page}`)
       .then((res) => {
+        console.log("hello", res);
         axios
           .get(`http://localhost:5000/user/list/friends/${userId}`, {
             headers: {
@@ -560,6 +571,7 @@ const Dashboard = () => {
     textarea.style.height = `${scHeight - 0}px`;
   };
 
+
   const sendMessage = () => {
     if (chatMessage) {
       const messageInfo = {
@@ -575,8 +587,9 @@ const Dashboard = () => {
     }
   };
 
+
   useEffect(() => {
-    getAllPosts();
+    getAllPosts()
     getAllComments();
     getUserById();
     getAllUsers();
@@ -584,7 +597,12 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <div className="container">
+    
+    <div
+      className="container"
+     
+    >
+
       <div className="sidebar">
         <ul className="sidebarList">
           <li className="sidebarListItem">
@@ -689,8 +707,8 @@ const Dashboard = () => {
               </form>
             </div>
           </div>
-
           <div className="container-post">
+   
             {" "}
             {show &&
               posts.map((post, index) => {
@@ -770,14 +788,15 @@ const Dashboard = () => {
                         <div>
                           {post.id == dropdownId && showUpdate ? (
                             <div className={"update-post-popup"}>
-                           <div className="updateheader">  
-                            <div className="update-post-header">
-                              <h2  >Update post</h2> 
-                                <IoCloseSharp
-                                  className="close-btn"
-                                  onClick={() => setShowUpdate(false)}
-                                />
-                              </div> </div>
+                              <div className="updateheader">
+                                <div className="update-post-header">
+                                  <h2>Update post</h2>
+                                  <IoCloseSharp
+                                    className="close-btn"
+                                    onClick={() => setShowUpdate(false)}
+                                  />
+                                </div>{" "}
+                              </div>
                               <form
                                 className="update-form"
                                 onSubmit={(e) => {
@@ -788,23 +807,21 @@ const Dashboard = () => {
                                 }}
                                 ref={formRef}
                               >
-                              
-
                                 <input
-                                className="textUpdate"
+                                  className="textUpdate"
                                   defaultValue={post.content}
                                   onChange={(e) => {
                                     setUpdatecontent(e.target.value);
                                   }}
-                                /> 
-                            
-                               <img
-                                className="iamge-post"
-                                src={
-                                  postEditUrl ||
-                                  "https://cdn.pixabay.com/photo/2017/11/10/05/24/add-2935429_960_720.png"
-                                }
-                              />
+                                />
+
+                                <img
+                                  className="iamge-post"
+                                  src={
+                                    postEditUrl ||
+                                    "https://cdn.pixabay.com/photo/2017/11/10/05/24/add-2935429_960_720.png"
+                                  }
+                                />
                                 <label
                                   htmlFor="update-post-image"
                                   className="update-post-image-label"
@@ -818,16 +835,11 @@ const Dashboard = () => {
                                       editPostImage();
                                     }}
                                   />
-                           
-                                  <FcUpload className="Fc"/>
+                                  <FcUpload className="Fc" />
                                   Upload Image
                                 </label>
-                           <button className="update--Post" >Update</button>
-                               
-                           
-                        
+                                <button className="update--Post">Update</button>
                               </form>
-                             
                             </div>
                           ) : (
                             ""
@@ -907,59 +919,61 @@ const Dashboard = () => {
                               style={{ display: "none" }}
                             >
                               <div className="comment-container">
-                              {users.map((user, i) => {
-                                return (
-                                  <div
-                                    className="profileName"
-                                    key={i}
-                                    onClick={() => {
-                                      navigate("/profile");
+                                {users.map((user, i) => {
+                                  return (
+                                    <div
+                                      className="profileName"
+                                      key={i}
+                                      onClick={() => {
+                                        navigate("/profile");
+                                      }}
+                                    >
+                                      <img className="Icon" src={user.image} />
+                                    </div>
+                                  );
+                                })}
+                                <form
+                                  id={`commentform${post.id}`}
+                                  className="addComment"
+                                >
+                                  <textarea
+                                    id={`comment-${post.id}`}
+                                    placeholder="Write a comment…"
+                                    onChange={(e) => {
+                                      setComment(e.target.value);
                                     }}
-                                  >
-                                    <img className="Icon" src={user.image} />
-                                  </div>
-                                );
-                              })}
-                              <form
-                                id={`commentform${post.id}`}
-                                className="addComment"
-                              >
-                                <textarea
-                                  id={`comment-${post.id}`}
-                                  placeholder="Write a comment…"
-                                  onChange={(e) => {
-                                    setComment(e.target.value);
-                                  }}
-                                  onKeyUp={(e) => {
-                                    resize(e);
-                                  }}
-                                  onKeyDown={(e) => {
-                                    if (e.key === "Enter") {
-                                      const commentSection =
-                                        document.getElementById(
-                                          `comment-${e.target.id.split("-")[1]}`
-                                        );
-                                      const commentDiv =
-                                        document.getElementById(
-                                          `commentDiv${
-                                            e.target.id.split("-")[1]
-                                          }`
-                                        );
-                                      const commentForm =
-                                        document.getElementById(
-                                          `commentform${
-                                            e.target.id.split("-")[1]
-                                          }`
-                                        );
-                                      commentDiv.style.display = "block";
-                                      commentSection.focus();
-                                      commentForm.reset();
-                                      newComment(e, post.id);
-                                    }
-                                  }}
-                                ></textarea>
-                              </form>
-                            </div>
+                                    onKeyUp={(e) => {
+                                      resize(e);
+                                    }}
+                                    onKeyDown={(e) => {
+                                      if (e.key === "Enter") {
+                                        const commentSection =
+                                          document.getElementById(
+                                            `comment-${
+                                              e.target.id.split("-")[1]
+                                            }`
+                                          );
+                                        const commentDiv =
+                                          document.getElementById(
+                                            `commentDiv${
+                                              e.target.id.split("-")[1]
+                                            }`
+                                          );
+                                        const commentForm =
+                                          document.getElementById(
+                                            `commentform${
+                                              e.target.id.split("-")[1]
+                                            }`
+                                          );
+                                        commentDiv.style.display = "block";
+                                        commentSection.focus();
+                                        commentForm.reset();
+                                        newComment(e, post.id);
+                                      }
+                                    }}
+                                  ></textarea>
+                                </form>
+                              </div>
                               {show &&
                                 comments.map((comment, index) => {
                                   return (
@@ -1029,6 +1043,7 @@ const Dashboard = () => {
                                               <div>
                                                 {" "}
 
+
                                                 <p 
                                                 className="commentName"
                                                   onClick={() =>
@@ -1074,7 +1089,7 @@ const Dashboard = () => {
                                 })}
                               {!comments.length ? <h1>No comments</h1> : ""}
                             </div>
-                            
+
                             {/* <button
                               id={post.id}
                               className="like"
@@ -1099,7 +1114,16 @@ const Dashboard = () => {
                   </div>
                 );
               })}
+            {/* <button onClick={()=>{
+          //  console.log("number1",  numberRef.current);
+           numberRef.current = numberRef.current + 1
+          // console.log("number2",  numberRef.current);
+          getAllPosts(numberRef.current)
+        }}>Click</button> */}
+      
           </div>
+        
+          
         </div>
       </div>
       <div className="rightbar">

@@ -106,8 +106,8 @@ const SearchResult = () => {
                 >
                   <img className="search-photo" src={user.image} />
                   <div className="userInfo">
-                    <span>{user.userName}</span>
-                    <span>{user.country}</span>
+                  <p className="searchName">{user.userName}</p>
+                  {user.country ?  <p className="searchCountry">Lives In <strong>{user.country}</strong> </p> : <></>}
                   </div>
                 </Link>
               ) : (
@@ -119,8 +119,9 @@ const SearchResult = () => {
                   
                   <img className="search-photo" src={user.image} />
                   <div className="userInfo">
-                    <p>{user.userName}</p>
-                    <p>Lives In <strong>{user.country}</strong> </p>
+                    <p  className="searchName">{user.userName}</p>
+                    {user.country ?  <p className="searchCountry">Lives In <strong>{user.country}</strong> </p> : <></>}
+                   
                   </div>
                 </Link>
               )}
