@@ -207,12 +207,10 @@ const Dashboard = () => {
   };
 
   //=================================
-  const getAllPosts = (page) => {
-    console.log(page);
+  const getAllPosts = () => {  
     axios
-      .get(`http://localhost:5000/posts/${page}`)
+      .get(`http://localhost:5000/posts/`)
       .then((res) => {
-        console.log("hello", res);
         axios
           .get(`http://localhost:5000/user/list/friends/${userId}`, {
             headers: {
