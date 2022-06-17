@@ -1037,7 +1037,9 @@ const Profile = () => {
                             </div>
                             <div className="postCenter">
                               <p>{post.content}</p>
-                              {post.image ? <img src={post.image} /> : ""}
+                              <div className="img-post-conatiner">
+                                {post.image ? <img src={post.image} /> : ""}
+                              </div>
                             </div>
                             <div>
                               {post.id == dropdownId && showUpdate ? (

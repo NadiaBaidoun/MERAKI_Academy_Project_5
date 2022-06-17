@@ -67,6 +67,8 @@ const Dashboard = () => {
   const addCommentRef = useRef("");
   const updatePostRef = useRef("");
 
+  const [showPostPopup, setShowPostPopup] = useState(false);
+
   const [chatHeader, setChatHeader] = useState("");
   const [chatHeadImage, setChatHeadImage] = useState("");
 
@@ -144,6 +146,8 @@ const Dashboard = () => {
           if (res.data.success) {
             setContent("");
             setPostUrl("");
+            setShowPostPopup(false);
+            document.querySelector("body").style.overflowY = "scroll";
             getAllPosts();
             addPostRef.current.reset();
           }
@@ -657,30 +661,100 @@ const Dashboard = () => {
       <div className="feed">
         <div className="post-container">
           <div className="share">
-            <div className="shareWrapper">
+            <div
+              className="shareWrapper"
+              onClick={() => {
+                document.querySelector("body").style.overflow = "hidden";
+                setShowPostPopup(true);
+              }}
+            >
+              <div className="shareTop">
+                {show &&
+                  users.map((user, index) => {
+                    return (
+                      <img
+                        key={index}
+                        className="shareProfileImg"
+                        src={user.image}
+                        alt=""
+                      />
+                    );
+                  })}
+                <input
+                  placeholder={`What's on your mind ${
+                    jwt_decode(token).firstName
+                  }?`}
+                  className="shareInput"
+                  onChange={(e) => setContent(e.target.value)}
+                />
+              </div>
+              <hr className="shareHr"></hr>
+              <div className="shareBottom">
+                <div className="shareOptions">
+                  <div className="shareOption">
+                    <label htmlFor="post-img-icon" className="label-post-img">
+                      <input hidden id="post-img-icon" />
+                      <MdOutlinePermMedia className="shareIcon" />
+                      <span className="shareOptionText">Photo</span>
+                    </label>
+                  </div>
+                  <button className="shareButton">Add</button>
+                </div>
+              </div>
+            </div>
+            <div className={showPostPopup ? "post-popup-add" : "hide"}>
+              <div className="updateheader">
+                <div className="update-post-header">
+                  <h1>Create post</h1>
+                  <IoCloseSharp
+                    className="close-btn"
+                    onClick={() => {
+                      document.querySelector("body").style.overflowY = "scroll";
+                      setShowPostPopup(false);
+                    }}
+                  />
+                </div>
+              </div>
               <form ref={addPostRef} className="addPost" onSubmit={newPost}>
-                <div className="shareTop">
-                  {show &&
-                    users.map((user, index) => {
-                      return (
-                        <img
-                          key={index}
-                          className="shareProfileImg"
-                          src={user.image}
-                          alt=""
-                        />
-                      );
-                    })}
+                <div className="pop-top">
+                  <div className="pop-header">
+                    <img
+                      style={{ cursor: "default" }}
+                      className="shareProfileImg"
+                      alt=""
+                      src={jwt_decode(token).image}
+                    />
+                    <p>
+                      <stong>{jwt_decode(token).userName}</stong>
+                    </p>
+                  </div>
+
                   <input
                     placeholder={`What's on your mind ${
                       jwt_decode(token).firstName
-                    }`}
-                    className="shareInput"
+                    }?`}
+                    className="shareInput pop-in"
                     onChange={(e) => setContent(e.target.value)}
                   />
                 </div>
-                <hr className="shareHr"></hr>
-                <div className="shareBottom">
+
+                <div className="image-post-container">
+                  <img
+                    className="iamge-post"
+                    src={
+                      postUrl ||
+                      "https://cdn.pixabay.com/photo/2017/11/10/05/24/add-2935429_960_720.png"
+                    }
+                  />
+                  <IoCloseSharp
+                    className="close-btn cancel"
+                    onClick={() => {
+                      setPostUrl("");
+                    }}
+                  />
+                </div>
+                <br />
+                <div className="shareBottom bottom-popup">
                   <div className="shareOptions">
                     <div className="shareOption">
                       <label htmlFor="post-img" className="label-post-img">
@@ -730,7 +804,6 @@ const Dashboard = () => {
                               );
                             }
                           })}
-                          {/* flex+center+spacebetween */}
 
                           <div
                             className={
@@ -794,6 +867,95 @@ const Dashboard = () => {
                                   <h1>Update post</h1>
                                   <IoCloseSharp
                                     className="close-btn"
+                                    onClick={() => {
+                                      setShowUpdate(false);
+                                    }}
+                                  />
+                                </div>
+                              </div>
+                              <form
+                                ref={addPostRef}
+                                className="addPost"
+                                onSubmit={newPost}
+                              >
+                                <div className="pop-top">
+                                  <div className="pop-header">
+                                    <img
+                                      style={{ cursor: "default" }}
+                                      className="shareProfileImg"
+                                      alt=""
+                                      src={jwt_decode(token).image}
+                                    />
+                                    <p>
+                                      <stong>
+                                        {jwt_decode(token).userName}
+                                      </stong>
+                                    </p>
+                                  </div>
+
+                                  <input
+                                    className="shareInput pop-in"
+                                    defaultValue={post.content}
+                                    onChange={(e) => {
+                                      setUpdatecontent(e.target.value);
+                                    }}
+                                  />
+                                </div>
+
+                                <div className="image-post-container">
+                                  <img
+                                    className="iamge-post"
+                                    src={
+                                      postEditUrl || post.image
+                                        ? post.image
+                                        : "https://cdn.pixabay.com/photo/2017/11/10/05/24/add-2935429_960_720.png"
+                                    }
+                                  />
+                                  <IoCloseSharp
+                                    className="close-btn cancel"
+                                    onClick={() => {
+                                      setPostEditUrl("");
+                                    }}
+                                  />
+                                </div>
+                                <br />
+                                <div className="shareBottom bottom-popup">
+                                  <div className="shareOptions">
+                                    <div className="shareOption">
+                                      <label
+                                        htmlFor="post-img"
+                                        className="label-post-img"
+                                      >
+                                        <input
+                                          hidden
+                                          id="post-img"
+                                          type="file"
+                                          onChange={(e) => {
+                                            imageEditRef.current =
+                                              e.target.files[0];
+                                            editPostImage();
+                                          }}
+                                        />
+                                        <MdOutlinePermMedia className="shareIcon" />
+                                        <span className="shareOptionText">
+                                          Photo
+                                        </span>
+                                      </label>
+                                    </div>
+                                    <button
+                                      className="shareButton"
+                                      style={{ width: "150px" }}
+                                    >
+                                      Save Changes
+                                    </button>
+                                  </div>
+                                </div>
+                              </form>
+                              {/* <div className="updateheader">
+                                <div className="update-post-header">
+                                  <h1>Update post</h1>
+                                  <IoCloseSharp
+                                    className="close-btn"
                                     onClick={() => setShowUpdate(false)}
                                   />
                                 </div>{" "}
@@ -840,7 +1002,7 @@ const Dashboard = () => {
                                   Upload Image
                                 </label>
                                 <button className="update--Post">Update</button>
-                              </form>
+                              </form> */}
                             </div>
                           ) : (
                             ""

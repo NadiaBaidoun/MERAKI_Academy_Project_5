@@ -661,7 +661,9 @@ const UserProfile = () => {
                           </div>
                           <div className="postCenter">
                             <p>{post.content}</p>
-                            {post.image ? <img src={post.image} /> : ""}
+                            <div className="img-post-conatiner">
+                              {post.image ? <img src={post.image} /> : ""}
+                            </div>
                           </div>
                           <div></div>
 
@@ -732,70 +734,67 @@ const UserProfile = () => {
                               >
                                 View all comments
                               </button>
+                              <div className="comment-container">
+                                {users.map((user, i) => {
+                                  return (
+                                    <div
+                                      className="profileName"
+                                      key={i}
+                                      onClick={() => {
+                                        navigate("/profile");
+                                      }}
+                                    >
+                                      <img className="Icon" src={user.image} />
+                                    </div>
+                                  );
+                                })}
+                                <form
+                                  id={`commentform${post.id}`}
+                                  className="addComment"
+                                >
+                                  <textarea
+                                    id={`comment-${post.id}`}
+                                    placeholder="Write a comment…"
+                                    onChange={(e) => {
+                                      setComment(e.target.value);
+                                    }}
+                                    onKeyUp={(e) => {
+                                      resize(e);
+                                    }}
+                                    onKeyDown={(e) => {
+                                      if (e.key === "Enter") {
+                                        const commentSection =
+                                          document.getElementById(
+                                            `comment-${
+                                              e.target.id.split("-")[1]
+                                            }`
+                                          );
+                                        const commentDiv =
+                                          document.getElementById(
+                                            `commentDiv${
+                                              e.target.id.split("-")[1]
+                                            }`
+                                          );
+                                        const commentForm =
+                                          document.getElementById(
+                                            `commentform${
+                                              e.target.id.split("-")[1]
+                                            }`
+                                          );
+                                        commentDiv.style.display = "block";
+                                        commentSection.focus();
+                                        commentForm.reset();
+                                        newComment(e, post.id);
+                                      }
+                                    }}
+                                  ></textarea>
+                                </form>
+                              </div>
                               <div
                                 id={`commentDiv${post.id}`}
                                 className="allComments"
                                 style={{ display: "none" }}
                               >
-                                <div className="comment-container">
-                                  {users.map((user, i) => {
-                                    return (
-                                      <div
-                                        className="profileName"
-                                        key={i}
-                                        onClick={() => {
-                                          navigate("/profile");
-                                        }}
-                                      >
-                                        <img
-                                          className="Icon"
-                                          src={user.image}
-                                        />
-                                      </div>
-                                    );
-                                  })}
-                                  <form
-                                    id={`commentform${post.id}`}
-                                    className="addComment"
-                                  >
-                                    <textarea
-                                      id={`comment-${post.id}`}
-                                      placeholder="Write a comment…"
-                                      onChange={(e) => {
-                                        setComment(e.target.value);
-                                      }}
-                                      onKeyUp={(e) => {
-                                        resize(e);
-                                      }}
-                                      onKeyDown={(e) => {
-                                        if (e.key === "Enter") {
-                                          const commentSection =
-                                            document.getElementById(
-                                              `comment-${
-                                                e.target.id.split("-")[1]
-                                              }`
-                                            );
-                                          const commentDiv =
-                                            document.getElementById(
-                                              `commentDiv${
-                                                e.target.id.split("-")[1]
-                                              }`
-                                            );
-                                          const commentForm =
-                                            document.getElementById(
-                                              `commentform${
-                                                e.target.id.split("-")[1]
-                                              }`
-                                            );
-                                          commentDiv.style.display = "block";
-                                          commentSection.focus();
-                                          commentForm.reset();
-                                          newComment(e, post.id);
-                                        }
-                                      }}
-                                    ></textarea>
-                                  </form>
-                                </div>
                                 {show &&
                                   comments.map((comment, index) => {
                                     return (
