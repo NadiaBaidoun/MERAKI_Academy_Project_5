@@ -21,7 +21,7 @@
   width: 100%;
   transform: translateY(-10%);
   background-color: rgba(190, 190, 190, 0.312);
- box-shadow: 0 1px 4px rgba(154, 154, 154, 0.708);
+  box-shadow: 0 1px 4px rgba(154, 154, 154, 0.708);
 }
 
 .cover-input-label {
@@ -496,4 +496,17 @@ textarea::-webkit-scrollbar {
 .close-btn:hover {
   background-color: rgb(212, 212, 212);
   border-radius: 50%;
+}
+
+.post-popup-add-profile {
+  background-color: #fff;
+  min-height: 450px;
+  width: 600px;
+  position: absolute;
+  top: 50%;
+  left: 70%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 1px 5px rgba(84, 84, 84, 0.822);
+  z-index: 2;
+  border-radius: 8px;
 }

@@ -876,7 +876,12 @@ const Dashboard = () => {
                               <form
                                 ref={addPostRef}
                                 className="addPost"
-                                onSubmit={newPost}
+                                onSubmit={(e) => {
+                                  e.preventDefault();
+                                  setShowUpdate(false);
+
+                                  editpost(post.id, post.image);
+                                }}
                               >
                                 <div className="pop-top">
                                   <div className="pop-header">
@@ -906,9 +911,8 @@ const Dashboard = () => {
                                   <img
                                     className="iamge-post"
                                     src={
-                                      postEditUrl || post.image
-                                        ? post.image
-                                        : "https://cdn.pixabay.com/photo/2017/11/10/05/24/add-2935429_960_720.png"
+                                      postEditUrl ||
+                                      "https://cdn.pixabay.com/photo/2017/11/10/05/24/add-2935429_960_720.png"
                                     }
                                   />
                                   <IoCloseSharp
@@ -923,12 +927,12 @@ const Dashboard = () => {
                                   <div className="shareOptions">
                                     <div className="shareOption">
                                       <label
-                                        htmlFor="post-img"
+                                        htmlFor="update-post-image"
                                         className="label-post-img"
                                       >
                                         <input
                                           hidden
-                                          id="post-img"
+                                          id="update-post-image"
                                           type="file"
                                           onChange={(e) => {
                                             imageEditRef.current =
@@ -951,58 +955,6 @@ const Dashboard = () => {
                                   </div>
                                 </div>
                               </form>
-                              {/* <div className="updateheader">
-                                <div className="update-post-header">
-                                  <h1>Update post</h1>
-                                  <IoCloseSharp
-                                    className="close-btn"
-                                    onClick={() => setShowUpdate(false)}
-                                  />
-                                </div>{" "}
-                              </div>
-                              <form
-                                className="update-form"
-                                onSubmit={(e) => {
-                                  e.preventDefault();
-                                  setShowUpdate(false);
-
-                                  editpost(post.id, post.image);
-                                }}
-                                ref={formRef}
-                              >
-                                <input
-                                  className="textUpdate"
-                                  defaultValue={post.content}
-                                  onChange={(e) => {
-                                    setUpdatecontent(e.target.value);
-                                  }}
-                                />
-
-                                <img
-                                  className="iamge-post"
-                                  src={
-                                    postEditUrl ||
-                                    "https://cdn.pixabay.com/photo/2017/11/10/05/24/add-2935429_960_720.png"
-                                  }
-                                />
-                                <label
-                                  htmlFor="update-post-image"
-                                  className="update-post-image-label"
-                                >
-                                  <input
-                                    id="update-post-image"
-                                    hidden
-                                    type="file"
-                                    onChange={(e) => {
-                                      imageEditRef.current = e.target.files[0];
-                                      editPostImage();
-                                    }}
-                                  />
-                                  <FcUpload className="Fc" />
-                                  Upload Image
-                                </label>
-                                <button className="update--Post">Update</button>
-                              </form> */}
                             </div>
                           ) : (
                             ""
