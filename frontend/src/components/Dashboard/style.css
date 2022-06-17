@@ -13,9 +13,8 @@
 }
 .profileName {
   display: flex;
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   align-items: center;
-  font-weight: bold;
   cursor: pointer;
 }
 .Icon {
@@ -58,6 +57,8 @@
 .sidebarListItem {
   display: flex;
   align-items: center;
+  height: 50px;
+  padding: 10px;
   margin-bottom: 20px;
   margin: 10px;
 }
@@ -134,7 +135,6 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-
   height: 40px;
 }
 
@@ -147,7 +147,19 @@
 }
 .iconUnlike {
   display: flex;
+  align-items: center;
   justify-content: center;
+  gap: 5px;
+}
+
+.like-icon {
+  height: 20px;
+  width: 20px;
+}
+
+.Unlike {
+  color: rgb(45, 123, 239);
+  transform: rotateZ(-18deg);
 }
 
 .comment {
@@ -234,6 +246,7 @@
   gap: 5px;
   font-size: 1rem;
   padding: 5px;
+  margin: 10px 0;
 }
 .postLike-header_like {
   background-color: rgb(40, 121, 213);
@@ -511,12 +524,6 @@
 .shareHr {
   margin: 20px;
 }
-.likediv {
-  /* background-color: aqua; */
-}
-.Unlike {
-  color: rgb(45, 123, 239);
-}
 
 .shareBottom {
   display: flex;
@@ -528,7 +535,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 80%;
+  width: 95%;
 }
 
 .shareOption {
@@ -585,13 +592,10 @@
 .container-post {
   display: flex;
   flex-direction: column;
-
-  /* min-height: 100vh; */
 }
 
 .post {
   /* width: 100%; */
-
   border-radius: 10px;
   -webkit-box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
   box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
@@ -621,7 +625,7 @@
   cursor: pointer;
 }
 
-.update-post-image-label:hover{
+.update-post-image-label:hover {
   background-color: rgb(137, 137, 137);
 }
 
@@ -644,13 +648,28 @@
   flex-direction: column;
 }
 .postCenter {
-  margin: 20px 0;
+  margin: 10px 0;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   font-size: 1rem;
 }
+
+.postCenter p {
+  align-self: flex-start;
+}
+
+.img-post-conatiner {
+  width: 680px;
+}
+
 .postCenter img {
   margin-top: 10px;
   width: 100%;
-  height: 500px;
+  height: 600px;
+  box-shadow: 0 1px 4px rgba(186, 186, 186, 0.687);
+  background-color: #2374e1;
   object-fit: fill;
 }
 

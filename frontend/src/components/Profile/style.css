@@ -21,7 +21,7 @@
   width: 100%;
   transform: translateY(-10%);
   background-color: rgba(190, 190, 190, 0.312);
-  border-style: none;
+ box-shadow: 0 1px 4px rgba(154, 154, 154, 0.708);
 }
 
 .cover-input-label {
@@ -212,7 +212,7 @@
 
 .mid-right {
   flex: 2.5;
-  margin: 0 20px 20px 20px;
+  margin: 10px 20px 20px 20px;
 }
 
 .left {
@@ -460,6 +460,17 @@ textarea::-webkit-scrollbar {
   background-color: rgb(253, 54, 54);
 }
 
+.follow-profile-popup {
+  width: 8rem;
+  color: black;
+  margin: 0 10px;
+  background-color: rgba(63, 63, 63, 0.204);
+}
+
+.follow-profile-popup:hover {
+  background-color: rgb(253, 54, 54);
+}
+
 .blue {
   background-color: #2374e1;
   width: 8rem;
@@ -469,6 +480,16 @@ textarea::-webkit-scrollbar {
 }
 
 .blue:hover {
+  opacity: 0.9;
+}
+
+.blue-popup {
+  background-color: #2374e1;
+  width: 8rem;
+  margin: 0 10px;
+}
+
+.blue-popup:hover {
   opacity: 0.9;
 }
 

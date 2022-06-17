@@ -600,18 +600,19 @@ const Dashboard = () => {
     <div className="container">
       <div className="sidebar">
         <ul className="sidebarList">
-          <li className="sidebarListItem">
+          <li
+            className="sidebarListItem"
+            onClick={() => {
+              navigate("/profile");
+            }}
+          >
             {users.map((user, i) => {
               return (
-                <div
-                  className="profileName"
-                  key={i}
-                  onClick={() => {
-                    navigate("/profile");
-                  }}
-                >
+                <div className="profileName" key={i}>
                   <img className="Icon" src={user.image} />
-                  <p>{user.userName} </p>
+                  <p>
+                    <strong>{user.userName}</strong>
+                  </p>
                 </div>
               );
             })}
@@ -781,7 +782,9 @@ const Dashboard = () => {
                         </div>
                         <div className="postCenter">
                           <p>{post.content}</p>
-                          {post.image ? <img src={post.image} /> : ""}
+                          <div className="img-post-conatiner">
+                            {post.image ? <img src={post.image} /> : ""}
+                          </div>
                         </div>
                         <div>
                           {post.id == dropdownId && showUpdate ? (
@@ -865,11 +868,12 @@ const Dashboard = () => {
                                 >
                                   {post.like.includes(userId) ? (
                                     <div className="iconUnlike">
-                                      <AiFillLike className="Unlike" /> Like
+                                      <AiFillLike className="Unlike like-icon" />{" "}
+                                      Like
                                     </div>
                                   ) : (
                                     <div className="iconUnlike">
-                                      <AiFillLike /> Like
+                                      <AiFillLike className="like-icon" /> Like
                                     </div>
                                   )}
                                 </button>
