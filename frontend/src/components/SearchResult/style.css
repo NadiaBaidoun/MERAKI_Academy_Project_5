@@ -19,26 +19,47 @@
   position: relative;
 }
 
-.search-photo{
+.search-photo {
   width: 80px;
   height: 80px;
 }
 
-.userInfo{
+.userInfo {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  gap: 0.2rem;
+  color: rgb(118, 151, 184);
+}
 
+.searchName {
+  color: black;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.info {
+  display: flex;
+  flex-direction: row;
+}
+
+.search-link {
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin-left: 30px;
-  justify-content: space-between;  
-  color: rgb(118,151,184);
+  justify-content: flex-start;
+  font-size: 1rem;
+  width: 400px;
+  padding: 10px;
 }
 
-.info{
+.search-friend-div {
+  width: 680px;
   display: flex;
-  flex-direction: row;
+  align-items: center;
+  background-color: #fff;
 }
 
-.searchCountry{
-  margin-left: 60px;
+.left-bar-name {
+  font-size: 1.2rem;
 }
