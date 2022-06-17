@@ -106,8 +106,6 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  /* width: 125vw; */
-  width: 78%;
   position: absolute;
   top: 55%;
   left: 12%;
@@ -450,8 +448,9 @@ textarea::-webkit-scrollbar {
 }
 
 .follow-profile {
-  background-color: transparent;
   width: 8rem;
+  position: absolute;
+  right: -280%;
   color: black;
   margin: 0 10px;
   background-color: rgba(63, 63, 63, 0.204);
@@ -464,6 +463,8 @@ textarea::-webkit-scrollbar {
 .blue {
   background-color: #2374e1;
   width: 8rem;
+  position: absolute;
+  right: -280%;
   margin: 0 10px;
 }
 
