@@ -990,7 +990,7 @@ const Profile = () => {
                           src={jwt_decode(token).image}
                         />
                         <p>
-                          <stong>{jwt_decode(token).userName}</stong>
+                          <strong>{jwt_decode(token).userName}</strong>
                         </p>
                       </div>
 
@@ -1042,53 +1042,7 @@ const Profile = () => {
                   </form>
                 </div>
               </div>
-              {/* <div className="share">
-                <div className="shareWrapper">
-                  <form ref={addPostRef} className="addPost" onSubmit={newPost}>
-                    <div className="shareTop">
-                      {show &&
-                        users.map((user, index) => {
-                          return (
-                            <img
-                              key={index}
-                              className="shareProfileImg"
-                              src={user.image}
-                              alt=""
-                            />
-                          );
-                        })}
-                      <input
-                        placeholder={`What's on your mind ${
-                          jwt_decode(token).firstName
-                        }`}
-                        className="shareInput"
-                        onChange={(e) => setContent(e.target.value)}
-                      />
-                    </div>
-                    <hr className="shareHr"></hr>
-                    <div className="shareBottom">
-                      <div className="shareOptions">
-                        <div className="shareOption">
-                          <label htmlFor="post-img" className="label-post-img">
-                            <input
-                              hidden
-                              id="post-img"
-                              type="file"
-                              onChange={(e) => {
-                                imageRef.current = e.target.files[0];
-                                uploadImage();
-                              }}
-                            />
-                            <MdOutlinePermMedia className="shareIcon" />
-                            <span className="shareOptionText">Photo</span>
-                          </label>
-                        </div>
-                        <button className="shareButton">Add</button>
-                      </div>
-                    </div>
-                  </form>
-                </div>
-              </div> */}
+
               <div className="container-post">
                 {" "}
                 {show &&
@@ -1200,9 +1154,9 @@ const Profile = () => {
                                           src={jwt_decode(token).image}
                                         />
                                         <p>
-                                          <stong>
+                                          <strong>
                                             {jwt_decode(token).userName}
-                                          </stong>
+                                          </strong>
                                         </p>
                                       </div>
 
@@ -1265,63 +1219,6 @@ const Profile = () => {
                                   </form>
                                 </div>
                               ) : (
-                                // <div className={"update-post-popup"}>
-                                //   <div className="updateheader">
-                                //     <div className="update-post-header">
-                                //       <h2>Update post</h2>
-                                //       <IoCloseSharp
-                                //         className="close-btn"
-                                //         onClick={() => setShowUpdate(false)}
-                                //       />
-                                //     </div>{" "}
-                                //   </div>
-                                //   <form
-                                //     className="update-form"
-                                //     onSubmit={(e) => {
-                                //       e.preventDefault();
-                                //       setShowUpdate(false);
-
-                                //       editpost(post.id, post.image);
-                                //     }}
-                                //     ref={formRef}
-                                //   >
-                                //     <input
-                                //       className="textUpdate"
-                                //       defaultValue={post.content}
-                                //       onChange={(e) => {
-                                //         setUpdatecontent(e.target.value);
-                                //       }}
-                                //     />
-
-                                //     <img
-                                //       className="iamge-post"
-                                //       src={
-                                //         postEditUrl ||
-                                //         "https://cdn.pixabay.com/photo/2017/11/10/05/24/add-2935429_960_720.png"
-                                //       }
-                                //     />
-                                //     <label
-                                //       htmlFor="update-post-image"
-                                //       className="update-post-image-label"
-                                //     >
-                                //       <input
-                                //         id="update-post-image"
-                                //         hidden
-                                //         type="file"
-                                //         onChange={(e) => {
-                                //           imageEditRef.current =
-                                //             e.target.files[0];
-                                //           editPostImage();
-                                //         }}
-                                //       />
-                                //       <FcUpload className="Fc" />
-                                //       Upload Image
-                                //     </label>
-                                //     <button className="update--Post">
-                                //       Update
-                                //     </button>
-                                //   </form>
-                                // </div>
                                 ""
                               )}
                             </div>

@@ -152,6 +152,10 @@
   gap: 5px;
 }
 
+.comment-section {
+  margin: 10px 0;
+}
+
 .like-icon {
   height: 20px;
   width: 20px;
@@ -168,6 +172,7 @@
   background-color: rgba(178, 178, 178, 0.271);
   font-size: 1rem;
   min-height: 60px;
+  margin: 10px 0;
   padding: 10px;
   width: 100%;
   word-break: break-all;
@@ -355,12 +360,10 @@
 
 .update-form {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   width: 100%;
-  /* margin: 10px;
-  padding: 10px; */
+  padding: 0 10px;
 }
 .Fc {
   min-height: 30px;
@@ -370,24 +373,25 @@
   min-height: 2rem !important;
   width: 100% !important;
   font-size: 1rem !important;
-  border-style: none !important;
+  border: 2px solid rgb(151, 151, 151) !important;
   outline: none !important;
-  border-radius: 8px;
+  box-shadow: 0 1px 5px rgb(189, 189, 189);
+  border-radius: 8px !important;
   margin: 0;
   padding: 10px;
 }
 
 .update-form button {
-  height: 2em;
-  font-size: 0.8em;
-  width: 5em;
+  height: 2.4rem;
+  font-size: 0.9rem;
+  width: 5rem;
   font-weight: bold;
-  color: rgb(0, 0, 0);
+  color: white;
   margin: 5px;
   border-radius: 5px;
   border-style: none;
   cursor: pointer;
-  background-color: white;
+  background-color: #2374e1;
 }
 
 .comment-btn {
@@ -454,7 +458,7 @@
 }
 
 .comment-div-container {
-  height: 50px;
+  height: 70px;
   margin: 10px;
   display: flex;
   flex-direction: column;

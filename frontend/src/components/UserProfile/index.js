@@ -515,7 +515,6 @@ const UserProfile = () => {
               <div className="friendlist-scroll">
                 {userFriends.length ? (
                   userFriends.map((friend, i) => {
-                    console.log(friend);
                     return (
                       <div className="friend-div" key={i}>
                         <Link

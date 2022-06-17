@@ -725,7 +725,7 @@ const Dashboard = () => {
                       src={jwt_decode(token).image}
                     />
                     <p>
-                      <stong>{jwt_decode(token).userName}</stong>
+                      <strong>{jwt_decode(token).userName}</strong>
                     </p>
                   </div>
 
@@ -892,9 +892,9 @@ const Dashboard = () => {
                                       src={jwt_decode(token).image}
                                     />
                                     <p>
-                                      <stong>
+                                      <strong>
                                         {jwt_decode(token).userName}
-                                      </stong>
+                                      </strong>
                                     </p>
                                   </div>
 
@@ -1091,89 +1091,90 @@ const Dashboard = () => {
                               {show &&
                                 comments.map((comment, index) => {
                                   return (
-                                    <div key={index}>
-                                      <div>
-                                        {post.id === comment.post_id ? (
-                                          <div className="comment-div-container">
-                                            {comment.commenter_id == userId ? (
-                                              <div className="dd-comment">
-                                                <button
+                                    <div
+                                      className="comment-section"
+                                      key={index}
+                                    >
+                                      {post.id === comment.post_id ? (
+                                        <div className="comment-div-container">
+                                          {comment.commenter_id == userId ? (
+                                            <div className="dd-comment">
+                                              <button
+                                                id={comment.id}
+                                                className="dd-button"
+                                                onClick={(e) => {
+                                                  showDDComment(e);
+                                                }}
+                                              >
+                                                <BsThreeDotsVertical
                                                   id={comment.id}
-                                                  className="dd-button"
                                                   onClick={(e) => {
                                                     showDDComment(e);
                                                   }}
-                                                >
-                                                  <BsThreeDotsVertical
+                                                />
+                                              </button>
+                                              {openComment &&
+                                              dropdownIdComment ==
+                                                comment.id ? (
+                                                <div className="dropdown-comment">
+                                                  <div
+                                                    className="options-div"
                                                     id={comment.id}
                                                     onClick={(e) => {
-                                                      showDDComment(e);
+                                                      updateFormComment(
+                                                        e,
+                                                        comment.comment
+                                                      );
                                                     }}
-                                                  />
-                                                </button>
-                                                {openComment &&
-                                                dropdownIdComment ==
-                                                  comment.id ? (
-                                                  <div className="dropdown-comment">
-                                                    <div
-                                                      className="options-div"
-                                                      id={comment.id}
-                                                      onClick={(e) => {
-                                                        updateFormComment(
-                                                          e,
-                                                          comment.comment
-                                                        );
-                                                      }}
-                                                    >
-                                                      Update
-                                                    </div>
-
-                                                    <div
-                                                      className="options-div"
-                                                      id={comment.id}
-                                                      onClick={(e) => {
-                                                        deleteComment(
-                                                          e.target.id
-                                                        );
-                                                      }}
-                                                    >
-                                                      Delete
-                                                    </div>
+                                                  >
+                                                    Update
                                                   </div>
-                                                ) : (
-                                                  <></>
-                                                )}
-                                              </div>
-                                            ) : (
-                                              ""
-                                            )}
 
-                                            <div className="comment">
-                                              <img
-                                                className="Icon"
-                                                src={comment.image}
-                                              />
+                                                  <div
+                                                    className="options-div"
+                                                    id={comment.id}
+                                                    onClick={(e) => {
+                                                      deleteComment(
+                                                        e.target.id
+                                                      );
+                                                    }}
+                                                  >
+                                                    Delete
+                                                  </div>
+                                                </div>
+                                              ) : (
+                                                <></>
+                                              )}
+                                            </div>
+                                          ) : (
+                                            ""
+                                          )}
 
-                                              <div>
-                                                {" "}
-                                                <p
-                                                  className="commentName"
-                                                  onClick={() =>
-                                                    handelCheckUser(
-                                                      comment.commenter_id
-                                                    )
-                                                  }
-                                                >
-                                                  {comment.userName}
-                                                </p>
-                                                <p>{comment.comment}</p>
-                                              </div>
+                                          <div className="comment">
+                                            <img
+                                              className="Icon"
+                                              src={comment.image}
+                                            />
+
+                                            <div>
+                                              <p
+                                                className="commentName"
+                                                onClick={() =>
+                                                  handelCheckUser(
+                                                    comment.commenter_id
+                                                  )
+                                                }
+                                              >
+                                                {comment.userName}
+                                              </p>
+                                              <p>{comment.comment}</p>
                                             </div>
                                           </div>
-                                        ) : (
-                                          ""
-                                        )}
-                                      </div>
+                                        </div>
+                                      ) : (
+                                        ""
+                                      )}
+
                                       {comment.id == dropdownIdComment &&
                                       showCommentUpdate ? (
                                         <form
