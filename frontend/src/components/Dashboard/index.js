@@ -207,7 +207,7 @@ const Dashboard = () => {
   };
 
   //=================================
-  const getAllPosts = () => {  
+  const getAllPosts = () => {
     axios
       .get(`http://localhost:5000/posts/`)
       .then((res) => {
@@ -224,6 +224,7 @@ const Dashboard = () => {
                 const postsRes = res.data.result.reverse();
                 const likeRes = response.data.result;
                 const friendRes = result.data.result;
+                console.log("allPOSTS", postsRes);
 
                 const postWithLike = [];
 
@@ -587,9 +588,8 @@ const Dashboard = () => {
     }
   };
 
-
   useEffect(() => {
-    getAllPosts()
+    getAllPosts();
     getAllComments();
     getUserById();
     getAllUsers();
@@ -597,12 +597,7 @@ const Dashboard = () => {
   }, []);
 
   return (
-    
-    <div
-      className="container"
-     
-    >
-
+    <div className="container">
       <div className="sidebar">
         <ul className="sidebarList">
           <li className="sidebarListItem">
@@ -708,7 +703,6 @@ const Dashboard = () => {
             </div>
           </div>
           <div className="container-post">
-   
             {" "}
             {show &&
               posts.map((post, index) => {
@@ -737,7 +731,11 @@ const Dashboard = () => {
                           })}
                           {/* flex+center+spacebetween */}
 
-                          <div className="dd-container">
+                          <div
+                            className={
+                              post.user_id == userId ? "dd-container" : "hide"
+                            }
+                          >
                             <button
                               id={post.id}
                               className="dd-button"
@@ -790,7 +788,7 @@ const Dashboard = () => {
                             <div className={"update-post-popup"}>
                               <div className="updateheader">
                                 <div className="update-post-header">
-                                  <h2>Update post</h2>
+                                  <h1>Update post</h1>
                                   <IoCloseSharp
                                     className="close-btn"
                                     onClick={() => setShowUpdate(false)}
@@ -913,67 +911,65 @@ const Dashboard = () => {
                             >
                               View all comments
                             </button>
+                            <div className="comment-container">
+                              {users.map((user, i) => {
+                                return (
+                                  <div
+                                    className="profileName"
+                                    key={i}
+                                    onClick={() => {
+                                      navigate("/profile");
+                                    }}
+                                  >
+                                    <img className="Icon" src={user.image} />
+                                  </div>
+                                );
+                              })}
+                              <form
+                                id={`commentform${post.id}`}
+                                className="addComment"
+                              >
+                                <textarea
+                                  id={`comment-${post.id}`}
+                                  placeholder="Write a comment…"
+                                  onChange={(e) => {
+                                    setComment(e.target.value);
+                                  }}
+                                  onKeyUp={(e) => {
+                                    resize(e);
+                                  }}
+                                  onKeyDown={(e) => {
+                                    if (e.key === "Enter") {
+                                      const commentSection =
+                                        document.getElementById(
+                                          `comment-${e.target.id.split("-")[1]}`
+                                        );
+                                      const commentDiv =
+                                        document.getElementById(
+                                          `commentDiv${
+                                            e.target.id.split("-")[1]
+                                          }`
+                                        );
+                                      const commentForm =
+                                        document.getElementById(
+                                          `commentform${
+                                            e.target.id.split("-")[1]
+                                          }`
+                                        );
+                                      commentDiv.style.display = "block";
+                                      commentSection.focus();
+                                      commentForm.reset();
+                                      newComment(e, post.id);
+                                    }
+                                  }}
+                                ></textarea>
+                              </form>
+                            </div>
                             <div
                               id={`commentDiv${post.id}`}
                               className="allComments"
                               style={{ display: "none" }}
                             >
-                              <div className="comment-container">
-                                {users.map((user, i) => {
-                                  return (
-                                    <div
-                                      className="profileName"
-                                      key={i}
-                                      onClick={() => {
-                                        navigate("/profile");
-                                      }}
-                                    >
-                                      <img className="Icon" src={user.image} />
-                                    </div>
-                                  );
-                                })}
-                                <form
-                                  id={`commentform${post.id}`}
-                                  className="addComment"
-                                >
-                                  <textarea
-                                    id={`comment-${post.id}`}
-                                    placeholder="Write a comment…"
-                                    onChange={(e) => {
-                                      setComment(e.target.value);
-                                    }}
-                                    onKeyUp={(e) => {
-                                      resize(e);
-                                    }}
-                                    onKeyDown={(e) => {
-                                      if (e.key === "Enter") {
-                                        const commentSection =
-                                          document.getElementById(
-                                            `comment-${
-                                              e.target.id.split("-")[1]
-                                            }`
-                                          );
-                                        const commentDiv =
-                                          document.getElementById(
-                                            `commentDiv${
-                                              e.target.id.split("-")[1]
-                                            }`
-                                          );
-                                        const commentForm =
-                                          document.getElementById(
-                                            `commentform${
-                                              e.target.id.split("-")[1]
-                                            }`
-                                          );
-                                        commentDiv.style.display = "block";
-                                        commentSection.focus();
-                                        commentForm.reset();
-                                        newComment(e, post.id);
-                                      }
-                                    }}
-                                  ></textarea>
-                                </form>
-                              </div>
                               {show &&
                                 comments.map((comment, index) => {
                                   return (
@@ -1042,12 +1038,8 @@ const Dashboard = () => {
 
                                               <div>
                                                 {" "}
-
-
-
-                                                <p 
-                                                className="commentName"
-
+                                                <p
+                                                  className="commentName"
                                                   onClick={() =>
                                                     handelCheckUser(
                                                       comment.commenter_id
@@ -1122,10 +1114,7 @@ const Dashboard = () => {
           // console.log("number2",  numberRef.current);
           getAllPosts(numberRef.current)
         }}>Click</button> */}
-      
           </div>
-        
-          
         </div>
       </div>
       <div className="rightbar">
