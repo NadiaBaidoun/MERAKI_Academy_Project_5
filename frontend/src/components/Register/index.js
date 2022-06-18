@@ -141,7 +141,7 @@ const Register = () => {
 
           <div className="input-div">
             <input
-              placeholder="Country regInput"
+              placeholder="Country"
               onChange={(e) => {
                 setCountry(e.target.value);
               }}
